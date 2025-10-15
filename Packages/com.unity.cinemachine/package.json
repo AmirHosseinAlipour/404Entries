@@ -1,0 +1,69 @@
+{
+  "name": "com.unity.cinemachine",
+  "displayName": "Cinemachine",
+  "version": "3.1.3",
+  "unity": "2022.3",
+  "description": "Smart camera tools for passionate creators. \n\nCinemachine 3 is a newer and better version of Cinemachine, but upgrading an existing project from 2.X will likely require some effort.  If you're considering upgrading an older project, please see our upgrade guide in the user manual.",
+  "keywords": [
+    "camera",
+    "follow",
+    "rig",
+    "fps",
+    "cinematography",
+    "aim",
+    "orbit",
+    "cutscene",
+    "cinematic",
+    "collision",
+    "freelook",
+    "cinemachine",
+    "compose",
+    "composition",
+    "dolly",
+    "track",
+    "clearshot",
+    "noise",
+    "framing",
+    "handheld",
+    "lens",
+    "impulse"
+  ],
+  "category": "cinematography",
+  "dependencies": {
+    "com.unity.splines": "2.0.0",
+    "com.unity.modules.imgui": "1.0.0"
+  },
+  "samples": [
+    {
+      "displayName": "2D Samples",
+      "description": "Sample scenes illustrating various ways to use Cinemachine in a 2D setting",
+      "path": "Samples~/2D Samples"
+    },
+    {
+      "displayName": "3D Samples",
+      "description": "Sample scenes illustrating various ways to use Cinemachine in a 3D setting",
+      "path": "Samples~/3D Samples"
+    },
+    {
+      "displayName": "Input System Samples",
+      "description": "Sample scenes illustrating various ways to use Cinemachine with the input system.",
+      "path": "Samples~/Input System Samples"
+    }
+  ],
+  "relatedPackages": {
+    "com.unity.cinemachine.tests": "3.1.3"
+  },
+  "_upm": {
+    "changelog": "### Bugfixes\n- Regression fix: CinemachinePanTilt recentering was ignoring axis Center setting.\n- CameraDeactivated events were not sent consistently when a blend interrupted another blend before completion.\n- CameraActivated events were not sent consistently when activation was due to timeline blends.\n- FramingTransposer with a dead zone would sometimes drift.\n- Decollider would sometimes cause camera to slip inside cracks between adjacent colliders.\n- The Deoccluder failed to reset its state when initially enabled, and sometimes caused small spurious camera rotations.\n- Fixed the Radial Axis input axis in the CinemachineOrbitalFollow component to map to the y axis.\n- Desired blend time is respected when interrupting blends with heterogeneous blend-in and blend-out times.\n\n### Changed\n- Added delayed processing to near and far clip plane inspector fields for the CinemachineCamera lens.\n- Updated the gamepad inputs in the CinemachineDefaultInputActions asset to closer match standard gamepad conventions. Renamed the Player action map to CM Default.\n\n### Added\n- CinemachineConfiner2D.BoundingShapeIsBaked can be used to check if the confiner's bounding shape is baked.\n- CinemachineConfiner2D.BakeBoundingShape() can be used to force-complete the confiner's baking of the bounding shape."
+  },
+  "upmCi": {
+    "footprint": "f5a6360f9cec00afa12b9f0308056a80af97fd02"
+  },
+  "documentationUrl": "https://docs.unity3d.com/Packages/com.unity.cinemachine@3.1/manual/index.html",
+  "repository": {
+    "url": "https://github.com/Unity-Technologies/com.unity.cinemachine.git",
+    "type": "git",
+    "revision": "23940e5601df6628d349dc9d1912bd2bb34ad631"
+  },
+  "_fingerprint": "624f919d8cdd376712eda21b43abcb0330c023e2"
+}
