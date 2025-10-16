@@ -24,7 +24,7 @@ public class SwitchWindow : MonoBehaviour
             // Hide the window
             if (windowToHideAnimation)
             {
-                UIAnimationManager.Instance.HideWindow(windowToHide);
+                UIAnimationManager.Instance.HideWindow(windowToHide, 0.5f);
             }
             else
             {
@@ -43,7 +43,7 @@ public class SwitchWindow : MonoBehaviour
             // Hide the window
             if (windowToHideAnimation)
             {
-                UIAnimationManager.Instance.HideWindow(windowToHide);
+                UIAnimationManager.Instance.HideWindow(windowToHide, 0.3f);
             }
             else
             {
@@ -56,7 +56,7 @@ public class SwitchWindow : MonoBehaviour
             // Show the window
             if (windowToShowAnimation)
             {
-                UIAnimationManager.Instance.ShowWindow(windowToShow);
+                UIAnimationManager.Instance.ShowWindow(windowToShow, 0.5f);
             }
             else
             {
