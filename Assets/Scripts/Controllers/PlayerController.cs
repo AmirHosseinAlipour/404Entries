@@ -17,6 +17,9 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D _rb;
     private Vector2 _movementInput;
     private Animator _animator;
+    
+    // Skip Inputs with this bool
+    public bool isUIActive = false;
 
     private void Start()
     {
@@ -35,6 +38,9 @@ public class PlayerController : MonoBehaviour
         {
             Flip();
         }
+        
+        // Enters the mini game (missions)
+        if (isUIActive) UIMode();
     }
 
     private void FixedUpdate()
@@ -44,6 +50,9 @@ public class PlayerController : MonoBehaviour
 
     public void OnMove(InputAction.CallbackContext context)
     {
+        // If player was in UI mini games inputs should be skipped
+        if (isUIActive) return;
+        
         // Normalize inputs to prevent faster diagonal movement
         _movementInput = context.ReadValue<Vector2>().normalized;
     }
@@ -75,5 +84,10 @@ public class PlayerController : MonoBehaviour
         scale.x *= -1;
         gameObject.transform.localScale = scale;
         _facingLeft = !_facingLeft;
+    }
+
+    private void UIMode()
+    {
+        _movementInput = Vector2.zero;
     }
 }
