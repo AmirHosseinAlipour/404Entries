@@ -5,9 +5,6 @@ public class UIAnimationManager : MonoBehaviour
 {
     public static UIAnimationManager Instance { get; private set; }
 
-    public float showWindowDuration = 0.8f;
-    public float hidWindowDuration = 0.5f;
-
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -20,7 +17,7 @@ public class UIAnimationManager : MonoBehaviour
             DontDestroyOnLoad(gameObject);
         }
     }
-    public void ShowWindow(RectTransform window)
+    public void ShowWindow(RectTransform window, float showWindowDuration)
     {
         if (window == null) return;
     
@@ -30,7 +27,7 @@ public class UIAnimationManager : MonoBehaviour
         window.DOScale(1f, showWindowDuration).From(0f).SetEase(Ease.OutBack).SetUpdate(true);
     }
 
-    public void HideWindow(RectTransform window)
+    public void HideWindow(RectTransform window, float hidWindowDuration)
     {
         if (window == null) return;
     
