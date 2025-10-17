@@ -3,7 +3,7 @@ using UnityEngine;
 public class BaseProfessors : MonoBehaviour
 {
     public RectTransform taskPanel;
-    private PlayerController _player;
+    protected PlayerController _player;
 
     protected virtual void Start()
     {
