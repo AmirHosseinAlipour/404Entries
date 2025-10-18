@@ -44,9 +44,10 @@ public class Shekofteh : BaseProfessors
         counter.SetActive(true);
 
         yield return new WaitForSeconds(1f);
+        
         SkipButton.gameObject.SetActive(true);
         buttonBackground.gameObject.SetActive(true);
-        SkipButton.StartTeleportMovement(); 
+        SkipButton.StartTeleportMovement();
     }
 
     private IEnumerator MoveObject(Vector3 targetWorldPosition)
