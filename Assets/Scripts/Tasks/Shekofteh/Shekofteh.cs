@@ -1,5 +1,7 @@
+using System;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Shekofteh : BaseProfessors
 {
@@ -17,6 +19,9 @@ public class Shekofteh : BaseProfessors
 
     // To make it visible after movement
     public GameObject counter;
+
+    [Header("Text Sequence")] 
+    public Text[] listOfTexts;
     
     private Animator _UIAnimator;
 
@@ -72,5 +77,36 @@ public class Shekofteh : BaseProfessors
         }
 
         UICharacterRectTransform.position = targetWorldPosition;
+    }
+
+    // Override this method do implement text sequence execution
+    protected override void OnTriggerEnter2D(Collider2D other)
+    {
+        base.OnTriggerEnter2D(other);
+
+        StartCoroutine(TextSequence());
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                // Reset the text so each time the text would be written in type writer effect!
+                listOfTexts[i].text = "";
+            }
+        }
+    }
+
+    private IEnumerator TextSequence()
+    {
+        // First of all we write the first 3 text which is the accept message + yes/no option
+        for (int i = 0; i < 3; i++)
+        {
+            FarsiTypewriter text = listOfTexts[i].gameObject.GetComponent<FarsiTypewriter>();
+            text.StartTyping();
+            yield return new WaitForSeconds(text.TypeTextTotalTime);
+        }
     }
 }
