@@ -9,7 +9,7 @@ public class CircleTimerAnimation : MonoBehaviour
     [HideInInspector] public float animationDuration;
     private Image _fillImage;
 
-    private void Start()
+    private void Awake()
     {
         _fillImage = gameObject.GetComponent<Image>();
     }
