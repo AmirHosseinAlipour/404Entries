@@ -9,7 +9,7 @@ using ArabicSupport;
 public class FarsiTypewriter : MonoBehaviour
 {
     public bool typeWriterEffect;
-    public float typeTextTotalTime;
+    public float typeCharTime;
     public bool autoResetText;
     
     // To fix RTL
@@ -80,9 +80,6 @@ public class FarsiTypewriter : MonoBehaviour
         {
             yield break; // Exit if there is no text to type.
         }
-
-        // Calculate the time to wait for each character to make a typewriter effect.
-        float time = typeTextTotalTime / _fixedText.Length;
         
         foreach (char c in _fixedText)
         {
@@ -105,7 +102,7 @@ public class FarsiTypewriter : MonoBehaviour
                 _canReset = false;
             }
             
-            yield return new WaitForSeconds(time);
+            yield return new WaitForSeconds(typeCharTime);
         }
     }
 
