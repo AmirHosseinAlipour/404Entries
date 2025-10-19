@@ -46,7 +46,8 @@ public class Shekofteh : BaseProfessors
 
         yield return new WaitForSeconds(1f);
 
-        textPanel.SetActive(true);
+        textPanel.transform.parent.gameObject.SetActive(true);
+        textPanel.GetComponent<FarsiTypewriter>().StartTyping();
         SkipButton.gameObject.SetActive(true);
         buttonBackground.gameObject.SetActive(true);
         SkipButton.StartTeleportMovement();
