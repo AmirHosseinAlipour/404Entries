@@ -1,26 +1,36 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using TMPro;
+using Random = UnityEngine.Random;
 
 public class SkipButton : MonoBehaviour
 {
-    // UI text that counts the touches
-    public TextMeshProUGUI counter;
+    // UI text that _counts the touches
+    public TextMeshProUGUI _counter;
+    public CircleTimerAnimation background;
     
     [Header("Teleport Settings")]
-    public float teleportInterval = 0.5f; 
+    public float teleportInterval = 0.5f;
     
     [Range(0f, 0.5f)]
     public float edgePadding = 0.3f;
 
-    private int count;
+    public int[] counts;
+
+    private int _count;
+    private int _currentGoal;
+    private int _currentLevel = 0;
+    
     private RectTransform rectTransform;
     private RectTransform parentRectTransform;
     private Coroutine teleportCoroutine;
     private Button button;
 
     private bool _canTouch = true;
+    private Vector2 lastPosition;
+    private bool isFirstTeleport = true;
 
     private void Awake()
     {
@@ -46,8 +56,13 @@ public class SkipButton : MonoBehaviour
         // Subscribe to the button click event
         if (button != null)
         {
-            button.onClick.AddListener(IncreaseCountAndLog);
+            button.onClick.AddListener(Increase_countAndLog);
         }
+    }
+
+    private void Start()
+    {
+        background.animationDuration = teleportInterval;
     }
 
     private void OnDisable()
@@ -74,14 +89,13 @@ public class SkipButton : MonoBehaviour
         }
     }
     
-    public void IncreaseCountAndLog()
+    public void Increase_countAndLog()
     {
         if (_canTouch)
         {
             _canTouch = false;
-            count++;
-            counter.text = count + " / 3";
-            Debug.Log("Button clicked! Count: " + count);
+            _count++;
+            _counter.text = _count + " / " + _currentGoal;
         }
     }
     
@@ -89,8 +103,10 @@ public class SkipButton : MonoBehaviour
     {
         while (true)
         {
+            // 1. Teleport and Start Animation
             TeleportButton();
-            yield return new WaitForSeconds(teleportInterval); 
+            background.StartCountdown();
+            yield return new WaitForSeconds(teleportInterval);
         }
     }
 
@@ -104,7 +120,7 @@ public class SkipButton : MonoBehaviour
         float parentWidth = parentRectTransform.rect.width;
         float parentHeight = parentRectTransform.rect.height;
 
-        // Get the button size (accounting for scale)
+        // Get the button size (ac_counting for scale)
         float buttonWidth = rectTransform.rect.width * rectTransform.localScale.x;
         float buttonHeight = rectTransform.rect.height * rectTransform.localScale.y;
 
@@ -134,9 +150,23 @@ public class SkipButton : MonoBehaviour
             minY = maxY = parentHeight * 0.5f;
         }
 
-        // Generate random position within the calculated bounds
-        float randomX = Random.Range(minX, maxX);
-        float randomY = Random.Range(minY, maxY);
+        const float minTeleportDistance = 300f;
+        const int maxAttempts = 30;
+        
+        Vector2 newPosition;
+        int currentAttempt = 0;
+        
+        do
+        {
+            float randomX = Random.Range(minX, maxX);
+            float randomY = Random.Range(minY, maxY);
+            newPosition = new Vector2(randomX, randomY);
+            currentAttempt++;
+        } 
+        while (!isFirstTeleport && Vector2.Distance(newPosition, lastPosition) < minTeleportDistance && currentAttempt < maxAttempts);
+
+        lastPosition = newPosition;
+        isFirstTeleport = false;
 
         // Set the position using offsetMin/offsetMax or anchoredPosition
         // Reset the anchors temporarily to set the position
@@ -145,15 +175,21 @@ public class SkipButton : MonoBehaviour
         
         rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
         rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-        rectTransform.anchoredPosition = new Vector2(randomX - parentWidth * 0.5f, randomY - parentHeight * 0.5f);
-        
+        rectTransform.anchoredPosition = new Vector2(newPosition.x - parentWidth * 0.5f, newPosition.y - parentHeight * 0.5f);
     }
 
     // Reset the counter
     public void ResetCounter()
     {
-        count = 0;
-        if (counter != null)
-            counter.text = count + " / 3";
+        _count = 0;
+        if (_counter != null)
+            _counter.text = _count + " / " + _currentGoal;
+        isFirstTeleport = true;
+    }
+
+    public void NextLevel()
+    {
+        _currentLevel++;
+        _currentGoal = counts[_currentLevel];
     }
 }
