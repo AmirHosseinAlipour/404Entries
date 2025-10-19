@@ -55,8 +55,6 @@ public class FarsiTypewriter : MonoBehaviour
         
         _cachedSettings = _textUI.GetGenerationSettings(_textUI.rectTransform.rect.size);
         _boxHeight = _textUI.rectTransform.rect.height;
-        
-        StartTyping();
     }
 
     public void StartTyping()

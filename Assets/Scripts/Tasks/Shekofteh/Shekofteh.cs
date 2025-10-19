@@ -12,8 +12,9 @@ public class Shekofteh : BaseProfessors
     [Header("Positions")]
     public RectTransform endPos1;
     public RectTransform endPos2;
-    
-    [Header("Skip Button")]
+
+    [Header("Mission")]
+    public GameObject textPanel;
     public SkipButton SkipButton;
     public CircleTimerAnimation buttonBackground;
 
@@ -44,7 +45,8 @@ public class Shekofteh : BaseProfessors
         counter.SetActive(true);
 
         yield return new WaitForSeconds(1f);
-        
+
+        textPanel.SetActive(true);
         SkipButton.gameObject.SetActive(true);
         buttonBackground.gameObject.SetActive(true);
         SkipButton.StartTeleportMovement();
