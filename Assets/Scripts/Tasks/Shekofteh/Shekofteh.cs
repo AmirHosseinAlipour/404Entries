@@ -107,7 +107,7 @@ public class Shekofteh : BaseProfessors
         {
             FarsiTypewriter text = listOfTexts[i].gameObject.GetComponent<FarsiTypewriter>();
             text.StartTyping();
-            yield return new WaitForSeconds(text.TypeTextTotalTime);
+            yield return new WaitForSeconds(text.typeTextTotalTime);
         }
     }
 }
