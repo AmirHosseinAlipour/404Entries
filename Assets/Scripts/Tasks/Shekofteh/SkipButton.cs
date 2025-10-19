@@ -7,8 +7,8 @@ using Random = UnityEngine.Random;
 
 public class SkipButton : MonoBehaviour
 {
-    // UI text that counts the touches
-    public TextMeshProUGUI counter;
+    // UI text that _counts the touches
+    public TextMeshProUGUI _counter;
     public CircleTimerAnimation background;
     
     [Header("Teleport Settings")]
@@ -17,7 +17,12 @@ public class SkipButton : MonoBehaviour
     [Range(0f, 0.5f)]
     public float edgePadding = 0.3f;
 
-    private int count;
+    public int[] counts;
+
+    private int _count;
+    private int _currentGoal;
+    private int _currentLevel = 0;
+    
     private RectTransform rectTransform;
     private RectTransform parentRectTransform;
     private Coroutine teleportCoroutine;
@@ -51,7 +56,7 @@ public class SkipButton : MonoBehaviour
         // Subscribe to the button click event
         if (button != null)
         {
-            button.onClick.AddListener(IncreaseCountAndLog);
+            button.onClick.AddListener(Increase_countAndLog);
         }
     }
 
@@ -84,13 +89,13 @@ public class SkipButton : MonoBehaviour
         }
     }
     
-    public void IncreaseCountAndLog()
+    public void Increase_countAndLog()
     {
         if (_canTouch)
         {
             _canTouch = false;
-            count++;
-            counter.text = count + " / 3";
+            _count++;
+            _counter.text = _count + " / " + _currentGoal;
         }
     }
     
@@ -115,7 +120,7 @@ public class SkipButton : MonoBehaviour
         float parentWidth = parentRectTransform.rect.width;
         float parentHeight = parentRectTransform.rect.height;
 
-        // Get the button size (accounting for scale)
+        // Get the button size (ac_counting for scale)
         float buttonWidth = rectTransform.rect.width * rectTransform.localScale.x;
         float buttonHeight = rectTransform.rect.height * rectTransform.localScale.y;
 
@@ -176,9 +181,15 @@ public class SkipButton : MonoBehaviour
     // Reset the counter
     public void ResetCounter()
     {
-        count = 0;
-        if (counter != null)
-            counter.text = count + " / 3";
+        _count = 0;
+        if (_counter != null)
+            _counter.text = _count + " / " + _currentGoal;
         isFirstTeleport = true;
+    }
+
+    public void NextLevel()
+    {
+        _currentLevel++;
+        _currentGoal = counts[_currentLevel];
     }
 }
