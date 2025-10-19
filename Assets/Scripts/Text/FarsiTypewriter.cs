@@ -1,17 +1,27 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 using ArabicSupport;
 
 public class FarsiTypewriter : MonoBehaviour
 {
-    public float TypeTextTotalTime;
-    public bool TypeWriterEffect;
+    public bool typeWriterEffect;
+    public float typeTextTotalTime;
+    public bool autoResetText;
     
+    // To fix RTL
     private Text _textUI;
     private string _fixedText;
+    
+    // To achieve text reset after vertical overflow
+    private StringBuilder _builder = new StringBuilder();
+    private TextGenerationSettings _cachedSettings;
+    private float _boxHeight;
+    private float _counter;
+    private bool _canReset;
 
     void Awake()
     {
@@ -38,10 +48,15 @@ public class FarsiTypewriter : MonoBehaviour
 
     private void Start()
     {
-        if (!TypeWriterEffect)
+        if (!typeWriterEffect)
         {
             _textUI.text = _fixedText;
         }
+        
+        _cachedSettings = _textUI.GetGenerationSettings(_textUI.rectTransform.rect.size);
+        _boxHeight = _textUI.rectTransform.rect.height;
+        
+        StartTyping();
     }
 
     public void StartTyping()
@@ -49,6 +64,11 @@ public class FarsiTypewriter : MonoBehaviour
         // Stop any previous typing routines before starting a new one.
         StopAllCoroutines();
         StartCoroutine(TypeTextCoroutine());
+    }
+
+    public void ResetText()
+    {
+        _canReset = true;
     }
 
     private IEnumerator TypeTextCoroutine()
@@ -59,12 +79,37 @@ public class FarsiTypewriter : MonoBehaviour
         }
 
         // Calculate the time to wait for each character to make a typewriter effect.
-        float time = TypeTextTotalTime / _fixedText.Length;
+        float time = typeTextTotalTime / _fixedText.Length;
         
         foreach (char c in _fixedText)
         {
-            _textUI.text += c;
+            _builder.Append(c);
+            _textUI.text = _builder.ToString();
+            
+            _counter++;
+
+            if (autoResetText)
+            {
+                _canReset = true;
+            }
+            
+            if (_canReset && _counter % 5 == 0 
+                          && CheckVerticalOverflow(_cachedSettings, _boxHeight))
+            {
+                _textUI.text = "";
+                _builder.Clear();
+                _counter = 0;
+                _canReset = false;
+            }
+            
             yield return new WaitForSeconds(time);
         }
+    }
+
+    private bool CheckVerticalOverflow(TextGenerationSettings settings, float boxHeight)
+    {
+        float preferredHeight = _textUI.cachedTextGenerator.GetPreferredHeight(_textUI.text, settings);
+
+        return preferredHeight > boxHeight;
     }
 }

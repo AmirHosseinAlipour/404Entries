@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Controls;
 
-public class Touch_button : MonoBehaviour
+public class TouchButton : MonoBehaviour
 {
     private Button _button;
     private RectTransform _buttonRect;
