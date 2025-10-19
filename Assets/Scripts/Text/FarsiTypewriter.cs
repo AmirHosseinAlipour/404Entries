@@ -61,6 +61,11 @@ public class FarsiTypewriter : MonoBehaviour
     {
         // Stop any previous typing routines before starting a new one.
         StopAllCoroutines();
+        
+        // Clear the string builder
+        _builder.Clear();
+        
+        // Start a new Type Writer Effect
         StartCoroutine(TypeTextCoroutine());
     }
 
