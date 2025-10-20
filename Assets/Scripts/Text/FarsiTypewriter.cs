@@ -15,6 +15,8 @@ public class FarsiTypewriter : MonoBehaviour
     // To fix RTL
     private Text _textUI;
     private string _fixedText;
+
+    public int len;
     
     // To achieve text reset after vertical overflow
     private StringBuilder _builder = new StringBuilder();
@@ -43,6 +45,8 @@ public class FarsiTypewriter : MonoBehaviour
         
         // Clear the UI text to prepare for typing.
         _textUI.text = "";
+
+        len = _fixedText.Length;
 
     }
 
