@@ -41,6 +41,9 @@ public class Safaei : BaseProfessors
                 HideAllOptions();
                 UIAnimationManager.Instance.HideWindow(taskPanel , 0.5f);
                 _player.isUIActive = false;
+                TaskManager.Instance.CompleteTask(0); 
+                FindObjectOfType<TaskUI>().UpdateUI(); 
+
                 yield break;
             }
 
