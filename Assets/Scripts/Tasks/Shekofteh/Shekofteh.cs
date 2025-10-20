@@ -17,6 +17,12 @@ public class Shekofteh : BaseProfessors
     public GameObject textPanel;
     public SkipButton SkipButton;
     public CircleTimerAnimation buttonBackground;
+    public FarsiTypewriter mission;
+
+    public int initialDialogueCount;
+    public int nextLevelWaitDuration;
+    
+    private bool _isNextLevelRunning = false;
 
     // To make it visible after movement
     public GameObject counter;
@@ -25,12 +31,22 @@ public class Shekofteh : BaseProfessors
     public Text[] listOfTexts;
     
     private Animator _UIAnimator;
-
+    
     protected override void Start()
     {
         base.Start();
         
         _UIAnimator = UICharacterRectTransform.GetComponent<Animator>();
+        
+        SkipButton.OnLevelGoalReached += HandleLevelGoalReached;
+    }
+    
+    private void HandleLevelGoalReached()
+    {
+        if (!_isNextLevelRunning)
+        {
+            StartCoroutine(NextLevel());
+        }
     }
 
     public void StartMission()
@@ -48,8 +64,13 @@ public class Shekofteh : BaseProfessors
 
         textPanel.transform.parent.gameObject.SetActive(true);
         textPanel.GetComponent<FarsiTypewriter>().StartTyping();
+        
         SkipButton.gameObject.SetActive(true);
         buttonBackground.gameObject.SetActive(true);
+        
+        UIUtils.SetAlpha(SkipButton.buttonImage.gameObject, 0);
+        UIUtils.SetAlpha(buttonBackground.gameObject, 0);
+        
         SkipButton.StartTeleportMovement();
     }
 
@@ -106,12 +127,30 @@ public class Shekofteh : BaseProfessors
     private IEnumerator TextSequence()
     {
         // First of all we write the first 3 text which is the accept message + yes/no option
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < initialDialogueCount; i++)
         {
             FarsiTypewriter text = listOfTexts[i].gameObject.GetComponent<FarsiTypewriter>();
-            int len = listOfTexts[i].text.Length;
             text.StartTyping();
-            yield return new WaitForSeconds(text.typeCharTime * len);
+            yield return new WaitForSeconds(text.typeCharTime * text.len);
         }
+    }
+
+    private IEnumerator NextLevel()
+    {
+        _isNextLevelRunning = true;
+
+        float originalSpeed = mission.typeCharTime;
+        mission.typeCharTime /= 5;
+
+        UIUtils.SetAlpha(SkipButton.gameObject, 0f);
+        UIUtils.SetAlpha(buttonBackground.gameObject, 0f);
+        
+        yield return new WaitForSecondsRealtime(nextLevelWaitDuration);
+        mission.typeCharTime = originalSpeed;
+        UIUtils.SetAlpha(SkipButton.gameObject, 1f);
+        UIUtils.SetAlpha(buttonBackground.gameObject, 1f);
+
+        SkipButton.NextLevel();
+        _isNextLevelRunning = false;
     }
 }
