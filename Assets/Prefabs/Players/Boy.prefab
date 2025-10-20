@@ -81,7 +81,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: 9128384846270689552, guid: ed583fd39dd75a34895ddba33ebb5e4b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -301,6 +301,14 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 9caa3d8a-6b2f-4e8e-8bad-6ede561bd9be
     m_ActionName: UI/TrackedDeviceOrientation
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: b1ddab81-32b9-4b2a-a007-7c34d8a3636c
+    m_ActionName: Touch/TouchPress
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ae447432-fe3a-490c-a6f3-7cc4dda59d2c
+    m_ActionName: Touch/TouchPosition
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -319,6 +327,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 5
+  isUIActive: 0
 --- !u!1 &7253001917200964209
 GameObject:
   m_ObjectHideFlags: 0
