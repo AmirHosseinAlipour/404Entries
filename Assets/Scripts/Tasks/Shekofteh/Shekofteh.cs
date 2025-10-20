@@ -12,8 +12,9 @@ public class Shekofteh : BaseProfessors
     [Header("Positions")]
     public RectTransform endPos1;
     public RectTransform endPos2;
-    
-    [Header("Skip Button")]
+
+    [Header("Mission")]
+    public GameObject textPanel;
     public SkipButton SkipButton;
     public CircleTimerAnimation buttonBackground;
 
@@ -44,7 +45,9 @@ public class Shekofteh : BaseProfessors
         counter.SetActive(true);
 
         yield return new WaitForSeconds(1f);
-        
+
+        textPanel.transform.parent.gameObject.SetActive(true);
+        textPanel.GetComponent<FarsiTypewriter>().StartTyping();
         SkipButton.gameObject.SetActive(true);
         buttonBackground.gameObject.SetActive(true);
         SkipButton.StartTeleportMovement();
@@ -106,8 +109,9 @@ public class Shekofteh : BaseProfessors
         for (int i = 0; i < 3; i++)
         {
             FarsiTypewriter text = listOfTexts[i].gameObject.GetComponent<FarsiTypewriter>();
+            int len = listOfTexts[i].text.Length;
             text.StartTyping();
-            yield return new WaitForSeconds(text.TypeTextTotalTime);
+            yield return new WaitForSeconds(text.typeCharTime * len);
         }
     }
 }
