@@ -90,4 +90,17 @@ public class PlayerController : MonoBehaviour
     {
         _movementInput = Vector2.zero;
     }
+    public bool IsMoving()
+    {
+        return _movementInput.magnitude > 0.1f;
+    }
+    public virtual void Respawn(Vector3 position)
+    {
+        transform.position = position;
+        if (_rb != null)
+        {
+            _rb.linearVelocity = Vector2.zero;
+            _rb.angularVelocity = 0f;
+        }
+    }
 }
