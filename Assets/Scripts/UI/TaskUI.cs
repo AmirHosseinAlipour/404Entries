@@ -1,6 +1,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using ArabicSupport;
 
 public class TaskUI : MonoBehaviour
 {
@@ -9,8 +10,8 @@ public class TaskUI : MonoBehaviour
     public GameObject allTasksPanel;
 
     [Header("UI Elements")]
-    public TMP_Text currentTaskText;
-    public TMP_Text[] allTaskTexts;
+    public Text currentTaskText;
+    public Text[] allTaskTexts;
     public Image[] allTaskImages;
 
     [Header("Sprites")]
@@ -19,6 +20,7 @@ public class TaskUI : MonoBehaviour
 
     private void Start()
     {
+        allTasksPanel.SetActive(false);
         UpdateUI();
     }
 
@@ -26,17 +28,24 @@ public class TaskUI : MonoBehaviour
     {
         var tm = TaskManager.Instance;
 
-     
+
         int currentIndex = tm.GetCurrentTaskIndex();
         if (currentIndex != -1)
-            currentTaskText.text = tm.taskNames[currentIndex];
+        {
+            string _fixedText;
+            _fixedText = ArabicFixer.Fix(tm.taskNames[currentIndex]);
+            currentTaskText.text = _fixedText;
+        }
+
         else
             currentTaskText.text = "All tasks completed!";
 
         
         for (int i = 0; i < allTaskTexts.Length; i++)
         {
-            allTaskTexts[i].text = tm.taskNames[i];
+            string _fixedText;
+            _fixedText = ArabicFixer.Fix(tm.taskNames[i]);
+            allTaskTexts[i].text = _fixedText;
             allTaskImages[i].sprite = tm.taskCompleted[i] ? doneSprite : notDoneSprite;
         }
     }
