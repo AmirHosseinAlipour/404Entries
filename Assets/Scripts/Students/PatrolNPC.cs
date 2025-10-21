@@ -7,9 +7,10 @@ using Random = UnityEngine.Random;
 
 public class PatrolNPC : MonoBehaviour
 {
-    public List<Transform> wayPoints;
+    public GameObject allPoints;
     public float moveSpeed;
 
+    private List<Transform> _wayPoints;
     private int _currentIndex = 0;
     private bool _isReturning = false;
 
@@ -31,9 +32,19 @@ public class PatrolNPC : MonoBehaviour
     private Vector2 _movementInput;
     private Animator _animator;
 
+    private void Awake()
+    {
+        _wayPoints = new List<Transform>();
+    }
+
     private void Start()
     {
         _animator = GetComponent<Animator>();
+
+        foreach (Transform child in allPoints.transform)
+        {
+            _wayPoints.Add(child.gameObject.transform);
+        }
     }
 
     private void FixedUpdate()
@@ -62,10 +73,10 @@ public class PatrolNPC : MonoBehaviour
     private void ProcessMovement()
     {
         // Skip if the there is no way to go
-        if (wayPoints.Count == 0) return;
+        if (_wayPoints.Count == 0) return;
 
         // Move a little bit in each frame
-        Transform target = wayPoints[_currentIndex];
+        Transform target = _wayPoints[_currentIndex];
         transform.position = Vector2.MoveTowards(transform.position, target.position
             , moveSpeed * Time.fixedDeltaTime);
         
@@ -90,9 +101,9 @@ public class PatrolNPC : MonoBehaviour
             if (!_isReturning)
             {
                 _currentIndex++;
-                if (_currentIndex >= wayPoints.Count)
+                if (_currentIndex >= _wayPoints.Count)
                 {
-                    _currentIndex = wayPoints.Count - 2;
+                    _currentIndex = _wayPoints.Count - 2;
                     _isReturning = true;
                 }
             }
