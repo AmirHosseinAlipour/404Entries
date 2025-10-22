@@ -190,8 +190,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   typeWriterEffect: 1
-  typeTextTotalTime: 0.5
+  typeCharTime: 0.05
   autoResetText: 0
+  len: 0
 --- !u!1 &1084127710023774374
 GameObject:
   m_ObjectHideFlags: 0
@@ -371,6 +372,9 @@ MonoBehaviour:
   textPanel: {fileID: 2661570352759690456}
   SkipButton: {fileID: 5795860075951726180}
   buttonBackground: {fileID: 5144252296937299323}
+  mission: {fileID: 3734070511063708973}
+  initialDialogueCount: 3
+  nextLevelWaitDuration: 5
   counter: {fileID: 8251710002268293463}
   listOfTexts:
   - {fileID: 4167054642304964735}
@@ -613,10 +617,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25e6b0f8b5df2c347bfe417464bfdd66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  counter: {fileID: 107594153467044082}
+  _counter: {fileID: 107594153467044082}
+  fastForwardImage: {fileID: 21300000, guid: 5878d346e1c299549ac38d7fa54c881f, type: 3}
+  falseForwardImage: {fileID: 6828258479950430733, guid: c196757ba4ead1545b316e4a116a8d7f, type: 3}
+  buttonImage: {fileID: 7210537606487742291}
   background: {fileID: 5144252296937299323}
-  teleportInterval: 1.5
+  counts: 0a0000000500000003000000
+  teleportIntervals:
+  - 1.5
+  - 1.2
+  - 0.9
   edgePadding: 0.1
+  canGoToNextLevel: 0
+  _firstLoop: 1
 --- !u!1 &2076113396134819908
 GameObject:
   m_ObjectHideFlags: 0
@@ -754,8 +767,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -9.999908, y: 0}
-  m_SizeDelta: {x: -40, y: -60}
+  m_AnchoredPosition: {x: -10.0000305, y: 0}
+  m_SizeDelta: {x: -140.00002, y: -60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5265010922992585572
 CanvasRenderer:
@@ -1011,8 +1024,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   typeWriterEffect: 1
-  typeTextTotalTime: 180
+  typeCharTime: 0.04
   autoResetText: 1
+  len: 0
 --- !u!1 &3826936160670256146
 GameObject:
   m_ObjectHideFlags: 0
@@ -1690,8 +1704,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   typeWriterEffect: 1
-  typeTextTotalTime: 0.5
+  typeCharTime: 0.05
   autoResetText: 0
+  len: 0
 --- !u!1 &6460067956537868619
 GameObject:
   m_ObjectHideFlags: 0
@@ -1942,7 +1957,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: -50, y: 0}
-  m_SizeDelta: {x: 30, y: 20}
+  m_SizeDelta: {x: 60, y: 20}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &2802242969962054488
 CanvasRenderer:
@@ -1972,7 +1987,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 0 / 3
+  m_text: 0 / 10
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2172,5 +2187,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   typeWriterEffect: 1
-  typeTextTotalTime: 1.5
+  typeCharTime: 0.05
   autoResetText: 0
+  len: 0
