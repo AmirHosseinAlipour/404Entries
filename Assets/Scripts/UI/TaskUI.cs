@@ -53,7 +53,7 @@ public class TaskUI : MonoBehaviour
             currentTaskText.text = "All tasks completed!";
 
         
-        for (int i = 0; i < allTaskTexts.Length; i++)
+        for (int i = 1; i < allTaskTexts.Length; i+=2)
         {
             string _fixedText;
             _fixedText = ArabicFixer.Fix(tm.taskNames[i]);
