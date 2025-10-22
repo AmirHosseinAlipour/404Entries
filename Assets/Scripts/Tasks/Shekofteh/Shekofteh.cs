@@ -15,7 +15,7 @@ public class Shekofteh : BaseProfessors
 
     [Header("Mission")]
     public GameObject textPanel;
-    public SkipButton SkipButton;
+    public SkipButton SkipButton;   
     public CircleTimerAnimation buttonBackground;
     public FarsiTypewriter mission;
 

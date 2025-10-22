@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,13 +16,24 @@ public class TaskUI : MonoBehaviour
     public Image[] allTaskImages;
 
     [Header("Sprites")]
-    public Sprite doneSprite;      
-    public Sprite notDoneSprite;   
+    public Sprite doneSprite;
+    public Sprite notDoneSprite;
+
+    private bool firstTime = true;
 
     private void Start()
     {
-        allTasksPanel.SetActive(false);
         UpdateUI();
+    }
+
+    private void Update()
+    {
+        if (firstTime)
+        {
+            firstTime = false;
+            allTasksPanel.SetActive(false);
+            UpdateUI();
+        }
     }
 
     public void UpdateUI()
@@ -66,6 +78,11 @@ public class TaskUI : MonoBehaviour
             UIAnimationManager.Instance.HideWindow(rectTransform , 0.5f);
             rectTransform = allTasksPanel.GetComponent<RectTransform>();
             UIAnimationManager.Instance.ShowWindow(rectTransform, 0.5f);
+
+            // Add these two lines:
+            Canvas.ForceUpdateCanvases();
+            UpdateUI();
         }
     }
+
 }
