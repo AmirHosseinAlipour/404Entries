@@ -1,25 +1,38 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Amozesh : MonoBehaviour
 {
     [System.Serializable]
     public class DialoguePhase
     {
-        public List<string> dialogues; 
+        public List<string> dialogues;
     }
 
+    [Header("Dialogue Data")]
     public  List<DialoguePhase> dialoguePhases;
-    public int currentPhase = 0;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public List<DialoguePhase> getDialoguePhases()
+
+    [Header("Dialogue UI")]
+    public List<Text> listOfTexts;
+    public int listLength;
+    public GameObject firstDialogue;
+
+    private void Start()
     {
-        return dialoguePhases;
+        for (int i = 0; i < listLength; i++)
+        {
+            listOfTexts[i].text = 
+                dialoguePhases[GameManager.Instance.getCurrentTaskIndex()].dialogues[i];
+        }
     }
 
-    public int getCurrentPhase()
+    private void OnTriggerEnter2D(Collider2D other)
     {
-        return TaskManager.Instance.GetCurrentTaskIndex();
+        if (other.gameObject.CompareTag("Player"))
+        {
+            firstDialogue.SetActive(true);
+        }
     }
 }

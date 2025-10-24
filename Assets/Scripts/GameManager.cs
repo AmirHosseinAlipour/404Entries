@@ -6,7 +6,9 @@ public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
     [Header("Task Triggers")]
-    public List<GameObject> taskTriggers; 
+    public List<GameObject> taskTriggers;
+
+    private int currentTaskIndex;
 
     private void Awake()
     {
@@ -20,7 +22,7 @@ public class GameManager : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            int currentTaskIndex = TaskManager.Instance.GetCurrentTaskIndex();
+            currentTaskIndex = TaskManager.Instance.GetCurrentTaskIndex();
             DeactiveTriggerTaskTriggers();
             taskTriggers[currentTaskIndex / 2].GetComponent<Collider2D>().isTrigger = true;
             if (currentTaskIndex % 2 == 0)
@@ -45,5 +47,10 @@ public class GameManager : MonoBehaviour
         {
             taskTriggers[i].GetComponent<Collider2D>().isTrigger = false;
         }
+    }
+
+    public int getCurrentTaskIndex()
+    {
+        return currentTaskIndex/2;
     }
 }
