@@ -18,25 +18,37 @@ public class GameManager : MonoBehaviour
             Destroy(gameObject);
     }
 
+    private void Start()
+    {
+        DeactiveTriggerTaskTriggers();
+        
+        if (TaskManager.Instance != null)
+        {
+            TaskManager.Instance.OnCurrentIndexChange += ChangeCurrentIndex;
+        }
+        
+        ChangeCurrentIndex();
+    }
+
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
         {
-            currentTaskIndex = TaskManager.Instance.GetCurrentTaskIndex();
-            DeactiveTriggerTaskTriggers();
-            taskTriggers[currentTaskIndex / 2].GetComponent<Collider2D>().isTrigger = true;
             if (currentTaskIndex % 2 == 0)
             {
                 TaskManager.Instance.CompleteTask(currentTaskIndex);   
             }
-            if (currentTaskIndex != -1)
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            DeactiveTriggerTaskTriggers();
+            if (taskTriggers[currentTaskIndex] != null)
             {
-                int dialogueIndex = currentTaskIndex / 2;
-
-                // lets  start dialogue in this Method 
-                // StartDialogue(dialogueIndex);
-
-                Debug.Log("Player entered trigger. Dialogue index: " + dialogueIndex);
+                taskTriggers[currentTaskIndex].GetComponent<Collider2D>().isTrigger = true;
             }
         }
     }
@@ -45,8 +57,16 @@ public class GameManager : MonoBehaviour
     {
         for (int i = 0; i < taskTriggers.Count; i++)
         {
-            taskTriggers[i].GetComponent<Collider2D>().isTrigger = false;
+            if (taskTriggers[i] != null)
+            {
+                taskTriggers[i].GetComponent<Collider2D>().isTrigger = false;
+            }
         }
+    }
+
+    public void ChangeCurrentIndex()
+    {
+        currentTaskIndex = TaskManager.Instance.GetCurrentTaskIndex();
     }
 
     public int getCurrentTaskIndex()

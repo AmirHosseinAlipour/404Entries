@@ -1,12 +1,15 @@
+using System;
 using UnityEngine;
 
 public class TaskManager : MonoBehaviour
 {
     [Header("Task Data")]
-    public string[] taskNames;      
-    public bool[] taskCompleted;      
+    public string[] taskNames;
+    public bool[] taskCompleted;
 
-    public static TaskManager Instance; 
+    public static TaskManager Instance;
+
+    public Action OnCurrentIndexChange;
 
     private void Awake()
     {
@@ -20,6 +23,8 @@ public class TaskManager : MonoBehaviour
         if (index >= 0 && index < taskCompleted.Length)
         {
             taskCompleted[index] = true;
+            
+            OnCurrentIndexChange?.Invoke();
         }
     }
     public int GetCurrentTaskIndex()

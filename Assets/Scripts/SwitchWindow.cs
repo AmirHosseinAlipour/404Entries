@@ -10,7 +10,7 @@ public class SwitchWindow : MonoBehaviour
     public bool windowToShowAnimation;
 
     private PlayerController _player;
-
+    
     private void Start()
     {
         _player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();

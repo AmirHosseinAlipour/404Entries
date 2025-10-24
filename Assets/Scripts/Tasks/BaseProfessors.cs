@@ -3,6 +3,8 @@ using UnityEngine;
 public class BaseProfessors : MonoBehaviour
 {
     public RectTransform taskPanel;
+    public int TaskOrderNumber;
+    public RectTransform afterEndingDialogue;
     protected PlayerController _player;
 
     protected virtual void Start()
@@ -15,8 +17,15 @@ public class BaseProfessors : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            _player.isUIActive = true;
-            UIAnimationManager.Instance.ShowWindow(taskPanel, 0.5f);
+            if (TaskManager.Instance.taskCompleted[TaskOrderNumber])
+            {
+                UIAnimationManager.Instance.ShowWindow(afterEndingDialogue, 0.5f);
+            }
+            else
+            {
+                _player.isUIActive = true;
+                UIAnimationManager.Instance.ShowWindow(taskPanel, 0.5f);
+            }
         }
     }
 }

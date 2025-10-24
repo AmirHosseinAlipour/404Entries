@@ -17,22 +17,47 @@ public class Amozesh : MonoBehaviour
     [Header("Dialogue UI")]
     public List<Text> listOfTexts;
     public int listLength;
-    public GameObject firstDialogue;
+    public RectTransform firstDialogue;
+
+    private int _lastCurrentIndex;
+    private int currentIndex;
 
     private void Start()
     {
+        SetDialogues();
+        
+        if (TaskManager.Instance != null)
+        {
+            TaskManager.Instance.OnCurrentIndexChange += ChangeCurrentIndex;
+        }
+    }
+
+    private void SetDialogues()
+    {
         for (int i = 0; i < listLength; i++)
         {
-            listOfTexts[i].text = 
-                dialoguePhases[GameManager.Instance.getCurrentTaskIndex()].dialogues[i];
+            string text = dialoguePhases[currentIndex / 2].dialogues[i];
+            listOfTexts[i].text = text;
+            listOfTexts[i].GetComponent<FarsiTypewriter>().SetText(text);
         }
+    }
+    
+    public void ChangeCurrentIndex()
+    {
+        _lastCurrentIndex = currentIndex;
+        currentIndex = TaskManager.Instance.GetCurrentTaskIndex();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            firstDialogue.SetActive(true);
+            if (_lastCurrentIndex != currentIndex)
+            {
+                SetDialogues();
+            }
+            
+            UIAnimationManager.Instance.ShowWindow(firstDialogue, 0.5f);
         }
     }
 }
