@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
@@ -15,10 +16,11 @@ public class FarsiTypewriter : MonoBehaviour
     public bool autoResetText;
     
     private Text _textUI;
-    private string _fixedText;
+    private string _rawText; // <-- ADDED: To store the original, unfixed text
+    private string _finalProcessedText; // <-- RENAMED: from _fixedText
     public int len;
     
-    private StringBuilder _builder = new StringBuilder();
+    private StringBuilder _builder = new StringBuilder(); // This will now store the RAW text
     private TextGenerationSettings _cachedSettings;
     private float _boxHeight;
     private float _counter;
@@ -33,15 +35,6 @@ public class FarsiTypewriter : MonoBehaviour
 
     private void Start()
     {
-        if (typeWriterEffect)
-        {
-            StartTyping();
-        }
-        else
-        {
-            _textUI.text = _fixedText;
-        }
-        
         _cachedSettings = _textUI.GetGenerationSettings(_textUI.rectTransform.rect.size);
         _boxHeight = _textUI.rectTransform.rect.height;
     }
@@ -58,12 +51,14 @@ public class FarsiTypewriter : MonoBehaviour
         }
         else
         {
-            _textUI.text = _fixedText;
+            _textUI.text = _finalProcessedText; // <-- CHANGED
         }
     }
 
     private void FixAndPrepareText(string rawText)
     {
+        _rawText = rawText; // <-- ADDED: Store the original text
+        
         string[] lines = rawText.Split('\n');
         
         for (int i = 0; i < lines.Length; i++)
@@ -71,13 +66,13 @@ public class FarsiTypewriter : MonoBehaviour
             lines[i] = ArabicFixer.Fix(lines[i], true, true);
         }
         
-        _fixedText = string.Join("\n", lines);
+        _finalProcessedText = string.Join("\n", lines); // <-- RENAMED
         
         _textUI.text = "";
 
-        len = _fixedText.Length;
+        len = _rawText.Length; // <-- CHANGED: Length of the raw text
         
-        _builder.Clear();
+        _builder.Clear(); // Builder will store raw text
         _counter = 0;
     }
 
@@ -86,7 +81,7 @@ public class FarsiTypewriter : MonoBehaviour
     {
         StopAllCoroutines();
         
-        _builder.Clear();
+        _builder.Clear(); // Clear the raw text builder
         
         StartCoroutine(TypeTextCoroutine());
     }
@@ -103,17 +98,36 @@ public class FarsiTypewriter : MonoBehaviour
 
     private IEnumerator TypeTextCoroutine()
     {
-        if (string.IsNullOrEmpty(_fixedText))
+        if (string.IsNullOrEmpty(_rawText)) // <-- CHANGED: Check raw text
         {
             yield break;
         }
         
-        _counter = 0; 
+        _counter = 0;
+        _builder.Clear(); // <-- Ensure raw text builder is clear
         
-        foreach (char c in _fixedText)
+        // <-- CHANGED: Iterate over the original RAW text
+        foreach (char c in _rawText) 
         {
-            _builder.Append(c);
-            _textUI.text = _builder.ToString();
+            _builder.Append(c); // <-- Build the RAW string
+            
+            // --- This is the new, critical part ---
+            // We must re-fix the *current* raw text at every step
+            
+            string currentRawText = _builder.ToString();
+            string[] currentLines = currentRawText.Split('\n');
+            string[] fixedLines = new string[currentLines.Length];
+            
+            for (int i = 0; i < currentLines.Length; i++)
+            {
+                // Fix each line of the *current partial* text
+                fixedLines[i] = ArabicFixer.Fix(currentLines[i], true, true);
+            }
+            
+            // Set the UI text to the newly fixed, partial string
+            _textUI.text = string.Join("\n", fixedLines);
+            // --- End of new part ---
+            
             
             _counter++;
 
@@ -122,11 +136,12 @@ public class FarsiTypewriter : MonoBehaviour
                 _canReset = true;
             }
             
+            // This overflow logic should now work fine
             if (_canReset && _counter % 5 == 0 
-                             && CheckVerticalOverflow(_cachedSettings, _boxHeight))
+                         && CheckVerticalOverflow(_cachedSettings, _boxHeight))
             {
                 _textUI.text = "";
-                _builder.Clear();
+                _builder.Clear(); // Clears the raw text builder
                 _counter = 0;
                 _canReset = false;
             }
