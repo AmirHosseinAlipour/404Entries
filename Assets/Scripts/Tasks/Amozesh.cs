@@ -22,9 +22,11 @@ public class Amozesh : MonoBehaviour
 
     private int _lastCurrentIndex;
     private int currentIndex;
+    TaskUI taskUI;
 
     private void Start()
     {
+        taskUI = FindObjectOfType<TaskUI>();
         SetDialogues();
         
         if (TaskManager.Instance != null)
@@ -62,6 +64,14 @@ public class Amozesh : MonoBehaviour
 
             UIAnimationManager.Instance.ShowDialogueWindow(
                 firstDialogue, 0.5f, listOfTexts[0].GetComponent<FarsiTypewriter>());
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            taskUI.UpdateUI();
         }
     }
 }
