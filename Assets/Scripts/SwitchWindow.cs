@@ -9,6 +9,9 @@ public class SwitchWindow : MonoBehaviour
     public RectTransform windowToShow;
     public bool windowToShowAnimation;
 
+    public RectTransform dialogueWindowToShow;
+    public FarsiTypewriter dialogueTypeWriter;
+
     private PlayerController _player;
     
     private void Start()
@@ -38,18 +41,7 @@ public class SwitchWindow : MonoBehaviour
 
     public void Toggle()
     {
-        if (windowToHide) // Null check
-        {
-            // Hide the window
-            if (windowToHideAnimation)
-            {
-                UIAnimationManager.Instance.HideWindow(windowToHide, 0.3f);
-            }
-            else
-            {
-                windowToHide.gameObject.SetActive(false);
-            }
-        }
+        HideWindow();
         
         if (windowToShow) // Null check
         {
@@ -60,7 +52,33 @@ public class SwitchWindow : MonoBehaviour
             }
             else
             {
-                windowToShow.gameObject.SetActive(false);
+                windowToShow.gameObject.SetActive(true);
+            }
+        }
+    }
+
+    public void DialogueToggle()
+    {
+        HideWindow();
+        
+        if (dialogueWindowToShow && dialogueTypeWriter) // Null check
+        {
+            UIAnimationManager.Instance.ShowDialogueWindow(dialogueWindowToShow, 0.5f, dialogueTypeWriter);
+        }
+    }
+
+    private void HideWindow()
+    {
+        if (windowToHide) // Null check
+        {
+            // Hide the window
+            if (windowToHideAnimation)
+            {
+                UIAnimationManager.Instance.HideWindow(windowToHide, 0.3f);
+            }
+            else
+            {
+                windowToHide.gameObject.SetActive(false);
             }
         }
     }
