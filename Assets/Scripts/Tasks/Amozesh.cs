@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Amozesh : MonoBehaviour
 {
@@ -15,7 +16,7 @@ public class Amozesh : MonoBehaviour
     public  List<DialoguePhase> dialoguePhases;
 
     [Header("Dialogue UI")]
-    public List<Text> listOfTexts;
+    public List<TextMeshProUGUI> listOfTexts;
     public int listLength;
     public RectTransform firstDialogue;
 
