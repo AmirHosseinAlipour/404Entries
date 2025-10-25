@@ -15,15 +15,19 @@ public class Shekofteh : BaseProfessors
 
     [Header("Mission")]
     public GameObject textPanel;
-    public SkipButton SkipButton;   
+    public SkipButton SkipButton;
     public CircleTimerAnimation buttonBackground;
     public FarsiTypewriter mission;
 
     public int initialDialogueCount;
     public int nextLevelWaitDuration;
+
+    [Header("After mission")] 
+    public GameObject firstDialogue;
     
     private bool _isNextLevelRunning = false;
 
+    [Header("Others")]
     // To make it visible after movement
     public GameObject counter;
 
@@ -31,6 +35,8 @@ public class Shekofteh : BaseProfessors
     public Text[] listOfTexts;
     
     private Animator _UIAnimator;
+
+    public TaskUI _tu;
     
     protected override void Start()
     {
@@ -39,14 +45,30 @@ public class Shekofteh : BaseProfessors
         _UIAnimator = UICharacterRectTransform.GetComponent<Animator>();
         
         SkipButton.OnLevelGoalReached += HandleLevelGoalReached;
+        
+        SkipButton.OnMissionComplete += HandleEnding;
     }
-    
+
     private void HandleLevelGoalReached()
     {
         if (!_isNextLevelRunning)
         {
             StartCoroutine(NextLevel());
         }
+    }
+
+    private void HandleEnding()
+    {
+        Debug.Log(TaskManager.Instance.taskCompleted.Length);
+        TaskManager.Instance.CompleteTask(TaskOrderNumber);
+        _tu.UpdateUI();
+        
+        RectTransform parent = taskPanel.transform.parent.GetComponent<RectTransform>();
+        textPanel.GetComponent<FarsiTypewriter>().StopTyping();
+        SkipButton.gameObject.SetActive(false);
+        parent.gameObject.SetActive(false);
+        UIAnimationManager.Instance.HideWindow(parent, 0.5f);
+        UIAnimationManager.Instance.ShowWindow(firstDialogue.GetComponent<RectTransform>(), 0.5f);
     }
 
     public void StartMission()
@@ -109,7 +131,10 @@ public class Shekofteh : BaseProfessors
     {
         base.OnTriggerEnter2D(other);
 
-        StartCoroutine(TextSequence());
+        if (!TaskManager.Instance.taskCompleted[TaskOrderNumber])
+        {
+            StartCoroutine(TextSequence());
+        }
     }
 
     private void OnTriggerExit2D(Collider2D other)

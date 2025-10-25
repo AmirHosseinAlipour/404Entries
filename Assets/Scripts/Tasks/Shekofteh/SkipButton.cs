@@ -26,7 +26,7 @@ public class SkipButton : MonoBehaviour
     public float edgePadding = 0.3f;
 
     private int _count;
-    public bool canGoToNextLevel; 
+    public bool canGoToNextLevel;
         
     private int _currentGoal;
     private int _currentLevel = 0;
@@ -47,6 +47,11 @@ public class SkipButton : MonoBehaviour
     [HideInInspector] public bool _firstLoop = true;
     
     [HideInInspector] public System.Action OnLevelGoalReached;
+    
+    [HideInInspector] public System.Action OnMissionComplete;
+    
+    [HideInInspector]
+    public bool isCompleted;
 
     private void Awake()
     {
@@ -256,6 +261,16 @@ public class SkipButton : MonoBehaviour
     public void NextLevel()
     {
         _currentLevel++;
+        
+        // End logic
+        if (_currentLevel >= counts.Length)
+        {
+            isCompleted = true;
+            OnMissionComplete?.Invoke();
+            StopTeleportMovement();
+            return;
+        }
+
         _currentGoal = counts[_currentLevel];
         _currentTeleportInterval = teleportIntervals[_currentLevel];
         background.animationDuration = _currentTeleportInterval;

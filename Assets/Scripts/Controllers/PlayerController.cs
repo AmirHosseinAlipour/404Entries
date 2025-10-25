@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -11,7 +12,6 @@ public class PlayerController : MonoBehaviour
     // Private Fields
     private Vector2 _lastMove;
     private bool _facingLeft = true;
-
     
     // Player components
     private Rigidbody2D _rb;
@@ -19,7 +19,7 @@ public class PlayerController : MonoBehaviour
     private Animator _animator;
     
     // Skip Inputs with this bool
-    public bool isUIActive = false;
+    [HideInInspector] public bool isUIActive = false;
 
     private void Start()
     {

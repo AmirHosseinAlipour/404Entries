@@ -1,25 +1,63 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Amozesh : MonoBehaviour
 {
     [System.Serializable]
     public class DialoguePhase
     {
-        public List<string> dialogues; 
+        public List<string> dialogues;
     }
 
+    [Header("Dialogue Data")]
     public  List<DialoguePhase> dialoguePhases;
-    public int currentPhase = 0;
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    public List<DialoguePhase> getDialoguePhases()
+
+    [Header("Dialogue UI")]
+    public List<Text> listOfTexts;
+    public int listLength;
+    public RectTransform firstDialogue;
+
+    private int _lastCurrentIndex;
+    private int currentIndex;
+
+    private void Start()
     {
-        return dialoguePhases;
+        SetDialogues();
+        
+        if (TaskManager.Instance != null)
+        {
+            TaskManager.Instance.OnCurrentIndexChange += ChangeCurrentIndex;
+        }
     }
 
-    public int getCurrentPhase()
+    private void SetDialogues()
     {
-        return TaskManager.Instance.GetCurrentTaskIndex();
+        for (int i = 0; i < listLength; i++)
+        {
+            string text = dialoguePhases[currentIndex / 2].dialogues[i];
+            listOfTexts[i].text = text;
+            listOfTexts[i].GetComponent<FarsiTypewriter>().SetText(text);
+        }
+    }
+    
+    public void ChangeCurrentIndex()
+    {
+        _lastCurrentIndex = currentIndex;
+        currentIndex = TaskManager.Instance.GetCurrentTaskIndex();
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            if (_lastCurrentIndex != currentIndex)
+            {
+                SetDialogues();
+            }
+            
+            UIAnimationManager.Instance.ShowWindow(firstDialogue, 0.5f);
+        }
     }
 }
