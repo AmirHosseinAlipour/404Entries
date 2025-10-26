@@ -27,7 +27,7 @@ public class UIAnimationManager : MonoBehaviour
         window.DOScale(1f, showWindowDuration).From(0f).SetEase(Ease.OutBack).SetUpdate(true);
     }
     
-    public void ShowDialogueWindow(RectTransform window, float showWindowDuration, FarsiTypewriter fw)
+    public void ShowDialogueWindow(RectTransform window, float showWindowDuration, NewFarsiTypewriter fw)
     {
         if (window == null) return;
 

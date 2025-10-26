@@ -4,6 +4,7 @@ public class SpaceInvadersManager : MonoBehaviour
 {
     [Header("FadeSetting")]
     public GameObject gameObjectsToShow; 
+    public RectTransform gameObjectsToHide;
     public float fadeSpeed = 2f;
 
     [Header("Enemy Setting")]
@@ -35,6 +36,7 @@ public class SpaceInvadersManager : MonoBehaviour
         }
         else if (isFadingOut)
         {
+            UIAnimationManager.Instance.HideWindow(gameObjectsToHide , 0.5f );
             bool done = FadeTo(0f);
             if (done)
             {

@@ -1,12 +1,15 @@
 using UnityEngine;
 using System.Collections; // حتماً برای Coroutine اضافه شود
 
-public class Test : MonoBehaviour
+public class Mazaheri : MonoBehaviour
 {
-    void Start()
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        // اجرای Coroutine
-        StartCoroutine(TriggerAfterDelay(5f));
+        if (collision.CompareTag("Player"))
+        {
+            StartCoroutine(TriggerAfterDelay(0.1f)); 
+        }
+        
     }
 
     // Coroutine برای تاخیر
