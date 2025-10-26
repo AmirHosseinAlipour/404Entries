@@ -22,11 +22,10 @@ public class Amozesh : MonoBehaviour
 
     private int _lastCurrentIndex;
     private int currentIndex;
-    TaskUI taskUI;
+    public TaskUI taskUI;
 
     private void Start()
     {
-        taskUI = FindObjectOfType<TaskUI>();
         SetDialogues();
         
         if (TaskManager.Instance != null)
@@ -42,7 +41,7 @@ public class Amozesh : MonoBehaviour
             string text = dialoguePhases[currentIndex / 2].dialogues[i];
             listOfTexts[i].transform.parent.parent.gameObject.SetActive(true);
             listOfTexts[i].text = text;
-            listOfTexts[i].GetComponent<FarsiTypewriter>().SetText(text);
+            listOfTexts[i].GetComponent<NewFarsiTypewriter>().SetText(text);
             listOfTexts[i].transform.parent.parent.gameObject.SetActive(false);
         }
     }
@@ -63,7 +62,7 @@ public class Amozesh : MonoBehaviour
             }
 
             UIAnimationManager.Instance.ShowDialogueWindow(
-                firstDialogue, 0.5f, listOfTexts[0].GetComponent<FarsiTypewriter>());
+                firstDialogue, 0.5f, listOfTexts[0].GetComponent<NewFarsiTypewriter>());
         }
     }
 

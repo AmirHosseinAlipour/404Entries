@@ -10,7 +10,7 @@ public class SwitchWindow : MonoBehaviour
     public bool windowToShowAnimation;
 
     public RectTransform dialogueWindowToShow;
-    public FarsiTypewriter dialogueTypeWriter;
+    public NewFarsiTypewriter dialogueTypeWriter;
 
     private PlayerController _player;
     
