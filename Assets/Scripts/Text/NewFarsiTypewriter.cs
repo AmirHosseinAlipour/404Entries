@@ -13,7 +13,7 @@ public class NewFarsiTypewriter : MonoBehaviour
 {
     [Header("Typewriter Settings")]
     public bool typeWriterEffect;
-    public float typeCharTime;
+    public float typeCharTime = 0.05f;
     public bool autoResetText;
     
     private TextMeshProUGUI _textUI;

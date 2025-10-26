@@ -1,10 +1,12 @@
 using UnityEngine;
 using System.Collections; // حتماً برای Coroutine اضافه شود
 
-public class Mazaheri : MonoBehaviour
+public class Mazaheri : BaseProfessors
 {
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        this.OnTriggerEnter2D(collision);
+        
         if (collision.CompareTag("Player"))
         {
             StartCoroutine(TriggerAfterDelay(0.1f)); 

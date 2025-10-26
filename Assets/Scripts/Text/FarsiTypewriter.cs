@@ -11,7 +11,7 @@ public class FarsiTypewriter : MonoBehaviour
 {
     [Header("Typewriter Settings")]
     public bool typeWriterEffect;
-    public float typeCharTime;
+    public float typeCharTime = 0.05f;
     public bool autoResetText;
     
     private Text _textUI;
@@ -33,14 +33,7 @@ public class FarsiTypewriter : MonoBehaviour
 
     private void Start()
     {
-        if (typeWriterEffect)
-        {
-            StartTyping();
-        }
-        else
-        {
-            _textUI.text = _fixedText;
-        }
+        _textUI.text = _fixedText;
         
         _cachedSettings = _textUI.GetGenerationSettings(_textUI.rectTransform.rect.size);
         _boxHeight = _textUI.rectTransform.rect.height;

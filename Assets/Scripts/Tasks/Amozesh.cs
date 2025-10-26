@@ -19,10 +19,17 @@ public class Amozesh : MonoBehaviour
     public List<TextMeshProUGUI> listOfTexts;
     public int listLength;
     public RectTransform firstDialogue;
+    
+    
+    [Header("Task UI")]
+    public TaskUI taskUI;
+    public Button allTasksBackButton;
+    public Button currentTaskButton;
 
     private int _lastCurrentIndex;
     private int currentIndex;
-    public TaskUI taskUI;
+
+    private PlayerController _player;
 
     private void Start()
     {
@@ -32,6 +39,8 @@ public class Amozesh : MonoBehaviour
         {
             TaskManager.Instance.OnCurrentIndexChange += ChangeCurrentIndex;
         }
+
+        _player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
     }
 
     private void SetDialogues()
@@ -56,6 +65,10 @@ public class Amozesh : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
+            // Disable player movement + UI task interactions
+            PlayerUIModeHelper.PlayerEnterUIMode(_player);
+            PlayerUIModeHelper.DisableTasksButton(allTasksBackButton, currentTaskButton);
+            
             if (_lastCurrentIndex != currentIndex)
             {
                 SetDialogues();
@@ -65,12 +78,25 @@ public class Amozesh : MonoBehaviour
                 firstDialogue, 0.5f, listOfTexts[0].GetComponent<NewFarsiTypewriter>());
         }
     }
-
-    private void OnTriggerExit2D(Collider2D other)
+    
+    void OnEnable()
     {
-        if (other.gameObject.CompareTag("Player"))
+        // Subscribe to the event when this script is enabled
+        SwitchWindow.OnPanelStateChanged += HandlePanelStateChange;
+    }
+
+    void OnDisable()
+    {
+        // Unsubscribe when this script is disabled to prevent memory leaks!
+        SwitchWindow.OnPanelStateChanged -= HandlePanelStateChange;
+    }
+    
+    private void HandlePanelStateChange(bool isActive)
+    {
+        if (!isActive)
         {
-            taskUI.UpdateUI();
+            PlayerUIModeHelper.PlayerExitUIMode(_player);
+            PlayerUIModeHelper.EnableTasksButton(allTasksBackButton, currentTaskButton);
         }
     }
 }
