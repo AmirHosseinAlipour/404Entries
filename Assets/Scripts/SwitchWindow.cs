@@ -5,6 +5,7 @@ public class SwitchWindow : MonoBehaviour
 {
     public RectTransform windowToHide;
     public bool windowToHideAnimation;
+    public bool shouldInvoke;
     
     public RectTransform windowToShow;
     public bool windowToShowAnimation;
@@ -13,6 +14,8 @@ public class SwitchWindow : MonoBehaviour
     public NewFarsiTypewriter dialogueTypeWriter;
 
     private PlayerController _player;
+    
+    [HideInInspector] public static event Action<bool> OnPanelStateChanged;
     
     private void Start()
     {
@@ -79,6 +82,11 @@ public class SwitchWindow : MonoBehaviour
             else
             {
                 windowToHide.gameObject.SetActive(false);
+            }
+
+            if (OnPanelStateChanged != null && shouldInvoke)
+            {
+                OnPanelStateChanged.Invoke(false);
             }
         }
     }

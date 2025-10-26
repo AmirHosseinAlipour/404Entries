@@ -47,10 +47,11 @@ public class TaskUI : MonoBehaviour
             string _fixedText;
             _fixedText = ArabicFixer.Fix(tm.taskNames[currentIndex]);
             currentTaskText.text = _fixedText;
+            currentTaskText.GetComponent<DynamicFontResizer>().AdjustFontSize();
         }
 
         else
-            currentTaskText.text = "All tasks completed!";
+            currentTaskText.text = "همه مدارک جمع آوری شد!";
 
         
         for (int i = 1; i < allTaskTexts.Length; i+=2)

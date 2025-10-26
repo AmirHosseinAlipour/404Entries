@@ -170,10 +170,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   windowToHide: {fileID: 779809957475645342}
   windowToHideAnimation: 1
-  windowToShow: {fileID: 2604981472176566992}
-  windowToShowAnimation: 1
-  dialogueWindowToShow: {fileID: 0}
-  dialogueTypeWriter: {fileID: 0}
+  windowToShow: {fileID: 0}
+  windowToShowAnimation: 0
+  shouldInvoke: 0
+  dialogueWindowToShow: {fileID: 2604981472176566992}
+  dialogueTypeWriter: {fileID: 4919315096314250482}
 --- !u!114 &2573761930660586723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -234,7 +235,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 2454488106696524332}
         m_TargetAssemblyTypeName: SwitchWindow, Assembly-CSharp
-        m_MethodName: Toggle
+        m_MethodName: DialogueToggle
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -258,7 +259,6 @@ GameObject:
   - component: {fileID: 5773004362961356154}
   - component: {fileID: 6029688075100941090}
   - component: {fileID: 3515231884083590128}
-  - component: {fileID: 8532236708861066384}
   m_Layer: 5
   m_Name: Person2 (1)
   m_TagString: Untagged
@@ -340,7 +340,8 @@ MonoBehaviour:
   windowToHide: {fileID: 2604981472176566992}
   windowToHideAnimation: 1
   windowToShow: {fileID: 0}
-  windowToShowAnimation: 1
+  windowToShowAnimation: 0
+  shouldInvoke: 0
   dialogueWindowToShow: {fileID: 0}
   dialogueTypeWriter: {fileID: 0}
 --- !u!114 &6029688075100941090
@@ -413,30 +414,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 8532236708861066384}
-        m_TargetAssemblyTypeName: ExitUIMode, Assembly-CSharp
-        m_MethodName: PlayerExitUIMode
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
---- !u!114 &8532236708861066384
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1184853705482317700}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b8030b69e2001704e8c55dc2a78964fb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1329719798260960985
 GameObject:
   m_ObjectHideFlags: 0

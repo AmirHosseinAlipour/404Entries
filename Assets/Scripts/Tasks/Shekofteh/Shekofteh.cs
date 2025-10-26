@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -36,7 +37,11 @@ public class Shekofteh : BaseProfessors
     
     private Animator _UIAnimator;
 
-    public TaskUI _tu;
+    [Header("Task UI")]
+    public TaskUI TaskUI;
+    public Button allTasksBackButton;
+    public Button currentTaskButton;
+    
     
     protected override void Start()
     {
@@ -59,9 +64,7 @@ public class Shekofteh : BaseProfessors
 
     private void HandleEnding()
     {
-        Debug.Log(TaskManager.Instance.taskCompleted.Length);
         TaskManager.Instance.CompleteTask(TaskOrderNumber);
-        _tu.UpdateUI();
         
         RectTransform parent = taskPanel.transform.parent.GetComponent<RectTransform>();
         textPanel.GetComponent<FarsiTypewriter>().StopTyping();
@@ -69,6 +72,9 @@ public class Shekofteh : BaseProfessors
         parent.gameObject.SetActive(false);
         UIAnimationManager.Instance.HideWindow(parent, 0.5f);
         UIAnimationManager.Instance.ShowWindow(firstDialogue.GetComponent<RectTransform>(), 0.5f);
+        
+        PlayerUIModeHelper.PlayerEnterUIMode(_player);
+        PlayerUIModeHelper.DisableTasksButton(allTasksBackButton, currentTaskButton);
     }
 
     public void StartMission()
@@ -133,19 +139,13 @@ public class Shekofteh : BaseProfessors
 
         if (!TaskManager.Instance.taskCompleted[TaskOrderNumber])
         {
-            StartCoroutine(TextSequence());
-        }
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.gameObject.CompareTag("Player"))
-        {
             for (int i = 0; i < 3; i++)
             {
                 // Reset the text so each time the text would be written in type writer effect!
                 listOfTexts[i].text = "";
             }
+            
+            StartCoroutine(TextSequence());
         }
     }
 
@@ -155,8 +155,9 @@ public class Shekofteh : BaseProfessors
         for (int i = 0; i < initialDialogueCount; i++)
         {
             FarsiTypewriter text = listOfTexts[i].gameObject.GetComponent<FarsiTypewriter>();
+            int len = text.len;
             text.StartTyping();
-            yield return new WaitForSeconds(text.typeCharTime * text.len);
+            yield return new WaitForSeconds(text.typeCharTime * len);
         }
     }
 
@@ -177,5 +178,26 @@ public class Shekofteh : BaseProfessors
 
         SkipButton.NextLevel();
         _isNextLevelRunning = false;
+    }
+    
+    void OnEnable()
+    {
+        // Subscribe to the event when this script is enabled
+        SwitchWindow.OnPanelStateChanged += HandlePanelStateChange;
+    }
+
+    void OnDisable()
+    {
+        // Unsubscribe when this script is disabled to prevent memory leaks!
+        SwitchWindow.OnPanelStateChanged -= HandlePanelStateChange;
+    }
+    
+    private void HandlePanelStateChange(bool isActive)
+    {
+        if (!isActive)
+        {
+            PlayerUIModeHelper.PlayerExitUIMode(_player);
+            PlayerUIModeHelper.EnableTasksButton(allTasksBackButton, currentTaskButton);
+        }
     }
 }

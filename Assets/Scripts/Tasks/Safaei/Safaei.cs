@@ -4,7 +4,7 @@ using System.Collections;
 using TMPro;
 
 public class Safaei : BaseProfessors
-    {
+{
         public TMP_Text dialogueText;
         public Button[] optionButtons;
         public TypeWriterEffect typewriter;
@@ -41,8 +41,7 @@ public class Safaei : BaseProfessors
                 HideAllOptions();
                 UIAnimationManager.Instance.HideWindow(taskPanel , 0.5f);
                 _player.isUIActive = false;
-                TaskManager.Instance.CompleteTask(0); 
-                FindObjectOfType<TaskUI>().UpdateUI(); 
+                TaskManager.Instance.CompleteTask(TaskOrderNumber);
 
                 yield break;
             }
@@ -84,9 +83,4 @@ public class Safaei : BaseProfessors
             currentPhase++;
             StartCoroutine(StartPhase());
         }
-
-
-
-
     }
-
