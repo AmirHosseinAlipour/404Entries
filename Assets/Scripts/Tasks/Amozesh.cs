@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class Amozesh : MonoBehaviour
 {
@@ -15,12 +16,13 @@ public class Amozesh : MonoBehaviour
     public  List<DialoguePhase> dialoguePhases;
 
     [Header("Dialogue UI")]
-    public List<Text> listOfTexts;
+    public List<TextMeshProUGUI> listOfTexts;
     public int listLength;
     public RectTransform firstDialogue;
 
     private int _lastCurrentIndex;
     private int currentIndex;
+    public TaskUI taskUI;
 
     private void Start()
     {
@@ -37,8 +39,10 @@ public class Amozesh : MonoBehaviour
         for (int i = 0; i < listLength; i++)
         {
             string text = dialoguePhases[currentIndex / 2].dialogues[i];
+            listOfTexts[i].transform.parent.parent.gameObject.SetActive(true);
             listOfTexts[i].text = text;
-            listOfTexts[i].GetComponent<FarsiTypewriter>().SetText(text);
+            listOfTexts[i].GetComponent<NewFarsiTypewriter>().SetText(text);
+            listOfTexts[i].transform.parent.parent.gameObject.SetActive(false);
         }
     }
     
@@ -56,8 +60,17 @@ public class Amozesh : MonoBehaviour
             {
                 SetDialogues();
             }
-            
-            UIAnimationManager.Instance.ShowWindow(firstDialogue, 0.5f);
+
+            UIAnimationManager.Instance.ShowDialogueWindow(
+                firstDialogue, 0.5f, listOfTexts[0].GetComponent<NewFarsiTypewriter>());
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            taskUI.UpdateUI();
         }
     }
 }

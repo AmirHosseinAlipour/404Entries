@@ -26,7 +26,24 @@ public class UIAnimationManager : MonoBehaviour
     
         window.DOScale(1f, showWindowDuration).From(0f).SetEase(Ease.OutBack).SetUpdate(true);
     }
+    
+    public void ShowDialogueWindow(RectTransform window, float showWindowDuration, NewFarsiTypewriter fw)
+    {
+        if (window == null) return;
 
+        window.gameObject.SetActive(true);
+        window.DOKill();
+
+        window.DOScale(1f, showWindowDuration)
+            .From(0f)
+            .SetEase(Ease.OutBack)
+            .SetUpdate(true)
+            .OnComplete(() =>
+            {
+                fw.StartTyping();
+            });
+    }
+    
     public void HideWindow(RectTransform window, float hidWindowDuration)
     {
         if (window == null) return;
