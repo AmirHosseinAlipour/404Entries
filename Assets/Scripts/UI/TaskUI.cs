@@ -19,10 +19,16 @@ public class TaskUI : MonoBehaviour
     public Sprite doneSprite;
     public Sprite notDoneSprite;
 
+    private FarsiTypewriter _currentTaskFtw;
+    private DynamicFontResizer _currentTaskDfr;
+    
     private bool firstTime = true;
 
     private void Start()
     {
+        _currentTaskFtw = currentTaskText.GetComponent<FarsiTypewriter>();
+        _currentTaskDfr = currentTaskText.GetComponent<DynamicFontResizer>();
+        
         UpdateUI();
     }
 
@@ -44,14 +50,16 @@ public class TaskUI : MonoBehaviour
         int currentIndex = tm.GetCurrentTaskIndex();
         if (currentIndex != -1)
         {
-            string _fixedText;
-            _fixedText = ArabicFixer.Fix(tm.taskNames[currentIndex]);
-            currentTaskText.text = _fixedText;
+            _currentTaskFtw.SetText(tm.taskNames[currentIndex]);
         }
-
         else
-            currentTaskText.text = "All tasks completed!";
-
+        {
+            currentTaskText.text = "همه مدارک جمع آوری شد!";
+        }
+        
+        _currentTaskDfr.AdjustFontSize();
+        _currentTaskFtw.StartTyping();
+        
         
         for (int i = 1; i < allTaskTexts.Length; i+=2)
         {
@@ -78,10 +86,6 @@ public class TaskUI : MonoBehaviour
             UIAnimationManager.Instance.HideWindow(rectTransform , 0.5f);
             rectTransform = allTasksPanel.GetComponent<RectTransform>();
             UIAnimationManager.Instance.ShowWindow(rectTransform, 0.5f);
-
-            // Add these two lines:
-            Canvas.ForceUpdateCanvases();
-            UpdateUI();
         }
     }
 

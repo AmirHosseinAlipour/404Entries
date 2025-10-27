@@ -11,12 +11,13 @@ public class AsgharManager : MonoBehaviour
     public float fadeDuration = 1f;
     public GameObject RespawnPoint;
     private CanvasGroup canvasGroup;
-   
+
     private void Awake()
     {
         canvasGroup = fadePanel.GetComponent<CanvasGroup>();
         if (canvasGroup == null)
             Debug.LogError("CanvasGroup component not found on FadePanel!");
+        player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
     }
 
     private void Update()

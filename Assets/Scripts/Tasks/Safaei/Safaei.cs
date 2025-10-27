@@ -4,7 +4,7 @@ using System.Collections;
 using TMPro;
 
 public class Safaei : BaseProfessors
-    {
+{
         public TMP_Text dialogueText;
         public Button[] optionButtons;
         public TypeWriterEffect typewriter;
@@ -31,6 +31,10 @@ public class Safaei : BaseProfessors
             base.Start();
             currentSpeed = baseSpeed;
             HideAllOptions();
+        }
+
+        public void StartGame()
+        {
             StartCoroutine(StartPhase());
         }
 
@@ -38,11 +42,13 @@ public class Safaei : BaseProfessors
         {
             if (currentPhase >= phaseTexts.Length)
             {
+                TaskManager.Instance.CompleteTask(TaskOrderNumber);
+        
                 HideAllOptions();
-                UIAnimationManager.Instance.HideWindow(taskPanel , 0.5f);
-                _player.isUIActive = false;
-                TaskManager.Instance.CompleteTask(0); 
-                FindObjectOfType<TaskUI>().UpdateUI(); 
+                RectTransform parent = StartPanel.transform.parent.GetComponent<RectTransform>();
+                parent.gameObject.SetActive(false);
+                UIAnimationManager.Instance.HideWindow(parent, 0.5f);
+                UIAnimationManager.Instance.ShowDialogueWindow(firstDialogue.GetComponent<RectTransform>(), 0.5f, firstDialogueFtw);
 
                 yield break;
             }
@@ -84,9 +90,4 @@ public class Safaei : BaseProfessors
             currentPhase++;
             StartCoroutine(StartPhase());
         }
-
-
-
-
     }
-

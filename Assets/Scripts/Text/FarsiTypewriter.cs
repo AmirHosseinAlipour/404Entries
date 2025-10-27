@@ -6,19 +6,22 @@ using UnityEngine;
 using UnityEngine.UI;
 using ArabicSupport;
 
+[RequireComponent(typeof(Text))]
 public class FarsiTypewriter : MonoBehaviour
 {
+    [Header("Typewriter Settings")]
     public bool typeWriterEffect;
-    public float typeCharTime;
+    public float typeCharTime = 0.05f;
     public bool autoResetText;
     
-    // To fix RTL
+    [Header("Alignment Settings")]
+    public bool centerAlign;
+    public bool middleAlign;
+    
     private Text _textUI;
     private string _fixedText;
-
     public int len;
     
-    // To achieve text reset after vertical overflow
     private StringBuilder _builder = new StringBuilder();
     private TextGenerationSettings _cachedSettings;
     private float _boxHeight;
@@ -29,25 +32,7 @@ public class FarsiTypewriter : MonoBehaviour
     {
         _textUI = GetComponent<Text>();
         
-        string originalFarsiText = _textUI.text;
-        
-        // 1. Split the original text into lines.
-        string[] lines = originalFarsiText.Split('\n');
-        
-        // 2. Fix each line individually.
-        for (int i = 0; i < lines.Length; i++)
-        {
-            lines[i] = ArabicFixer.Fix(lines[i], true, true);
-        }
-        
-        // 3. Join the fixed lines back together with newlines.
-        _fixedText = string.Join("\n", lines);
-        
-        // Clear the UI text to prepare for typing.
-        _textUI.text = "";
-
-        len = _fixedText.Length;
-
+        FixAndPrepareText(_textUI.text);
     }
 
     private void Start()
@@ -61,16 +46,54 @@ public class FarsiTypewriter : MonoBehaviour
         _boxHeight = _textUI.rectTransform.rect.height;
     }
 
-    public void StartTyping()
+    public void SetText(string newRawFarsiText)
     {
-        // Stop any previous typing routines before starting a new one.
         StopAllCoroutines();
         
-        // Clear the string builder
+        FixAndPrepareText(newRawFarsiText);
+
+        if (typeWriterEffect)
+        {
+            StartTyping();
+        }
+        else
+        {
+            _textUI.text = _fixedText;
+        }
+    }
+
+    private void FixAndPrepareText(string rawText)
+    {
+        string[] lines = rawText.Split('\n');
+        
+        for (int i = 0; i < lines.Length; i++)
+        {
+            lines[i] = ArabicFixer.Fix(lines[i], true, true);
+        }
+        
+        _fixedText = string.Join("\n", lines);
+        
+        _textUI.text = "";
+
+        len = _fixedText.Length;
+        
+        _builder.Clear();
+        _counter = 0;
+    }
+
+
+    public void StartTyping()
+    {
+        StopAllCoroutines();
+        
         _builder.Clear();
         
-        // Start a new Type Writer Effect
         StartCoroutine(TypeTextCoroutine());
+    }
+    
+    public void StopTyping()
+    {
+        StopAllCoroutines();
     }
 
     public void ResetText()
@@ -81,34 +104,46 @@ public class FarsiTypewriter : MonoBehaviour
     private IEnumerator TypeTextCoroutine()
     {
         if (string.IsNullOrEmpty(_fixedText))
-        {
-            yield break; // Exit if there is no text to type.
-        }
-        
-        foreach (char c in _fixedText)
-        {
-            _builder.Append(c);
-            _textUI.text = _builder.ToString();
-            
-            _counter++;
+            yield break;
 
-            if (autoResetText)
+        _counter = 0;
+        
+        if (middleAlign)
+            _textUI.alignment = centerAlign ? TextAnchor.MiddleCenter : TextAnchor.MiddleRight;
+        else
+            _textUI.alignment = centerAlign ? TextAnchor.UpperCenter : TextAnchor.UpperRight;
+        
+        _textUI.text = "";
+
+        string[] lines = _fixedText.Split('\n');
+
+        for (int lineIndex = 0; lineIndex < lines.Length; lineIndex++)
+        {
+            string currentLine = lines[lineIndex];
+            StringBuilder lineBuilder = new StringBuilder();
+
+            for (int i = currentLine.Length - 1; i >= 0; i--)
             {
-                _canReset = true;
+                yield return new WaitForSeconds(typeCharTime);
+                
+                lineBuilder.Insert(0, currentLine[i]);
+                // بازسازی متن نهایی تا این لحظه
+                string typedSoFar = "";
+                for (int j = 0; j < lineIndex; j++)
+                    typedSoFar += lines[j] + "\n";
+
+                typedSoFar += lineBuilder.ToString();
+
+                _textUI.text = typedSoFar;
+
+                _counter++;
             }
-            
-            if (_canReset && _counter % 5 == 0 
-                          && CheckVerticalOverflow(_cachedSettings, _boxHeight))
-            {
-                _textUI.text = "";
-                _builder.Clear();
-                _counter = 0;
-                _canReset = false;
-            }
-            
-            yield return new WaitForSeconds(typeCharTime);
+
+            yield return new WaitForSeconds(typeCharTime * 2f);
         }
     }
+
+
 
     private bool CheckVerticalOverflow(TextGenerationSettings settings, float boxHeight)
     {

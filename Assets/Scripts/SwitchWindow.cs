@@ -1,17 +1,29 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SwitchWindow : MonoBehaviour
 {
+    [Header("Switch Window Settings")]
     public RectTransform windowToHide;
     public bool windowToHideAnimation;
+    public bool shouldInvoke;
     
     public RectTransform windowToShow;
     public bool windowToShowAnimation;
 
-    private PlayerController _player;
+    public RectTransform dialogueWindowToShow;
+    public FarsiTypewriter dialogueTypeWriter;
+    
+    [Header("Task UI")]
+    public Button allTasksBackButton;
+    public Button currentTaskButton;
 
-    private void Start()
+    private PlayerController _player;
+    
+    [HideInInspector] public static event Action<bool> OnPanelStateChanged;
+    
+    private void Awake()
     {
         _player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
     }
@@ -32,11 +44,39 @@ public class SwitchWindow : MonoBehaviour
             }
         }
         
-        // Back player inputs to normal
-        _player.isUIActive = false;
+        PlayerUIModeHelper.PlayerExitUIMode(_player);
+        PlayerUIModeHelper.EnableTasksButton(allTasksBackButton, currentTaskButton);
     }
 
     public void Toggle()
+    {
+        HideWindow();
+        
+        if (windowToShow) // Null check
+        {
+            // Show the window
+            if (windowToShowAnimation)
+            {
+                UIAnimationManager.Instance.ShowWindow(windowToShow, 0.5f);
+            }
+            else
+            {
+                windowToShow.gameObject.SetActive(true);
+            }
+        }
+    }
+
+    public void DialogueToggle()
+    {
+        HideWindow();
+        
+        if (dialogueWindowToShow && dialogueTypeWriter) // Null check
+        {
+            UIAnimationManager.Instance.ShowDialogueWindow(dialogueWindowToShow, 0.5f, dialogueTypeWriter);
+        }
+    }
+
+    private void HideWindow()
     {
         if (windowToHide) // Null check
         {
@@ -49,18 +89,10 @@ public class SwitchWindow : MonoBehaviour
             {
                 windowToHide.gameObject.SetActive(false);
             }
-        }
-        
-        if (windowToShow) // Null check
-        {
-            // Show the window
-            if (windowToShowAnimation)
+
+            if (OnPanelStateChanged != null && shouldInvoke)
             {
-                UIAnimationManager.Instance.ShowWindow(windowToShow, 0.5f);
-            }
-            else
-            {
-                windowToShow.gameObject.SetActive(false);
+                OnPanelStateChanged.Invoke(false);
             }
         }
     }

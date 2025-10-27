@@ -4,11 +4,15 @@ public class SpaceInvadersManager : MonoBehaviour
 {
     [Header("FadeSetting")]
     public GameObject gameObjectsToShow; 
+    public RectTransform gameObjectsToHide;
     public float fadeSpeed = 2f;
 
     [Header("Enemy Setting")]
-    public int totalEnemies = 10; 
+    public int totalEnemies = 10;
 
+    [Header("Professor")] public Mazaheri m;
+    
+    
     private Renderer[] renderers; 
     [SerializeField] private bool isFadingIn = false;
     private bool isFadingOut = false;
@@ -35,12 +39,16 @@ public class SpaceInvadersManager : MonoBehaviour
         }
         else if (isFadingOut)
         {
+            UIAnimationManager.Instance.HideWindow(gameObjectsToHide , 0.5f );
             bool done = FadeTo(0f);
             if (done)
             {
                 isFadingOut = false;
-                gameObject.SetActive(false); 
+                
             }
+
+            TaskManager.Instance.CompleteTask(m.TaskOrderNumber);
+            m.HandleEnding();
         }
     }
 
