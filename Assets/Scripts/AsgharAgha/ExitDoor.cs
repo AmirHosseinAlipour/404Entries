@@ -1,3 +1,4 @@
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class ExitDoor : MonoBehaviour
@@ -11,6 +12,8 @@ public class ExitDoor : MonoBehaviour
         {
             gameManager.WinGame();
             teacher.StopLooking();
+            TaskManager.Instance.CompleteTask(teacher.TaskOrderNumber);
+            UIAnimationManager.Instance.ShowDialogueWindow(teacher.firstDialogue.GetComponent<RectTransform>(), 0.5f, teacher.firstDialogueFtw);
         }
     }
 }

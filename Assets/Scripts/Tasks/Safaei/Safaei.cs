@@ -31,6 +31,10 @@ public class Safaei : BaseProfessors
             base.Start();
             currentSpeed = baseSpeed;
             HideAllOptions();
+        }
+
+        public void StartGame()
+        {
             StartCoroutine(StartPhase());
         }
 
@@ -38,10 +42,13 @@ public class Safaei : BaseProfessors
         {
             if (currentPhase >= phaseTexts.Length)
             {
-                HideAllOptions();
-                UIAnimationManager.Instance.HideWindow(taskPanel , 0.5f);
-                _player.isUIActive = false;
                 TaskManager.Instance.CompleteTask(TaskOrderNumber);
+        
+                HideAllOptions();
+                RectTransform parent = StartPanel.transform.parent.GetComponent<RectTransform>();
+                parent.gameObject.SetActive(false);
+                UIAnimationManager.Instance.HideWindow(parent, 0.5f);
+                UIAnimationManager.Instance.ShowDialogueWindow(firstDialogue.GetComponent<RectTransform>(), 0.5f, firstDialogueFtw);
 
                 yield break;
             }

@@ -1,27 +1,26 @@
 using System.Collections;
 using UnityEngine;
 
-public class TeacherController : MonoBehaviour
+public class TeacherController : BaseProfessors
 {
     public Animator animator;
-    public bool isFacingPlayer = false; 
+    public bool isFacingPlayer = false;
 
     [Header("Random Rotation Settings")]
-    public float minWait = 2f;
-    public float maxWait = 5f;
+    public float minWait = 1.5f;
+    public float maxWait = 4f;
 
     private bool _isActive = false; 
     private Coroutine lookRoutine;
 
     private void Start()
     {
-        
         animator.Play("FacingBack");
     }
 
     public void StartLooking()
     {
-        if (_isActive) return; 
+        if (_isActive) return;
         _isActive = true;
         lookRoutine = StartCoroutine(RandomLookRoutine());
     }
@@ -38,7 +37,7 @@ public class TeacherController : MonoBehaviour
             if (isFacingPlayer)
                 animator.SetTrigger("FacingFront");
             else
-                animator.SetTrigger("FacingBack");  
+                animator.SetTrigger("FacingBack");
         }
     }
 
@@ -48,5 +47,10 @@ public class TeacherController : MonoBehaviour
         if (lookRoutine != null)
             StopCoroutine(lookRoutine);
         animator.Play("FaocingBack");
+    }
+
+    protected override void OnTriggerEnter2D(Collider2D other)
+    {
+        //ignore the base method!
     }
 }
