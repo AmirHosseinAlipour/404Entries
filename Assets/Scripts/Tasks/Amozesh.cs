@@ -9,6 +9,7 @@ public class Amozesh : MonoBehaviour
     [System.Serializable]
     public class DialoguePhase
     {
+        [TextArea]
         public List<string> dialogues;
     }
 
@@ -16,7 +17,7 @@ public class Amozesh : MonoBehaviour
     public  List<DialoguePhase> dialoguePhases;
 
     [Header("Dialogue UI")]
-    public List<TextMeshProUGUI> listOfTexts;
+    public List<Text> listOfTexts;
     public int listLength;
     public RectTransform firstDialogue;
     
@@ -31,6 +32,11 @@ public class Amozesh : MonoBehaviour
 
     private PlayerController _player;
 
+    private void Awake()
+    {
+        _player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+    }
+
     private void Start()
     {
         SetDialogues();
@@ -39,8 +45,6 @@ public class Amozesh : MonoBehaviour
         {
             TaskManager.Instance.OnCurrentIndexChange += ChangeCurrentIndex;
         }
-
-        _player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
     }
 
     private void SetDialogues()
@@ -50,7 +54,7 @@ public class Amozesh : MonoBehaviour
             string text = dialoguePhases[currentIndex / 2].dialogues[i];
             listOfTexts[i].transform.parent.parent.gameObject.SetActive(true);
             listOfTexts[i].text = text;
-            listOfTexts[i].GetComponent<NewFarsiTypewriter>().SetText(text);
+            listOfTexts[i].GetComponent<FarsiTypewriter>().SetText(text);
             listOfTexts[i].transform.parent.parent.gameObject.SetActive(false);
         }
     }
@@ -75,7 +79,7 @@ public class Amozesh : MonoBehaviour
             }
 
             UIAnimationManager.Instance.ShowDialogueWindow(
-                firstDialogue, 0.5f, listOfTexts[0].GetComponent<NewFarsiTypewriter>());
+                firstDialogue, 0.5f, listOfTexts[0].GetComponent<FarsiTypewriter>());
         }
     }
     

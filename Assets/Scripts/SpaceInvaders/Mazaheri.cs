@@ -3,31 +3,17 @@ using System.Collections; // حتماً برای Coroutine اضافه شود
 
 public class Mazaheri : BaseProfessors
 {
-    private void OnTriggerEnter2D(Collider2D collision)
+    public SpaceInvadersManager game;
+    public void StartGame()
     {
-        this.OnTriggerEnter2D(collision);
-        
-        if (collision.CompareTag("Player"))
-        {
-            StartCoroutine(TriggerAfterDelay(0.1f)); 
-        }
-        
+        game.PlayerEnteredTrigger();
     }
 
-    // Coroutine برای تاخیر
-    IEnumerator TriggerAfterDelay(float delay)
+    public void HandleEnding()
     {
-        yield return new WaitForSeconds(delay); // صبر کردن به مدت delay ثانیه
-
-        // پیدا کردن SpaceInvadersManager و فراخوانی PlayerEnteredTrigger
-        SpaceInvadersManager manager = FindObjectOfType<SpaceInvadersManager>();
-        if (manager != null)
-        {
-            manager.PlayerEnteredTrigger();
-        }
-        else
-        {
-            Debug.LogWarning("SpaceInvadersManager پیدا نشد!");
-        }
+        RectTransform parent = StartPanel.transform.parent.GetComponent<RectTransform>();
+        parent.gameObject.SetActive(false);
+        UIAnimationManager.Instance.HideWindow(parent, 0.5f);
+        UIAnimationManager.Instance.ShowDialogueWindow(firstDialogue.GetComponent<RectTransform>(), 0.5f, firstDialogueFtw);
     }
 }

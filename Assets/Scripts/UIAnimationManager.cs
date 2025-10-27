@@ -27,7 +27,7 @@ public class UIAnimationManager : MonoBehaviour
         window.DOScale(1f, showWindowDuration).From(0f).SetEase(Ease.OutBack).SetUpdate(true);
     }
     
-    public void ShowDialogueWindow(RectTransform window, float showWindowDuration, NewFarsiTypewriter fw)
+    public void ShowDialogueWindow(RectTransform window, float showWindowDuration, FarsiTypewriter fw)
     {
         if (window == null) return;
 
@@ -40,6 +40,9 @@ public class UIAnimationManager : MonoBehaviour
             .SetUpdate(true)
             .OnComplete(() =>
             {
+                if (!fw.gameObject.activeInHierarchy)
+                    fw.gameObject.SetActive(true);
+                
                 fw.StartTyping();
             });
     }
