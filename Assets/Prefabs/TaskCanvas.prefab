@@ -95,6 +95,8 @@ MonoBehaviour:
   typeWriterEffect: 0
   typeCharTime: 0
   autoResetText: 0
+  centerAlign: 0
+  middleAlign: 0
   len: 0
 --- !u!1 &1632698518359240079
 GameObject:
@@ -359,10 +361,10 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 6519462942963470550}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 480, y: 120}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3506716276431330174
 CanvasRenderer:
@@ -418,9 +420,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf93a1da200e05a46a3db21ae978e645, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  typeWriterEffect: 0
-  typeCharTime: 0
+  typeWriterEffect: 1
+  typeCharTime: 0.05
   autoResetText: 0
+  centerAlign: 1
+  middleAlign: 1
   len: 0
 --- !u!114 &3624496972477253725
 MonoBehaviour:
@@ -718,6 +722,8 @@ MonoBehaviour:
   typeWriterEffect: 0
   typeCharTime: 0
   autoResetText: 0
+  centerAlign: 0
+  middleAlign: 0
   len: 0
 --- !u!1 &4635517050899446944
 GameObject:
@@ -1030,14 +1036,14 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1198353064661490957}
   - {fileID: 4595439641319756029}
+  - {fileID: 1198353064661490957}
   m_Father: {fileID: 6980611570889631960}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: -15}
-  m_SizeDelta: {x: 480, y: 120}
+  m_AnchoredPosition: {x: -21.6, y: -6.0999756}
+  m_SizeDelta: {x: 480, y: 115.9}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &1113553565132436328
 CanvasRenderer:
@@ -1314,6 +1320,8 @@ MonoBehaviour:
   typeWriterEffect: 0
   typeCharTime: 0
   autoResetText: 0
+  centerAlign: 0
+  middleAlign: 0
   len: 0
 --- !u!114 &7472324752862098202
 MonoBehaviour:
@@ -1514,6 +1522,8 @@ MonoBehaviour:
   typeWriterEffect: 0
   typeCharTime: 0
   autoResetText: 0
+  centerAlign: 0
+  middleAlign: 0
   len: 0
 --- !u!1 &6720149673941332546
 GameObject:
@@ -2143,6 +2153,8 @@ MonoBehaviour:
   typeWriterEffect: 0
   typeCharTime: 0
   autoResetText: 0
+  centerAlign: 0
+  middleAlign: 0
   len: 0
 --- !u!1 &8252232689675226765
 GameObject:

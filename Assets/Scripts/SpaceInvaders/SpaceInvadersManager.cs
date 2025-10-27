@@ -8,8 +8,11 @@ public class SpaceInvadersManager : MonoBehaviour
     public float fadeSpeed = 2f;
 
     [Header("Enemy Setting")]
-    public int totalEnemies = 10; 
+    public int totalEnemies = 10;
 
+    [Header("Professor")] public Mazaheri m;
+    
+    
     private Renderer[] renderers; 
     [SerializeField] private bool isFadingIn = false;
     private bool isFadingOut = false;
@@ -41,8 +44,11 @@ public class SpaceInvadersManager : MonoBehaviour
             if (done)
             {
                 isFadingOut = false;
-                gameObject.SetActive(false); 
+                
             }
+
+            TaskManager.Instance.CompleteTask(m.TaskOrderNumber);
+            m.HandleEnding();
         }
     }
 

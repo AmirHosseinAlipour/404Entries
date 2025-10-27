@@ -1,10 +1,18 @@
+using System;
 using UnityEngine;
 
 public class ClassEntrance : MonoBehaviour
 {
     public AsgharManager gameManager;
     public TeacherController teacher;
+    
+    private GameObject _player;
     private bool started = false;
+
+    private void Start()
+    {
+        _player = GameObject.FindWithTag("Player");
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -12,7 +20,7 @@ public class ClassEntrance : MonoBehaviour
         {
             started = true;
             Debug.Log("🎬 Class started!");
-            teacher.StartLooking(); 
+            teacher.StartLooking();
         }
     }
 }

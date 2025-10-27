@@ -1,8 +1,10 @@
 using System;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class SwitchWindow : MonoBehaviour
 {
+    [Header("Switch Window Settings")]
     public RectTransform windowToHide;
     public bool windowToHideAnimation;
     public bool shouldInvoke;
@@ -11,13 +13,17 @@ public class SwitchWindow : MonoBehaviour
     public bool windowToShowAnimation;
 
     public RectTransform dialogueWindowToShow;
-    public NewFarsiTypewriter dialogueTypeWriter;
+    public FarsiTypewriter dialogueTypeWriter;
+    
+    [Header("Task UI")]
+    public Button allTasksBackButton;
+    public Button currentTaskButton;
 
     private PlayerController _player;
     
     [HideInInspector] public static event Action<bool> OnPanelStateChanged;
     
-    private void Start()
+    private void Awake()
     {
         _player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
     }
@@ -38,8 +44,8 @@ public class SwitchWindow : MonoBehaviour
             }
         }
         
-        // Back player inputs to normal
-        _player.isUIActive = false;
+        PlayerUIModeHelper.PlayerExitUIMode(_player);
+        PlayerUIModeHelper.EnableTasksButton(allTasksBackButton, currentTaskButton);
     }
 
     public void Toggle()

@@ -103,4 +103,11 @@ public class PlayerController : MonoBehaviour
             _rb.angularVelocity = 0f;
         }
     }
+
+    public void SetIdleDirection(Vector2 idleDirection)
+    {
+        
+        _animator.SetFloat("LastMoveX", idleDirection.x);
+        _animator.SetFloat("LastMoveY", idleDirection.y);
+    }
 }
