@@ -1,5 +1,7 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class TaskManager : MonoBehaviour
 {
@@ -8,8 +10,15 @@ public class TaskManager : MonoBehaviour
     public bool[] taskCompleted;
 
     public static TaskManager Instance;
-
+    public Sprite Boy_image;
+    public Sprite Girl_image;
+    public Image Main_image;
     public Action OnCurrentIndexChange;
+
+    private void Start()
+    {
+        SetImage();
+    }
 
     private void Awake()
     {
@@ -35,5 +44,18 @@ public class TaskManager : MonoBehaviour
                 return i;
         }
         return -1; 
+    }
+
+    public void SetImage()
+    {
+        int index = SelectionPlayer.instance.PlayerID;
+        if (index == 0)
+        {
+            Main_image.sprite = Girl_image;
+        }
+        else
+        {
+            Main_image.sprite = Boy_image;
+        }
     }
 }
