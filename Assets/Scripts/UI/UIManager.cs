@@ -6,7 +6,7 @@ public class UIManager : MonoBehaviour
     [Header("Buttons")]
     public Button button1;
     public Button button2;
-
+    public FarsiTypewriter farsiTypewriter;
     [Header("Panels")]
     public RectTransform panel1;
     public RectTransform panel2;
@@ -31,6 +31,7 @@ public class UIManager : MonoBehaviour
         Deactive();
         panel2Active = true;
         UIAnimationManager.Instance.ShowWindow(panel2, 0.5f);
+        farsiTypewriter.StartTyping();
     }
     public void DeactivateAllPanels()
     {
