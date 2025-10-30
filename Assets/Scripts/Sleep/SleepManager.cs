@@ -87,7 +87,7 @@ public class SleepManager : MonoBehaviour
 
     IEnumerator JustWait()
     {
-        Debug.Log("JustWait");
+        
         yield return new WaitForSeconds(1f);
         targetSleepProgress = 0;
         sleepProgress = Mathf.Lerp(sleepProgress, 0f, Time.deltaTime * smoothSpeed);
