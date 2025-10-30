@@ -22,10 +22,9 @@ public class Amozesh : MonoBehaviour
     public RectTransform firstDialogue;
     
     
-    [Header("Task UI")]
-    public TaskUI taskUI;
-    public Button allTasksBackButton;
-    public Button currentTaskButton;
+    // Task UI
+    private Button _allTasksBackButton;
+    private Button _currentTaskButton;
 
     private int _lastCurrentIndex;
     private int currentIndex;
@@ -35,6 +34,9 @@ public class Amozesh : MonoBehaviour
     private void Awake()
     {
         _player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+        
+        _allTasksBackButton = GameObject.FindWithTag("AllTasksBackButton").GetComponent<Button>();
+        _currentTaskButton = GameObject.FindWithTag("CurrentTaskButton").GetComponent<Button>();
     }
 
     private void Start()
@@ -71,7 +73,7 @@ public class Amozesh : MonoBehaviour
         {
             // Disable player movement + UI task interactions
             PlayerUIModeHelper.PlayerEnterUIMode(_player);
-            PlayerUIModeHelper.DisableTasksButton(allTasksBackButton, currentTaskButton);
+            PlayerUIModeHelper.DisableTasksButton(_allTasksBackButton, _currentTaskButton);
             
             if (_lastCurrentIndex != currentIndex)
             {
@@ -100,7 +102,7 @@ public class Amozesh : MonoBehaviour
         if (!isActive)
         {
             PlayerUIModeHelper.PlayerExitUIMode(_player);
-            PlayerUIModeHelper.EnableTasksButton(allTasksBackButton, currentTaskButton);
+            PlayerUIModeHelper.EnableTasksButton(_allTasksBackButton, _currentTaskButton);
         }
     }
 }
