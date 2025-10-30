@@ -23,4 +23,9 @@ public class ClassEntrance : MonoBehaviour
             teacher.StartLooking();
         }
     }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        gameObject.GetComponent<Collider2D>().isTrigger = false;
+    }
 }
