@@ -1,15 +1,22 @@
+using Unity.Cinemachine;
 using UnityEngine;
 
-public class AliAkbari : MonoBehaviour
+public class AliAkbari : BaseProfessors
 {
+    [Header("Mini Game")] 
+    public GameObject pongGame;
     public PongManager fadeActivator;
+    public CinemachineCamera cam;
 
-    private void OnTriggerEnter2D(Collider2D other)
+    public void StartGame()
     {
-        if (other.CompareTag("Player"))
-        {
-            other.GetComponent<PlayerController>().isUIActive = true; 
-            fadeActivator.FadeInAndActivate();
-        }
+        PlayerUIModeHelper.PlayerEnterUIMode(_player);
+        PlayerUIModeHelper.DisableTasksButton(_allTasksBackButton, _currentTaskButton);
+        
+        UIUtils.SetAlpha(_currentTaskButton.gameObject, 0f);
+        
+        pongGame.SetActive(true);
+        fadeActivator.FadeInAndActivate();
+        cam.Priority = 20;
     }
 }

@@ -10,6 +10,9 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private Transform originalParent;
     private Canvas canvas;
 
+    private DropZone pendingDropZone = null;
+    public bool isLocked = false;
+
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
@@ -17,38 +20,66 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         canvas = GetComponentInParent<Canvas>();
     }
 
-    // Called when the drag is first detected
     public void OnBeginDrag(PointerEventData eventData)
     {
-        // Store original state
+        if (isLocked)
+        {
+            eventData.pointerDrag = null;
+            return;
+        }
+
         originalPosition = rectTransform.anchoredPosition;
         originalParent = transform.parent;
         
-        // Make the item a direct child of the canvas to render on top of everything
         transform.SetParent(canvas.transform, true);
         transform.SetAsLastSibling();
         
         image.raycastTarget = false;
+        pendingDropZone = null;
     }
 
-    // Called every frame while the object is being dragged
     public void OnDrag(PointerEventData eventData)
     {
-        // Update the position of the UI element to follow the mouse/finger
+        if (isLocked || transform.parent != canvas.transform)
+            return;
+
         rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
     }
 
-    // Called when the drag is released
     public void OnEndDrag(PointerEventData eventData)
     {
         image.raycastTarget = true;
 
-        // If the item's parent is still the canvas, it means it wasn't dropped on a valid zone
-        if (transform.parent == canvas.transform)
+        if (pendingDropZone != null)
         {
-            // Snap back to its original parent and position
-            transform.SetParent(originalParent, false);
-            rectTransform.anchoredPosition = originalPosition;
+            PaperManager.Instance.ShowConfirmation(this, pendingDropZone);
         }
+        else if (transform.parent == canvas.transform)
+        {
+            CancelDrop();
+        }
+    }
+
+    public void SetPendingDrop(DropZone zone)
+    {
+        pendingDropZone = zone;
+    }
+
+    public void CancelDrop()
+    {
+        transform.SetParent(originalParent, false);
+        rectTransform.anchoredPosition = originalPosition;
+        pendingDropZone = null;
+    }
+
+    public void CompleteDrop()
+    {
+        if (pendingDropZone == null) return;
+
+        transform.rotation = Quaternion.identity;
+        transform.SetParent(pendingDropZone.transform);
+        rectTransform.anchoredPosition = Vector2.zero;
+        isLocked = true;
+        pendingDropZone = null;
     }
 }

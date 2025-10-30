@@ -27,6 +27,9 @@ public class PatrolNPC : MonoBehaviour
     private float _chosenStopTime;
     private bool _isStopping;
     private float _stopTimer;
+
+    [Header("Emote")] 
+    public OnTriggerRandomEmote emote;
     
     // Private character fields
     private Vector2 _movementInput;
@@ -135,5 +138,21 @@ public class PatrolNPC : MonoBehaviour
         scale.x *= -1;
         gameObject.transform.localScale = scale;
         _facingLeft = !_facingLeft;
+    }
+
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            emote.ShowEmote();
+        }
+    }
+    
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            emote.HideEmote();
+        }
     }
 }

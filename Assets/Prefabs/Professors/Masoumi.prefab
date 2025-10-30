@@ -177,8 +177,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   windowToHide: {fileID: 1332089297324864958}
   windowToHideAnimation: 1
+  shouldInvoke: 0
   windowToShow: {fileID: 5532663561602516328}
   windowToShowAnimation: 1
+  dialogueWindowToShow: {fileID: 0}
+  dialogueTypeWriter: {fileID: 0}
+  allTasksBackButton: {fileID: 0}
+  currentTaskButton: {fileID: 0}
 --- !u!1 &1252882352964555574
 GameObject:
   m_ObjectHideFlags: 0
@@ -190,7 +195,6 @@ GameObject:
   - component: {fileID: 2985517255578473874}
   - component: {fileID: 5289602823588175046}
   - component: {fileID: 5391654874966227975}
-  - component: {fileID: 8048500446825833439}
   m_Layer: 5
   m_Name: DropZone (2)
   m_TagString: Untagged
@@ -255,18 +259,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8048500446825833439
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1252882352964555574}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e034fac97be31c14b8b0c6d2419798f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1448291628900205972
 GameObject:
   m_ObjectHideFlags: 0
@@ -278,7 +270,6 @@ GameObject:
   - component: {fileID: 1496224430196582482}
   - component: {fileID: 8938453784827418155}
   - component: {fileID: 8388494745221918497}
-  - component: {fileID: 8333278082133234450}
   m_Layer: 5
   m_Name: DropZone (4)
   m_TagString: Untagged
@@ -343,18 +334,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8333278082133234450
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1448291628900205972}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e034fac97be31c14b8b0c6d2419798f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1747336598077364959
 GameObject:
   m_ObjectHideFlags: 0
@@ -567,9 +546,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c2c7bd1fcd50dd4ca97fba20653b27b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  taskPanel: {fileID: 8032117436301326540}
+  StartPanel: {fileID: 0}
+  listOfTexts: []
   TaskOrderNumber: 0
   afterEndingDialogue: {fileID: 0}
+  firstDialogue: {fileID: 0}
+  firstDialogueFtw: {fileID: 0}
+  allTasksBackButton: {fileID: 0}
+  currentTaskButton: {fileID: 0}
 --- !u!1 &2292844554501954422
 GameObject:
   m_ObjectHideFlags: 0
@@ -718,7 +702,6 @@ GameObject:
   - component: {fileID: 6673408101117144269}
   - component: {fileID: 1166663779261774690}
   - component: {fileID: 2177934650380904520}
-  - component: {fileID: 7909905698287008483}
   m_Layer: 5
   m_Name: DropZone (5)
   m_TagString: Untagged
@@ -783,18 +766,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7909905698287008483
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2852870713585883896}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e034fac97be31c14b8b0c6d2419798f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &2967276700827557398
 GameObject:
   m_ObjectHideFlags: 0
@@ -806,7 +777,6 @@ GameObject:
   - component: {fileID: 6374581847714770464}
   - component: {fileID: 7406563367897578181}
   - component: {fileID: 6151926237062884595}
-  - component: {fileID: 5898691867627681644}
   m_Layer: 5
   m_Name: DropZone (3)
   m_TagString: Untagged
@@ -871,18 +841,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &5898691867627681644
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2967276700827557398}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e034fac97be31c14b8b0c6d2419798f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3168027691115221240
 GameObject:
   m_ObjectHideFlags: 0
@@ -894,7 +852,6 @@ GameObject:
   - component: {fileID: 3425519043371220827}
   - component: {fileID: 2620309910268932185}
   - component: {fileID: 1977580417529127483}
-  - component: {fileID: 3470228669858645490}
   m_Layer: 5
   m_Name: DropZone (6)
   m_TagString: Untagged
@@ -959,18 +916,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &3470228669858645490
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3168027691115221240}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e034fac97be31c14b8b0c6d2419798f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &3260074838568915744
 GameObject:
   m_ObjectHideFlags: 0
@@ -1075,7 +1020,6 @@ GameObject:
   - component: {fileID: 6399992802182370038}
   - component: {fileID: 3138319210244506420}
   - component: {fileID: 7266548644323061171}
-  - component: {fileID: 4059747645148912612}
   m_Layer: 5
   m_Name: DropZone (1)
   m_TagString: Untagged
@@ -1140,18 +1084,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4059747645148912612
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3928212737140474502}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e034fac97be31c14b8b0c6d2419798f6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4687646062076128312
 GameObject:
   m_ObjectHideFlags: 0
@@ -1265,7 +1197,6 @@ GameObject:
   - component: {fileID: 3704455617239280230}
   - component: {fileID: 723520752911888633}
   - component: {fileID: 7891691876660301951}
-  - component: {fileID: 8128376337766340014}
   m_Layer: 5
   m_Name: Draggable (1)
   m_TagString: Untagged
@@ -1330,18 +1261,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &8128376337766340014
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4710355986810249282}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c986d2d2e5a0ee48afdaec226f186c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &4728453176223081326
 GameObject:
   m_ObjectHideFlags: 0
@@ -1740,8 +1659,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   windowToHide: {fileID: 8032117436301326540}
   windowToHideAnimation: 1
+  shouldInvoke: 0
   windowToShow: {fileID: 0}
   windowToShowAnimation: 0
+  dialogueWindowToShow: {fileID: 0}
+  dialogueTypeWriter: {fileID: 0}
+  allTasksBackButton: {fileID: 0}
+  currentTaskButton: {fileID: 0}
 --- !u!1 &6904422327538512811
 GameObject:
   m_ObjectHideFlags: 0
@@ -1753,7 +1677,6 @@ GameObject:
   - component: {fileID: 774494204331153212}
   - component: {fileID: 5564240072169991418}
   - component: {fileID: 294387920766939080}
-  - component: {fileID: 2303711831681649357}
   m_Layer: 5
   m_Name: Draggable (2)
   m_TagString: Untagged
@@ -1818,18 +1741,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2303711831681649357
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6904422327538512811}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c986d2d2e5a0ee48afdaec226f186c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &7203162237816168586
 GameObject:
   m_ObjectHideFlags: 0
@@ -2013,7 +1924,6 @@ GameObject:
   - component: {fileID: 5014862054369502444}
   - component: {fileID: 8860762716984715163}
   - component: {fileID: 3425760569492442831}
-  - component: {fileID: 2492109649434042803}
   m_Layer: 5
   m_Name: Draggable
   m_TagString: Untagged
@@ -2078,15 +1988,3 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &2492109649434042803
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9159815998786616256}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c986d2d2e5a0ee48afdaec226f186c4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
