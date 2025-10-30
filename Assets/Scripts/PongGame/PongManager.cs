@@ -5,10 +5,13 @@ public class PongManager : MonoBehaviour
     [Header("Fade Settings")]
     public GameObject targetObject;
     public float fadeSpeed = 2f;
+    public GameObject PongGameObject;
 
     private Renderer[] renderers;
     private bool isFadingIn = false;
     private bool isFadingOut = false;
+
+    private GameObject _currentTaskButton;
 
     void Awake()
     {
@@ -18,6 +21,8 @@ public class PongManager : MonoBehaviour
             renderers = targetObject.GetComponentsInChildren<Renderer>();
             targetObject.SetActive(false);
         }
+
+        _currentTaskButton = GameObject.FindWithTag("CurrentTaskButton");
     }
 
     void Update()
@@ -35,6 +40,8 @@ public class PongManager : MonoBehaviour
             {
                 isFadingOut = false;
                 targetObject.SetActive(false);
+                PongGameObject.SetActive(false);
+                UIUtils.SetAlpha(_currentTaskButton.gameObject, 1f);
             }
         }
     }

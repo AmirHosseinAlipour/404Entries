@@ -13,13 +13,16 @@ public class BaseTasks : MonoBehaviour
 
     protected PlayerController _player;
     
-    [Header("Task UI")]
-    public Button allTasksBackButton;
-    public Button currentTaskButton;
+    // Task UI
+    private Button _allTasksBackButton;
+    private Button _currentTaskButton;
     
     private void Awake()
     {
         _player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+        
+        _allTasksBackButton = GameObject.FindWithTag("AllTasksBackButton").GetComponent<Button>();
+        _currentTaskButton = GameObject.FindWithTag("CurrentTaskButton").GetComponent<Button>();
     }
     
     protected virtual void OnTriggerEnter2D(Collider2D other)
@@ -27,7 +30,7 @@ public class BaseTasks : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             PlayerUIModeHelper.PlayerEnterUIMode(_player);
-            PlayerUIModeHelper.DisableTasksButton(allTasksBackButton, currentTaskButton);
+            PlayerUIModeHelper.DisableTasksButton(_allTasksBackButton, _currentTaskButton);
                 
             UIAnimationManager.Instance.ShowWindow(StartPanel, 0.5f);
                 

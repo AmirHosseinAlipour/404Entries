@@ -20,15 +20,18 @@ public class BaseProfessors : MonoBehaviour
     public GameObject firstDialogue;
     public FarsiTypewriter firstDialogueFtw;
     
-    [Header("Task UI")]
-    public Button allTasksBackButton;
-    public Button currentTaskButton;
+    // Task UI
+    protected Button _allTasksBackButton;
+    protected Button _currentTaskButton;
     
     protected PlayerController _player;
 
     private void Awake()
     {
         _player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+        
+        _allTasksBackButton = GameObject.FindWithTag("AllTasksBackButton").GetComponent<Button>();
+        _currentTaskButton = GameObject.FindWithTag("CurrentTaskButton").GetComponent<Button>();
     }
 
     protected virtual void Start()
@@ -48,7 +51,7 @@ public class BaseProfessors : MonoBehaviour
             else
             {
                 PlayerUIModeHelper.PlayerEnterUIMode(_player);
-                PlayerUIModeHelper.DisableTasksButton(allTasksBackButton, currentTaskButton);
+                PlayerUIModeHelper.DisableTasksButton(_allTasksBackButton, _currentTaskButton);
                 
                 UIAnimationManager.Instance.ShowWindow(StartPanel, 0.5f);
                 
@@ -93,7 +96,7 @@ public class BaseProfessors : MonoBehaviour
         if (!isActive)
         {
             PlayerUIModeHelper.PlayerExitUIMode(_player);
-            PlayerUIModeHelper.EnableTasksButton(allTasksBackButton, currentTaskButton);
+            PlayerUIModeHelper.EnableTasksButton(_allTasksBackButton, _currentTaskButton);
         }
     }
 }

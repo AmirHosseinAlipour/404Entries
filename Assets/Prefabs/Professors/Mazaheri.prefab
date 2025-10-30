@@ -230,8 +230,6 @@ MonoBehaviour:
   windowToShowAnimation: 0
   dialogueWindowToShow: {fileID: 0}
   dialogueTypeWriter: {fileID: 0}
-  allTasksBackButton: {fileID: 0}
-  currentTaskButton: {fileID: 0}
 --- !u!1 &3059504057715997181
 GameObject:
   m_ObjectHideFlags: 0
@@ -267,7 +265,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 100.9494, y: -63.456635}
+  m_AnchoredPosition: {x: 97, y: -45}
   m_SizeDelta: {x: 142.1012, y: 137.08667}
   m_Pivot: {x: 0, y: 1}
 --- !u!222 &3852725991990603362
@@ -493,7 +491,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: -2}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.44, y: 0.5}
     oldSize: {x: 4, y: 4}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
@@ -545,8 +543,6 @@ MonoBehaviour:
   afterEndingDialogue: {fileID: 0}
   firstDialogue: {fileID: 0}
   firstDialogueFtw: {fileID: 0}
-  allTasksBackButton: {fileID: 0}
-  currentTaskButton: {fileID: 0}
   game: {fileID: 0}
 --- !u!1 &4321381874593630114
 GameObject:
@@ -822,8 +818,6 @@ MonoBehaviour:
   windowToShowAnimation: 0
   dialogueWindowToShow: {fileID: 0}
   dialogueTypeWriter: {fileID: 0}
-  allTasksBackButton: {fileID: 0}
-  currentTaskButton: {fileID: 0}
 --- !u!1 &4957754066230985020
 GameObject:
   m_ObjectHideFlags: 0
@@ -859,7 +853,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -21, y: 239}
+  m_AnchoredPosition: {x: 150, y: 0}
   m_SizeDelta: {x: 64, y: 64}
   m_Pivot: {x: 1, y: 0}
 --- !u!222 &273181679411151790
@@ -1625,19 +1619,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2130247198134913698, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
       propertyPath: m_SizeDelta.x
-      value: 161.66528
+      value: 1938.5
       objectReference: {fileID: 0}
     - target: {fileID: 2130247198134913698, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
       propertyPath: m_SizeDelta.y
-      value: 57.477173
+      value: 1080
       objectReference: {fileID: 0}
     - target: {fileID: 2130247198134913698, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: 551.16736
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2130247198134913698, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -968.2614
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2409393125703356964, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
       propertyPath: SpawnBoom
@@ -1709,7 +1703,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4424856994415415975, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4889016373325863946, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
       propertyPath: m_SortingOrder
@@ -1731,6 +1725,10 @@ PrefabInstance:
       propertyPath: SpawnBoom
       value: 
       objectReference: {fileID: 2895398654336622583}
+    - target: {fileID: 5204298342375161147, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
+      propertyPath: m_Color.a
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5373190014549579660, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
       propertyPath: m_SortingOrder
       value: 13
@@ -1900,7 +1898,8 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2895398654336622583}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: 8020859237196332301, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 675292481502755246, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
       insertIndex: -1
