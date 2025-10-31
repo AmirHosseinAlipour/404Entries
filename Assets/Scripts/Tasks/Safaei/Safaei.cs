@@ -84,7 +84,9 @@ public class Safaei : BaseProfessors
             bool isCorrect = (index == correctOptionIndex[currentPhase]);
             if (!isCorrect)
             {
-                currentSpeed /= 2f;
+                currentPhase = -1;
+                UIAnimationManager.Instance.HideWindow(StartPanel , 0.5f );
+                
             }
 
             currentPhase++;
