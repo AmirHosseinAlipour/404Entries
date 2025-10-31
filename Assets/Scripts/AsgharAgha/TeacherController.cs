@@ -31,13 +31,13 @@ public class TeacherController : BaseProfessors
         {
             yield return new WaitForSeconds(Random.Range(minWait, maxWait));
 
-            
-            isFacingPlayer = !isFacingPlayer;
-
             if (isFacingPlayer)
                 animator.SetTrigger("FacingFront");
             else
-                animator.SetTrigger("FacingBack");
+                animator.SetTrigger("FacingBack");            
+            isFacingPlayer = !isFacingPlayer;
+
+           
         }
     }
 
