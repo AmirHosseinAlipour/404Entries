@@ -205,7 +205,7 @@ public class PaperManager : MonoBehaviour
             if (prof.firstDialogue != null && prof.firstDialogueFtw != null)
             {
                 UIAnimationManager.Instance.ShowDialogueWindow(
-                    prof.firstDialogue.GetComponent<RectTransform>(), 0.5f, prof.firstDialogueFtw
+                    prof.firstDialogue, 0.5f, prof.firstDialogueFtw
                 );
             }
         }

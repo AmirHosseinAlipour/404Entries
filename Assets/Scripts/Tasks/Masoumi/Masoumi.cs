@@ -11,11 +11,16 @@ public class Level
 
 public class Masoumi : BaseProfessors
 {
+    [Header("Settings")]
     public BaseDropZone[] initialZones;
     public BaseDropZone[] zonesToDrop;
     public BaseDraggableItem[] items;
 
     public List<Level> levelKeys;
+
+    [Header("References")] 
+    public RectTransform speechPanel;
+    public RectTransform missionPanel;
 
     private int _currentLevel = 0;
 
@@ -54,12 +59,13 @@ public class Masoumi : BaseProfessors
         }
         
         Debug.Log("before");
-        StartCoroutine(LoadNextLevelAfterDelay(2.0f));
+        StartCoroutine(LoadNextLevelAfterDelay(0.5f));
         Debug.Log("after");
     }
 
     private IEnumerator LoadNextLevelAfterDelay(float delay)
     {
+        UIAnimationManager.Instance.HideWindow(speechPanel, 0.5f);
         yield return new WaitForSeconds(delay);
         NextLevel();
     }
@@ -70,13 +76,27 @@ public class Masoumi : BaseProfessors
 
         if (_currentLevel >= levelKeys.Count)
         {
+            HandleEnding();
             return;
         }
+        
+        UIAnimationManager.Instance.ShowWindow(speechPanel, 0.5f);
 
-
-        foreach (BaseDraggableItem item in items)
+        for (int i = 0; i < initialZones.Length; i++)
         {
-            item.ReturnToOriginalPosition();
+            items[i].currentDropZone = null;
+            items[i].transform.SetParent(initialZones[i].transform, false);
+            
+            items[i].rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+            items[i].rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+            items[i].rectTransform.anchoredPosition = Vector2.zero;
         }
+    }
+
+    private void HandleEnding()
+    {
+        UIAnimationManager.Instance.HideWindow(missionPanel, 0.5f);
+        TaskManager.Instance.CompleteTask(TaskOrderNumber);
+        UIAnimationManager.Instance.ShowDialogueWindow(firstDialogue, 0.3f, firstDialogueFtw);
     }
 }

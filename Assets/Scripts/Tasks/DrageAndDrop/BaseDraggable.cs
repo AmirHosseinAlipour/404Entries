@@ -6,9 +6,9 @@ using UnityEngine.UI;
 public class BaseDraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
 {
     public static event Action OnItemDropCompleted;
-    public BaseDropZone currentDropZone { get; protected set; }
+    public BaseDropZone currentDropZone { get; set; }
     
-    protected RectTransform rectTransform;
+    public RectTransform rectTransform;
     protected Image image;
     protected Canvas canvas;
 

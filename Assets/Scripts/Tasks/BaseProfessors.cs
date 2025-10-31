@@ -17,7 +17,7 @@ public class BaseProfessors : MonoBehaviour
     
     [Header("After mission")]
     public RectTransform afterEndingDialogue;
-    public GameObject firstDialogue;
+    public RectTransform firstDialogue;
     public FarsiTypewriter firstDialogueFtw;
     
     // Task UI
