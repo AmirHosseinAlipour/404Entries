@@ -6,6 +6,10 @@ using UnityEngine.UI;
 public class PaperManager : MonoBehaviour
 {
     public static PaperManager Instance;
+    
+    [Header("Mini Game")]
+    public RectTransform task;
+    public FailOrPass prof;
 
     [Header("Papers")]
     public List<GameObject> listOfPapers;
@@ -192,6 +196,19 @@ public class PaperManager : MonoBehaviour
         
         counterFtw.SetText(_papersLength + " / " + _counter);
         counterFtw.StartTyping();
+        
+        // End logic
+        if (_counter == 0)
+        {
+            TaskManager.Instance.CompleteTask(prof.TaskOrderNumber);
+            UIAnimationManager.Instance.HideWindow(task, 0.5f);
+            if (prof.firstDialogue != null && prof.firstDialogueFtw != null)
+            {
+                UIAnimationManager.Instance.ShowDialogueWindow(
+                    prof.firstDialogue.GetComponent<RectTransform>(), 0.5f, prof.firstDialogueFtw
+                );
+            }
+        }
     }
 
     public void OnNoClicked()

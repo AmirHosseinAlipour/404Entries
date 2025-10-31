@@ -1,52 +1,23 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
-public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler
+public class DraggableItem : BaseDraggableItem
 {
-    private RectTransform rectTransform;
-    private Image image;
-    private Vector2 originalPosition;
-    private Transform originalParent;
-    private Canvas canvas;
-
     private DropZone pendingDropZone = null;
-    public bool isLocked = false;
 
-    private void Awake()
+    public override void OnBeginDrag(PointerEventData eventData)
     {
-        rectTransform = GetComponent<RectTransform>();
-        image = GetComponent<Image>();
-        canvas = GetComponentInParent<Canvas>();
-    }
-
-    public void OnBeginDrag(PointerEventData eventData)
-    {
+        // Derived class re-implements the lock check
         if (isLocked)
         {
             eventData.pointerDrag = null;
             return;
         }
-
-        originalPosition = rectTransform.anchoredPosition;
-        originalParent = transform.parent;
         
-        transform.SetParent(canvas.transform, true);
-        transform.SetAsLastSibling();
-        
-        image.raycastTarget = false;
-        pendingDropZone = null;
+        base.OnBeginDrag(eventData);
     }
 
-    public void OnDrag(PointerEventData eventData)
-    {
-        if (isLocked || transform.parent != canvas.transform)
-            return;
-
-        rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
-    }
-
-    public void OnEndDrag(PointerEventData eventData)
+    public override void OnEndDrag(PointerEventData eventData)
     {
         image.raycastTarget = true;
 
@@ -54,22 +25,32 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         {
             PaperManager.Instance.ShowConfirmation(this, pendingDropZone);
         }
-        else if (transform.parent == canvas.transform)
+        else if (transform.parent == canvas.transform) 
         {
-            CancelDrop();
+            ReturnToOriginalPosition();
         }
     }
 
-    public void SetPendingDrop(DropZone zone)
+    public override void NotifyDrop(BaseDropZone zone)
     {
-        pendingDropZone = zone;
+        DropZone confirmationZone = zone as DropZone;
+
+        if (confirmationZone != null)
+        {
+            pendingDropZone = confirmationZone;
+            wasDropped = true;
+        }
+        else
+        {
+            base.NotifyDrop(zone);
+        }
     }
 
     public void CancelDrop()
     {
-        transform.SetParent(originalParent, false);
-        rectTransform.anchoredPosition = originalPosition;
+        ReturnToOriginalPosition();
         pendingDropZone = null;
+        wasDropped = false;
     }
 
     public void CompleteDrop()
@@ -77,9 +58,11 @@ public class DraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         if (pendingDropZone == null) return;
 
         transform.rotation = Quaternion.identity;
-        transform.SetParent(pendingDropZone.transform);
-        rectTransform.anchoredPosition = Vector2.zero;
-        isLocked = true;
+        FinalizeDrop(pendingDropZone);
+        
+        // Locking is now handled here, in the derived class
+        isLocked = true; 
+        
         pendingDropZone = null;
     }
 }
