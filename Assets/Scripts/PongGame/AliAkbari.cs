@@ -10,9 +10,6 @@ public class AliAkbari : BaseProfessors
 
     public void StartGame()
     {
-        PlayerUIModeHelper.PlayerEnterUIMode(_player);
-        PlayerUIModeHelper.DisableTasksButton(_allTasksBackButton, _currentTaskButton);
-        
         UIUtils.SetAlpha(_currentTaskButton.gameObject, 0f);
         
         pongGame.SetActive(true);
