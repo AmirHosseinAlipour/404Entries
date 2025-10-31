@@ -8,6 +8,7 @@ public class BaseProfessors : MonoBehaviour
     [Header("Base Fields")]
     // Accept challenge message
     public RectTransform StartPanel;
+    public RectTransform acceptRect;
     public Text[] listOfTexts;
 
     private const int InitialDialogueCount = 3;
@@ -16,9 +17,14 @@ public class BaseProfessors : MonoBehaviour
     public int TaskOrderNumber;
     
     [Header("After mission")]
-    public RectTransform afterEndingDialogue;
-    public RectTransform firstDialogue;
-    public FarsiTypewriter firstDialogueFtw;
+    public RectTransform afterWinDialogue;
+    public RectTransform firstWinDialogue;
+    public FarsiTypewriter firstWinDialogueFtw;
+    
+    [Header("After task not complete")]
+    public RectTransform afterFailDialogue;
+    public RectTransform firstFailDialogue;
+    public FarsiTypewriter firstFailDialogueFtw;
     
     // Task UI
     protected Button _allTasksBackButton;
@@ -46,7 +52,7 @@ public class BaseProfessors : MonoBehaviour
         {
             if (TaskManager.Instance.taskCompleted[TaskOrderNumber])
             {
-                UIAnimationManager.Instance.ShowWindow(afterEndingDialogue, 0.5f);
+                UIAnimationManager.Instance.ShowWindow(afterWinDialogue, 0.5f);
             }
             else
             {

@@ -114,7 +114,7 @@ public class SleepManager : MonoBehaviour
         gameObject.SetActive(false);
         UIAnimationManager.Instance.HideWindow(mainPanel , 0.5f);
         TaskManager.Instance.CompleteTask(prof.TaskOrderNumber);
-        UIAnimationManager.Instance.ShowDialogueWindow(prof.firstDialogue, 0.5f, prof.firstDialogueFtw);
+        UIAnimationManager.Instance.ShowDialogueWindow(prof.firstWinDialogue, 0.5f, prof.firstWinDialogueFtw);
     }
     public void StartGame()
     {
