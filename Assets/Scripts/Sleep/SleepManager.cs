@@ -31,11 +31,13 @@ public class SleepManager : MonoBehaviour
     private int redClickCount = 0;
     private float lastInteractionTime;
     private float targetSleepProgress = 0f;
+
     [Header("LoseOption")]
     public Image PanelToChange;
-
     private bool IsLose = false;
     public Sprite Loosing_Sprite;
+    private bool isGameStarted = false;
+
     void Start()
     {
         lastInteractionTime = Time.time;
@@ -44,25 +46,33 @@ public class SleepManager : MonoBehaviour
 
     void Update()
     {
-        if (IsLose) return;
+        if (!isGameStarted || IsLose) return;
+
         elapsed += Time.deltaTime;
         float left = Mathf.Max(0f, totalTime - elapsed);
+
         if (Time.time - lastInteractionTime > inactivityThreshold)
         {
             targetSleepProgress += inactivitySleepRate * Time.deltaTime;
             targetSleepProgress = Mathf.Clamp01(targetSleepProgress);
         }
+
         sleepProgress = Mathf.Lerp(sleepProgress, targetSleepProgress, Time.deltaTime * smoothSpeed);
+
         if (eyelidController != null)
             eyelidController.SetCloseAmount(sleepProgress);
+
         if (sleepProgress >= 0.99f || redClickCount >= redClicksToSleep)
             OnSleep();
+
         if (left <= 0f && sleepProgress < sleepProgressToSleep && redClickCount < redClicksToSleep)
             OnWin();
     }
 
     public void HandleClick()
     {
+        if (!isGameStarted || IsLose) return;
+
         lastInteractionTime = Time.time;
         float barHalf = barRect.rect.width;
         float px = pointerRect.localPosition.x;
@@ -90,7 +100,6 @@ public class SleepManager : MonoBehaviour
 
     IEnumerator JustWait()
     {
-        
         yield return new WaitForSeconds(1f);
         targetSleepProgress = 0;
         sleepProgress = Mathf.Lerp(sleepProgress, 0f, Time.deltaTime * smoothSpeed);
@@ -105,5 +114,15 @@ public class SleepManager : MonoBehaviour
         gameObject.SetActive(false);
         UIAnimationManager.Instance.HideWindow(MainCanvas , 0.5f);
         TaskManager.Instance.CompleteTask(prof.TaskOrderNumber);
+    }
+    public void StartGame()
+    {
+        isGameStarted = true;
+        elapsed = 0f;
+        redClickCount = 0;
+        sleepProgress = 0f;
+        targetSleepProgress = 0f;
+        lastInteractionTime = Time.time;
+        IsLose = false;
     }
 }
