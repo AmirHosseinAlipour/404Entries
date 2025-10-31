@@ -13,7 +13,7 @@ public class ExitDoor : MonoBehaviour
             gameManager.WinGame();
             teacher.StopLooking();
             TaskManager.Instance.CompleteTask(teacher.TaskOrderNumber);
-            UIAnimationManager.Instance.ShowDialogueWindow(teacher.firstDialogue.GetComponent<RectTransform>(), 0.5f, teacher.firstDialogueFtw);
+            UIAnimationManager.Instance.ShowDialogueWindow(teacher.firstWinDialogue, 0.5f, teacher.firstWinDialogueFtw);
         }
     }
 }

@@ -6,7 +6,7 @@ public class SpaceInvadersManager : MonoBehaviour
     public GameObject gameObjectsToShow; 
     public RectTransform gameObjectsToHide;
     public float fadeSpeed = 2f;
-
+    public RectTransform ErorWindow;
     [Header("Enemy Setting")]
     public int totalEnemies = 10;
 
@@ -40,6 +40,7 @@ public class SpaceInvadersManager : MonoBehaviour
         else if (isFadingOut)
         {
             UIAnimationManager.Instance.HideWindow(gameObjectsToHide , 0.5f );
+            gameObjectsToShow.SetActive(false);
             bool done = FadeTo(0f);
             if (done)
             {
@@ -99,5 +100,15 @@ public class SpaceInvadersManager : MonoBehaviour
             c.a = a;
             rend.material.color = c;
         }
+    }
+
+    public void ShowErorwindow()
+    {
+        UIAnimationManager.Instance.ShowWindow(ErorWindow , 0.5f );
+    }
+
+    public void HideErorwindow()
+    {
+        UIAnimationManager.Instance.HideWindow(ErorWindow , 0.5f);
     }
 }

@@ -20,6 +20,9 @@ public class PlayerController : MonoBehaviour
     
     // Skip Inputs with this bool
     [HideInInspector] public bool isUIActive = false;
+    
+    // Logic for minimap
+    [HideInInspector] public float FacingAngle { get; private set; }
 
     private void Start()
     {
@@ -66,6 +69,9 @@ public class PlayerController : MonoBehaviour
         {
             _lastMove = _movementInput;
         }
+        
+        // For mini map
+        FacingAngle = Mathf.Atan2(_lastMove.y, _lastMove.x) * Mathf.Rad2Deg - 90f;
     }
 
     private void Animate()
@@ -106,8 +112,7 @@ public class PlayerController : MonoBehaviour
 
     public void SetIdleDirection(Vector2 idleDirection)
     {
-        
-        _animator.SetFloat("LastMoveX", idleDirection.x);
-        _animator.SetFloat("LastMoveY", idleDirection.y);
+        _lastMove = idleDirection.normalized; 
     }
+
 }

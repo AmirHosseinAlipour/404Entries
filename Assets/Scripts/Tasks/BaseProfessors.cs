@@ -8,6 +8,7 @@ public class BaseProfessors : MonoBehaviour
     [Header("Base Fields")]
     // Accept challenge message
     public RectTransform StartPanel;
+    public RectTransform acceptRect;
     public Text[] listOfTexts;
 
     private const int InitialDialogueCount = 3;
@@ -16,19 +17,27 @@ public class BaseProfessors : MonoBehaviour
     public int TaskOrderNumber;
     
     [Header("After mission")]
-    public RectTransform afterEndingDialogue;
-    public GameObject firstDialogue;
-    public FarsiTypewriter firstDialogueFtw;
+    public RectTransform afterWinDialogue;
+    public RectTransform firstWinDialogue;
+    public FarsiTypewriter firstWinDialogueFtw;
     
-    [Header("Task UI")]
-    public Button allTasksBackButton;
-    public Button currentTaskButton;
+    [Header("After task not complete")]
+    public RectTransform afterFailDialogue;
+    public RectTransform firstFailDialogue;
+    public FarsiTypewriter firstFailDialogueFtw;
+    
+    // Task UI
+    protected Button _allTasksBackButton;
+    protected Button _currentTaskButton;
     
     protected PlayerController _player;
 
     private void Awake()
     {
         _player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+        
+        _allTasksBackButton = GameObject.FindWithTag("AllTasksBackButton").GetComponent<Button>();
+        _currentTaskButton = GameObject.FindWithTag("CurrentTaskButton").GetComponent<Button>();
     }
 
     protected virtual void Start()
@@ -43,12 +52,12 @@ public class BaseProfessors : MonoBehaviour
         {
             if (TaskManager.Instance.taskCompleted[TaskOrderNumber])
             {
-                UIAnimationManager.Instance.ShowWindow(afterEndingDialogue, 0.5f);
+                UIAnimationManager.Instance.ShowWindow(afterWinDialogue, 0.5f);
             }
             else
             {
                 PlayerUIModeHelper.PlayerEnterUIMode(_player);
-                PlayerUIModeHelper.DisableTasksButton(allTasksBackButton, currentTaskButton);
+                PlayerUIModeHelper.DisableTasksButton(_allTasksBackButton, _currentTaskButton);
                 
                 UIAnimationManager.Instance.ShowWindow(StartPanel, 0.5f);
                 
@@ -93,7 +102,7 @@ public class BaseProfessors : MonoBehaviour
         if (!isActive)
         {
             PlayerUIModeHelper.PlayerExitUIMode(_player);
-            PlayerUIModeHelper.EnableTasksButton(allTasksBackButton, currentTaskButton);
+            PlayerUIModeHelper.EnableTasksButton(_allTasksBackButton, _currentTaskButton);
         }
     }
 }

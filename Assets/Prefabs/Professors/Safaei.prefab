@@ -587,8 +587,6 @@ MonoBehaviour:
   windowToShowAnimation: 0
   dialogueWindowToShow: {fileID: 0}
   dialogueTypeWriter: {fileID: 0}
-  allTasksBackButton: {fileID: 0}
-  currentTaskButton: {fileID: 0}
 --- !u!1 &791450194720296059
 GameObject:
   m_ObjectHideFlags: 0
@@ -882,8 +880,6 @@ MonoBehaviour:
   windowToShowAnimation: 1
   dialogueWindowToShow: {fileID: 0}
   dialogueTypeWriter: {fileID: 0}
-  allTasksBackButton: {fileID: 0}
-  currentTaskButton: {fileID: 0}
 --- !u!1 &2659338803318726398
 GameObject:
   m_ObjectHideFlags: 0
@@ -1748,7 +1744,7 @@ BoxCollider2D:
   m_Offset: {x: 0, y: -2}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
+    pivot: {x: 0.44, y: 0.5}
     oldSize: {x: 4, y: 4}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
@@ -1792,17 +1788,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartPanel: {fileID: 1930109522758540318}
+  acceptRect: {fileID: 6185778590593402048}
   listOfTexts:
   - {fileID: 4802599944445294020}
   - {fileID: 748122094267587156}
   - {fileID: 7549893108518068551}
   TaskOrderNumber: 3
-  afterEndingDialogue: {fileID: 0}
-  firstDialogue: {fileID: 0}
-  firstDialogueFtw: {fileID: 0}
-  allTasksBackButton: {fileID: 0}
-  currentTaskButton: {fileID: 0}
+  afterWinDialogue: {fileID: 0}
+  firstWinDialogue: {fileID: 0}
+  firstWinDialogueFtw: {fileID: 0}
+  afterFailDialogue: {fileID: 0}
+  firstFailDialogue: {fileID: 0}
+  firstFailDialogueFtw: {fileID: 0}
   dialogueText: {fileID: 7060992839074817150}
+  textPanel: {fileID: 3436140369058707965}
   optionButtons:
   - {fileID: 5912715907365639272}
   - {fileID: 51980897699880675}

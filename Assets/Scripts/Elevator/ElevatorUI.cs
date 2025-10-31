@@ -8,9 +8,10 @@ public class ElevatorUI : MonoBehaviour
     public DoorAnimation doorAnimation;
     public Text messageText;
 
-    public Vector3[] floorPositions; 
+    public GameObject[] floorPositions; 
     public Button[] floorButtons;
-    public int currentFloor = 1; 
+    public int currentFloor = 1;
+    public RectTransform buttonsPanel;
 
     private void Start()
     {
@@ -20,7 +21,7 @@ public class ElevatorUI : MonoBehaviour
             floorButtons[i].onClick.AddListener(() => OnFloorButtonPressed(index));
         }
         player = GameObject.FindGameObjectWithTag("Player").transform;
-        gameObject.SetActive(false);
+        //gameObject.SetActive(false);
         messageText.gameObject.SetActive(false);
     }
 
@@ -43,9 +44,12 @@ public class ElevatorUI : MonoBehaviour
 
     private IEnumerator MoveToFloor(int floorIndex)
     {
-        UIAnimationManager.Instance.HideWindow(gameObject.GetComponent<RectTransform>() , 0.5f);  
-        doorAnimation.OpenDoors(); 
-        player.position = floorPositions[floorIndex];
+        PlayerController p = player.GetComponent<PlayerController>();
+        p.SetIdleDirection(new Vector2(0 , -1));
+        UIAnimationManager.Instance.HideWindow(buttonsPanel , 0.5f );
+        UIAnimationManager.Instance.HideWindow(gameObject.GetComponent<RectTransform>() , 0.5f);    
+        doorAnimation.OpenDoors();
+        player.position = floorPositions[floorIndex].transform.position;
         currentFloor = floorIndex;
 
         yield return new WaitForSeconds(0.5f);

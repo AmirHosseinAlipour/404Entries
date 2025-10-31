@@ -15,9 +15,9 @@ public class SwitchWindow : MonoBehaviour
     public RectTransform dialogueWindowToShow;
     public FarsiTypewriter dialogueTypeWriter;
     
-    [Header("Task UI")]
-    public Button allTasksBackButton;
-    public Button currentTaskButton;
+    // Task UI 
+    private Button _allTasksBackButton;
+    private Button _currentTaskButton;
 
     private PlayerController _player;
     
@@ -26,6 +26,9 @@ public class SwitchWindow : MonoBehaviour
     private void Awake()
     {
         _player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+
+        _allTasksBackButton = GameObject.FindWithTag("AllTasksBackButton").GetComponent<Button>();
+        _currentTaskButton = GameObject.FindWithTag("CurrentTaskButton").GetComponent<Button>();
     }
 
     // This method is only for closing the mini game UI!
@@ -45,7 +48,7 @@ public class SwitchWindow : MonoBehaviour
         }
         
         PlayerUIModeHelper.PlayerExitUIMode(_player);
-        PlayerUIModeHelper.EnableTasksButton(allTasksBackButton, currentTaskButton);
+        PlayerUIModeHelper.EnableTasksButton(_allTasksBackButton, _currentTaskButton);
     }
 
     public void Toggle()
