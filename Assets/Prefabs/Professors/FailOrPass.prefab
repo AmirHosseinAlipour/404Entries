@@ -116,7 +116,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &9199726618076904261
 RectTransform:
   m_ObjectHideFlags: 0
@@ -372,12 +372,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -762,6 +762,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c986d2d2e5a0ee48afdaec226f186c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectTransform: {fileID: 0}
   isLocked: 0
 --- !u!1 &895693892155708516
 GameObject:
@@ -979,6 +980,18 @@ MonoBehaviour:
       - m_Target: {fileID: 5440636401563641960}
         m_TargetAssemblyTypeName: SwitchWindow, Assembly-CSharp
         m_MethodName: Toggle
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+      - m_Target: {fileID: 5387318197549735426}
+        m_TargetAssemblyTypeName: FailOrPass, Assembly-CSharp
+        m_MethodName: StartGame
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1523,6 +1536,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c986d2d2e5a0ee48afdaec226f186c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectTransform: {fileID: 0}
   isLocked: 0
 --- !u!1 &1890842293931919678
 GameObject:
@@ -1786,6 +1800,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c986d2d2e5a0ee48afdaec226f186c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectTransform: {fileID: 0}
   isLocked: 0
 --- !u!1 &2553322198047019022
 GameObject:
@@ -1835,6 +1850,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c4634553e33a624896dbfabfd49013a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  task: {fileID: 6735657379012363739}
+  prof: {fileID: 5387318197549735426}
   listOfPapers:
   - {fileID: 8269307245725811222}
   - {fileID: 877511581050644442}
@@ -2183,6 +2200,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c986d2d2e5a0ee48afdaec226f186c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectTransform: {fileID: 0}
   isLocked: 0
 --- !u!1 &3341881543318024029
 GameObject:
@@ -2371,6 +2389,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c986d2d2e5a0ee48afdaec226f186c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectTransform: {fileID: 0}
   isLocked: 0
 --- !u!1 &4033737179444988565
 GameObject:
@@ -2653,7 +2672,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &6385274639400246360
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3052,6 +3071,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c986d2d2e5a0ee48afdaec226f186c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectTransform: {fileID: 0}
   isLocked: 0
 --- !u!1 &4866812489042411019
 GameObject:
@@ -3842,6 +3862,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c986d2d2e5a0ee48afdaec226f186c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectTransform: {fileID: 0}
   isLocked: 0
 --- !u!1 &6419018545840451283
 GameObject:
@@ -3932,6 +3953,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c986d2d2e5a0ee48afdaec226f186c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectTransform: {fileID: 0}
   isLocked: 0
 --- !u!1 &6445101335460687743
 GameObject:
@@ -3951,7 +3973,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &33354971649764664
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4497,7 +4519,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6735657379012363739
 RectTransform:
   m_ObjectHideFlags: 0
@@ -4947,6 +4969,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c986d2d2e5a0ee48afdaec226f186c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectTransform: {fileID: 0}
   isLocked: 0
 --- !u!1 &8702053325079970993
 GameObject:
@@ -5103,7 +5126,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_Sprite: {fileID: 1092628676154287437, guid: 0289031a65c07d049b29049a3f561c9c, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -5173,7 +5196,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07b6615c9969eb24bb07da0e25ebe148, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  StartPanel: {fileID: 9199726618076904261}
+  StartPanel: {fileID: 33354971649764664}
   listOfTexts:
   - {fileID: 5883180478965722852}
   - {fileID: 8500849317289427228}
@@ -5182,7 +5205,7 @@ MonoBehaviour:
   afterEndingDialogue: {fileID: 0}
   firstDialogue: {fileID: 0}
   firstDialogueFtw: {fileID: 0}
-  task: {fileID: 0}
+  task: {fileID: 6735657379012363739}
 --- !u!1 &8798973791405477675
 GameObject:
   m_ObjectHideFlags: 0
@@ -5370,6 +5393,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c986d2d2e5a0ee48afdaec226f186c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectTransform: {fileID: 0}
   isLocked: 0
 --- !u!1 &8967568940842970516
 GameObject:
