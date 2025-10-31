@@ -1,3 +1,4 @@
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class PongManager : MonoBehaviour
@@ -6,6 +7,10 @@ public class PongManager : MonoBehaviour
     public GameObject targetObject;
     public float fadeSpeed = 2f;
     public GameObject PongGameObject;
+    public CinemachineCamera cam;
+
+    [Header("Professor")] 
+    public AliAkbari prof;
 
     private Renderer[] renderers;
     private bool isFadingIn = false;
@@ -42,6 +47,9 @@ public class PongManager : MonoBehaviour
                 targetObject.SetActive(false);
                 PongGameObject.SetActive(false);
                 UIUtils.SetAlpha(_currentTaskButton.gameObject, 1f);
+                cam.Priority = 0;
+                TaskManager.Instance.CompleteTask(prof.TaskOrderNumber);
+                UIAnimationManager.Instance.ShowDialogueWindow(prof.firstWinDialogue, 0.5f, prof.firstWinDialogueFtw);
             }
         }
     }

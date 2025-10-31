@@ -19,6 +19,18 @@ public class CircleTimerAnimation : MonoBehaviour
         StopAllCoroutines();
         StartCoroutine(AnimateCircleFill());
     }
+    
+    public void StopCountdown()
+    {
+        // Stop any animation coroutine that might be running
+        StopAllCoroutines();
+        
+        // Reset the timer's visual to its empty/finished state
+        if (_fillImage != null)
+        {
+            _fillImage.fillAmount = 0f; 
+        }
+    }
 
     private IEnumerator AnimateCircleFill()
     {

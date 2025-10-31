@@ -18,6 +18,8 @@ public class FarsiTypewriter : MonoBehaviour
     public bool centerAlign;
     public bool middleAlign;
     
+    public event Action OnTypingFinished;
+    
     private Text _textUI;
     private string _fixedText;
     public int len;
@@ -141,6 +143,8 @@ public class FarsiTypewriter : MonoBehaviour
 
             yield return new WaitForSeconds(typeCharTime * 2f);
         }
+        
+        OnTypingFinished.Invoke();
     }
 
 

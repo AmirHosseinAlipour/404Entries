@@ -13,9 +13,12 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
     public bool typeWriterEffect;
     public float typeCharTime = 0.05f;
     public bool autoResetText;
+    
+    public event Action OnTypingFinished;
 
     private Text _textUI;
     private string _fixedText;
+    private string _originalText;
     public int len;
     private StringBuilder _builder = new StringBuilder();
     private TextGenerationSettings _cachedSettings;
@@ -26,7 +29,8 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
     void Awake()
     {
         _textUI = GetComponent<Text>();
-        FixAndPrepareText(_textUI.text);
+        _originalText = _textUI.text;
+        FixAndPrepareText(_originalText);
     }
 
     private void Start()
@@ -71,7 +75,8 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
     public void StartTyping()
     {
         StopAllCoroutines();
-        _builder.Clear();
+        FixAndPrepareText(_originalText); 
+
         StartCoroutine(TypeTextCoroutine());
     }
 
@@ -113,6 +118,8 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
 
             yield return new WaitForSeconds(typeCharTime);
         }
+        
+        OnTypingFinished?.Invoke();
     }
 
     private bool CheckVerticalOverflow(TextGenerationSettings settings, float boxHeight)

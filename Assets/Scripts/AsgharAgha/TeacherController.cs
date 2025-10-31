@@ -30,15 +30,25 @@ public class TeacherController : BaseProfessors
         while (_isActive)
         {
             yield return new WaitForSeconds(Random.Range(minWait, maxWait));
-
+        
             if (isFacingPlayer)
-                animator.SetTrigger("FacingFront");
+            {
+                // Player is safe immediately
+                isFacingPlayer = false; 
+                animator.SetTrigger("FacingBack");
+            }
             else
-                animator.SetTrigger("FacingBack");            
-            isFacingPlayer = !isFacingPlayer;
-
-           
+            {
+                // Just trigger the animation.
+                // The Animation Event will call OnFacingFrontComplete() when it's done.
+                animator.SetTrigger("FacingFront");
+            }
         }
+    }
+    
+    public void OnFacingFrontComplete()
+    {
+        isFacingPlayer = true;
     }
 
     public void StopLooking()

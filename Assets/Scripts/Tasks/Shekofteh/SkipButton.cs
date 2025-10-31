@@ -277,4 +277,47 @@ public class SkipButton : MonoBehaviour
         ResetCounter();
         canGoToNextLevel = false;
     }
+    
+    // Resets the entire component to its initial state (Level 0)
+    public void ResetState()
+    {
+        // Stop any active movement
+        StopTeleportMovement();
+        background.StopCountdown();
+
+        // Reset level and completion status
+        _currentLevel = 0;
+        isCompleted = false;
+        canGoToNextLevel = false;
+
+        // Set stats for the first level (Level 0)
+        if (counts.Length > 0)
+            _currentGoal = counts[0];
+
+        if (teleportIntervals.Length > 0)
+        {
+            _currentTeleportInterval = teleportIntervals[0];
+            background.animationDuration = _currentTeleportInterval;
+        }
+
+        // Reset the counter UI and state
+        ResetCounter(); // This sets _count = 0 and updates the text
+
+        // --- NEW CODE ---
+        // Force the counter text to be active and visible.
+        // This fixes the "no text" problem.
+        if (_counter != null)
+        {
+            _counter.gameObject.SetActive(true);
+        }
+        // --- END NEW CODE ---
+
+        // Hide the button visuals (they get shown on first teleport)
+        UIUtils.SetAlpha(buttonImage.gameObject, 0);
+        UIUtils.SetAlpha(background.gameObject, 0);
+
+        // Reset state flags
+        _firstLoop = true;
+        isFirstTeleport = true;
+    }
 }
