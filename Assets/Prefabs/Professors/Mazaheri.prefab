@@ -277,75 +277,6 @@ MonoBehaviour:
   windowToShowAnimation: 0
   dialogueWindowToShow: {fileID: 0}
   dialogueTypeWriter: {fileID: 0}
---- !u!1 &953120828308975093
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 6895654318579274037}
-  - component: {fileID: 3781518358207593430}
-  - component: {fileID: 1847543011370493804}
-  m_Layer: 0
-  m_Name: Manger
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &6895654318579274037
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 953120828308975093}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 3083984687437717825}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3781518358207593430
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 953120828308975093}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3674965f122862b468a5eef915f56fc7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameObjectsToShow: {fileID: 5133747154577700309}
-  gameObjectsToHide: {fileID: 2735955829584745859}
-  fadeSpeed: 2
-  ErorWindow: {fileID: 0}
-  totalEnemies: 24
-  m: {fileID: 8037209256637358354}
-  isFadingIn: 0
-  oneShotAudioPrefab: {fileID: 6204697345686949466, guid: 8c7351fac9239c945880e990517a0371, type: 3}
-  WindowsXp: {fileID: 8300000, guid: 2b2f6d2a066d7a145ac0e3f9f72b6e83, type: 3}
---- !u!114 &1847543011370493804
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 953120828308975093}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc5e24ca238db8a4ca819f8a99d71660, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  gameObjectsToShow: {fileID: 5995526623066939194}
-  fadeSpeed: 2
-  isFadingIn: 0
 --- !u!1 &1038594834026503846
 GameObject:
   m_ObjectHideFlags: 0
@@ -499,7 +430,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &469536848455823742
 RectTransform:
   m_ObjectHideFlags: 0
@@ -682,7 +613,7 @@ MonoBehaviour:
       - m_Target: {fileID: 7270057265260313901}
         m_TargetAssemblyTypeName: SpaceInvadersManager, Assembly-CSharp
         m_MethodName: ShowErorwindow
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -708,7 +639,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8835459105077523823
 RectTransform:
   m_ObjectHideFlags: 0
@@ -891,11 +822,11 @@ MonoBehaviour:
       - m_Target: {fileID: 7270057265260313901}
         m_TargetAssemblyTypeName: SpaceInvadersManager, Assembly-CSharp
         m_MethodName: ShowErorwindow
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -1251,12 +1182,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -2092,7 +2023,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &8558457617607996701
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2188,7 +2119,6 @@ Transform:
   - {fileID: 1868098886835008586}
   - {fileID: 1470630781708285457}
   - {fileID: 446519272405209985}
-  - {fileID: 6895654318579274037}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6076657020774345687
@@ -2339,7 +2269,7 @@ MonoBehaviour:
   afterFailDialogue: {fileID: 0}
   firstFailDialogue: {fileID: 0}
   firstFailDialogueFtw: {fileID: 0}
-  game: {fileID: 0}
+  game: {fileID: 7270057265260313901}
   Boot_Panel: {fileID: 5820425692470382617}
 --- !u!1 &4321381874593630114
 GameObject:
@@ -2738,11 +2668,11 @@ MonoBehaviour:
       - m_Target: {fileID: 7270057265260313901}
         m_TargetAssemblyTypeName: SpaceInvadersManager, Assembly-CSharp
         m_MethodName: ShowErorwindow
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -2795,7 +2725,11 @@ MonoBehaviour:
   gameObjectsToShow: {fileID: 5133747154577700309}
   gameObjectsToHide: {fileID: 2735955829584745859}
   fadeSpeed: 2
-  ErorWindow: {fileID: 0}
+  ErorWindow:
+  - {fileID: 5123087496525187165}
+  - {fileID: 8835459105077523823}
+  - {fileID: 469536848455823742}
+  - {fileID: 8558457617607996701}
   totalEnemies: 24
   m: {fileID: 8037209256637358354}
   isFadingIn: 0
@@ -3023,7 +2957,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &5123087496525187165
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3308,11 +3242,11 @@ MonoBehaviour:
       - m_Target: {fileID: 7270057265260313901}
         m_TargetAssemblyTypeName: SpaceInvadersManager, Assembly-CSharp
         m_MethodName: ShowErorwindow
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3463,8 +3397,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00002265, y: -175}
-  m_SizeDelta: {x: 356.9123, y: 110.7152}
+  m_AnchoredPosition: {x: 0.00099564, y: 0.00047302}
+  m_SizeDelta: {x: 191, y: 126}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2424677117400500328
 CanvasRenderer:
@@ -3551,11 +3485,11 @@ MonoBehaviour:
       - m_Target: {fileID: 7270057265260313901}
         m_TargetAssemblyTypeName: SpaceInvadersManager, Assembly-CSharp
         m_MethodName: HideErorwindow
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 3
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3595,8 +3529,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00002265, y: -175}
-  m_SizeDelta: {x: 356.9123, y: 110.7152}
+  m_AnchoredPosition: {x: -0.00099564, y: 0.0006032}
+  m_SizeDelta: {x: 191, y: 126}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6192966744843267813
 CanvasRenderer:
@@ -3683,7 +3617,7 @@ MonoBehaviour:
       - m_Target: {fileID: 7270057265260313901}
         m_TargetAssemblyTypeName: SpaceInvadersManager, Assembly-CSharp
         m_MethodName: HideErorwindow
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3727,8 +3661,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00002265, y: -175}
-  m_SizeDelta: {x: 356.9123, y: 110.7152}
+  m_AnchoredPosition: {x: 0.00099564, y: 0.00047302}
+  m_SizeDelta: {x: 191, y: 126}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5407705997390104175
 CanvasRenderer:
@@ -3815,11 +3749,11 @@ MonoBehaviour:
       - m_Target: {fileID: 7270057265260313901}
         m_TargetAssemblyTypeName: SpaceInvadersManager, Assembly-CSharp
         m_MethodName: HideErorwindow
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 2
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -3934,8 +3868,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0.00002265, y: -175}
-  m_SizeDelta: {x: 356.9123, y: 110.7152}
+  m_AnchoredPosition: {x: 0.00099564, y: 0.00047302}
+  m_SizeDelta: {x: 191, y: 126}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6975904931861049886
 CanvasRenderer:
@@ -4022,11 +3956,11 @@ MonoBehaviour:
       - m_Target: {fileID: 7270057265260313901}
         m_TargetAssemblyTypeName: SpaceInvadersManager, Assembly-CSharp
         m_MethodName: HideErorwindow
-        m_Mode: 1
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -4135,7 +4069,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slider: {fileID: 3456739768480206529}
   fillTime: 2
-  spaceInvadersManager: {fileID: 3781518358207593430}
+  spaceInvadersManager: {fileID: 7270057265260313901}
   Boot_panel: {fileID: 5820425692470382617}
 --- !u!1 &8058971622286060538
 GameObject:
@@ -4900,7 +4834,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6713424092449954181, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6843874554399155202, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
       propertyPath: m_SortingOrder

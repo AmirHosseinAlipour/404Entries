@@ -10,6 +10,23 @@ public class PaperManager : MonoBehaviour
     [Header("Mini Game")]
     public RectTransform task;
     public FailOrPass prof;
+    
+    public FarsiTypewriter letterLow;
+    public Button lastLetterLow;
+    
+    public FarsiTypewriter letterMedium;
+    public Button lastLetterMedium;
+    
+    public FarsiTypewriter letterHigh;
+    public Button lastLetterHigh;
+    
+    private FarsiTypewriter chosen;
+    private Button chosenButton;
+
+    // 0: low, 1: medium, 2: high
+    public int[] counts;
+
+    private int _passedCount;
 
     [Header("Papers")]
     public List<GameObject> listOfPapers;
@@ -50,6 +67,10 @@ public class PaperManager : MonoBehaviour
         
         _failedPapers = new List<GameObject>();
         _passedPapers = new List<GameObject>();
+        
+        letterLow.OnTypingFinished += EnableButton;
+        letterMedium.OnTypingFinished += EnableButton;
+        letterHigh.OnTypingFinished += EnableButton;
     }
 
     private void Start()
@@ -126,6 +147,11 @@ public class PaperManager : MonoBehaviour
     private void UpdateDropZone(DraggableItem currentItem)
     {
         List<GameObject> targetList = _currentZone.isPassSlot ? _passedPapers : _failedPapers;
+        
+        if (_currentZone.isPassSlot)
+        {
+            _passedCount++; // <-- Increase the counter if it's the pass slot
+        }
 
         if (targetList.Count > 0)
         {
@@ -201,13 +227,37 @@ public class PaperManager : MonoBehaviour
         if (_counter == 0)
         {
             TaskManager.Instance.CompleteTask(prof.TaskOrderNumber);
-            UIAnimationManager.Instance.HideWindow(task, 0.5f);
-            if (prof.firstWinDialogue != null && prof.firstWinDialogueFtw != null)
+            
+            if (_passedCount <= counts[0]) // e.g., if _passedCount is 0-3
             {
-                UIAnimationManager.Instance.ShowDialogueWindow(
-                    prof.firstWinDialogue, 0.5f, prof.firstWinDialogueFtw
-                );
+                chosen = letterLow;
+                chosenButton = lastLetterLow;
             }
+            else if (_passedCount <= counts[1]) // e.g., if _passedCount is 4-6
+            {
+                chosen = letterMedium;
+                chosenButton = lastLetterMedium;
+            }
+            else // e.g., if _passedCount is 7+
+            {
+                chosen = letterHigh;
+                chosenButton = lastLetterHigh;
+            }
+            
+            UIAnimationManager.Instance.ShowWindow(chosenButton.GetComponent<RectTransform>(), 0.5f);
+            DisableButton();
+            
+        }
+    }
+
+    public void HandleEnding()
+    {
+        UIAnimationManager.Instance.HideWindow(task, 0.5f);
+        if (prof.firstWinDialogue != null && prof.firstWinDialogueFtw != null)
+        {
+            UIAnimationManager.Instance.ShowDialogueWindow(
+                prof.firstWinDialogue, 0.5f, prof.firstWinDialogueFtw
+            );
         }
     }
 
@@ -222,5 +272,23 @@ public class PaperManager : MonoBehaviour
         _currentZone = null;
         
         UIAnimationManager.Instance.HideWindow(dialogueBox, 0.5f);
+    }
+
+    private void DisableButton()
+    {
+        if (chosenButton != null)
+        {
+            chosenButton.interactable = false;
+        }
+        
+        chosen.StartTyping();
+    }
+    
+    private void EnableButton()
+    {
+        if (chosenButton != null)
+        {
+            chosenButton.interactable = true;
+        }
     }
 }
