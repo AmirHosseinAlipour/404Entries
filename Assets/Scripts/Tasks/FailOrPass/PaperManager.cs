@@ -202,10 +202,10 @@ public class PaperManager : MonoBehaviour
         {
             TaskManager.Instance.CompleteTask(prof.TaskOrderNumber);
             UIAnimationManager.Instance.HideWindow(task, 0.5f);
-            if (prof.firstDialogue != null && prof.firstDialogueFtw != null)
+            if (prof.firstWinDialogue != null && prof.firstWinDialogueFtw != null)
             {
                 UIAnimationManager.Instance.ShowDialogueWindow(
-                    prof.firstDialogue, 0.5f, prof.firstDialogueFtw
+                    prof.firstWinDialogue, 0.5f, prof.firstWinDialogueFtw
                 );
             }
         }

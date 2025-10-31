@@ -97,6 +97,6 @@ public class Masoumi : BaseProfessors
     {
         UIAnimationManager.Instance.HideWindow(missionPanel, 0.5f);
         TaskManager.Instance.CompleteTask(TaskOrderNumber);
-        UIAnimationManager.Instance.ShowDialogueWindow(firstDialogue, 0.3f, firstDialogueFtw);
+        UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.3f, firstWinDialogueFtw);
     }
 }

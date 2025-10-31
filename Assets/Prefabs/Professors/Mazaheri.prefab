@@ -2327,14 +2327,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartPanel: {fileID: 974384082226214508}
+  acceptRect: {fileID: 0}
   listOfTexts:
   - {fileID: 1986722546927921694}
   - {fileID: 6019986647203894536}
   - {fileID: 4514763484348412626}
   TaskOrderNumber: 5
-  afterEndingDialogue: {fileID: 0}
-  firstDialogue: {fileID: 0}
-  firstDialogueFtw: {fileID: 0}
+  afterWinDialogue: {fileID: 0}
+  firstWinDialogue: {fileID: 0}
+  firstWinDialogueFtw: {fileID: 0}
+  afterFailDialogue: {fileID: 0}
+  firstFailDialogue: {fileID: 0}
+  firstFailDialogueFtw: {fileID: 0}
   game: {fileID: 0}
   Boot_Panel: {fileID: 5820425692470382617}
 --- !u!1 &4321381874593630114
@@ -4893,6 +4897,10 @@ PrefabInstance:
     - target: {fileID: 6713424092449954181, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
       propertyPath: m_Name
       value: SpaceInvaders
+      objectReference: {fileID: 0}
+    - target: {fileID: 6713424092449954181, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6843874554399155202, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
       propertyPath: m_SortingOrder

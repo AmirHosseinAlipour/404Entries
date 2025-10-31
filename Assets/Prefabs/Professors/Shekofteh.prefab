@@ -430,11 +430,11 @@ MonoBehaviour:
   falseForwardImage: {fileID: 6828258479950430733, guid: c196757ba4ead1545b316e4a116a8d7f, type: 3}
   buttonImage: {fileID: 651506056487912342}
   background: {fileID: 4439027320133190182}
-  counts: 010000000100000001000000
+  counts: 080000000500000003000000
   teleportIntervals:
-  - 2
-  - 2
-  - 2
+  - 1
+  - 0.8
+  - 0.6
   edgePadding: 0.1
   canGoToNextLevel: 0
   _firstLoop: 1
@@ -579,7 +579,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 0 / 10
+  m_text: 0 / 8
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1638,14 +1638,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StartPanel: {fileID: 4611070828486924552}
+  acceptRect: {fileID: 0}
   listOfTexts:
   - {fileID: 7622216371585304138}
   - {fileID: 196878278960464313}
   - {fileID: 6880369887649412679}
   TaskOrderNumber: 1
-  afterEndingDialogue: {fileID: 0}
-  firstDialogue: {fileID: 0}
-  firstDialogueFtw: {fileID: 0}
+  afterWinDialogue: {fileID: 0}
+  firstWinDialogue: {fileID: 0}
+  firstWinDialogueFtw: {fileID: 0}
+  afterFailDialogue: {fileID: 0}
+  firstFailDialogue: {fileID: 0}
+  firstFailDialogueFtw: {fileID: 0}
   UICharacterRectTransform: {fileID: 4400525657220329232}
   UICharacterMoveSpeed: 200
   endPos1: {fileID: 2490284940328064449}
@@ -1654,7 +1658,7 @@ MonoBehaviour:
   SkipButton: {fileID: 6746820809105006194}
   buttonBackground: {fileID: 4439027320133190182}
   mission: {fileID: 9160251140394897649}
-  nextLevelWaitDuration: 5
+  nextLevelWaitDuration: 4
   counter: {fileID: 692733135325450379}
 --- !u!1 &5727029052409267888
 GameObject:
