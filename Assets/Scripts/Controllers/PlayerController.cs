@@ -112,8 +112,7 @@ public class PlayerController : MonoBehaviour
 
     public void SetIdleDirection(Vector2 idleDirection)
     {
-        
-        _animator.SetFloat("LastMoveX", idleDirection.x);
-        _animator.SetFloat("LastMoveY", idleDirection.y);
+        _lastMove = idleDirection.normalized; 
     }
+
 }

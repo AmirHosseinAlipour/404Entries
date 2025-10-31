@@ -4,9 +4,11 @@ using System.Collections; // حتماً برای Coroutine اضافه شود
 public class Mazaheri : BaseProfessors
 {
     public SpaceInvadersManager game;
+    public RectTransform Boot_Panel; 
     public void StartGame()
     {
-        game.PlayerEnteredTrigger();
+        UIAnimationManager.Instance.ShowWindow(Boot_Panel, 0.5f);
+        
     }
 
     public void HandleEnding()
