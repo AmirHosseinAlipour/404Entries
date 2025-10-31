@@ -57,7 +57,7 @@ public class Shekofteh : BaseProfessors
         SkipButton.gameObject.SetActive(false);
         parent.gameObject.SetActive(false);
         UIAnimationManager.Instance.HideWindow(parent, 0.5f);
-        UIAnimationManager.Instance.ShowDialogueWindow(firstDialogue.GetComponent<RectTransform>(), 0.5f, firstDialogueFtw);
+        UIAnimationManager.Instance.ShowDialogueWindow(firstDialogue, 0.5f, firstDialogueFtw);
     }
 
     public void StartMission()
