@@ -14,7 +14,7 @@ public class SleepManager : MonoBehaviour
     public RectTransform pointerRect;
     public float totalTime = 90f; 
     public int redClicksToSleep = 3;
-    public RectTransform MainCanvas;
+    public RectTransform mainPanel;
     
     [Header("Sleep / Inactivity")]
     public float inactivityThreshold = 3f; 
@@ -106,14 +106,15 @@ public class SleepManager : MonoBehaviour
         PanelToChange.sprite = Loosing_Sprite;
         yield return new WaitForSeconds(0.5f);
         IsLose = true;
-        UIAnimationManager.Instance.HideWindow(MainCanvas , 0.5f);
+        UIAnimationManager.Instance.HideWindow(mainPanel, 0.5f);
     }
 
     void OnWin()
     {
         gameObject.SetActive(false);
-        UIAnimationManager.Instance.HideWindow(MainCanvas , 0.5f);
+        UIAnimationManager.Instance.HideWindow(mainPanel , 0.5f);
         TaskManager.Instance.CompleteTask(prof.TaskOrderNumber);
+        UIAnimationManager.Instance.ShowDialogueWindow(prof.firstDialogue, 0.5f, prof.firstDialogueFtw);
     }
     public void StartGame()
     {

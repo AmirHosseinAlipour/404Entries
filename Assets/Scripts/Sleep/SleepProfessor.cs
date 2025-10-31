@@ -15,5 +15,6 @@ public class SleepProfessor : BaseProfessors
     public void StartGame()
     {
         UIAnimationManager.Instance.ShowWindow(MiniGamePanel , 0.5f);
+        GameManager.StartGame();
     }
 }
