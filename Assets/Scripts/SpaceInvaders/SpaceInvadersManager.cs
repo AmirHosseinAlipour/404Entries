@@ -40,6 +40,7 @@ public class SpaceInvadersManager : MonoBehaviour
         else if (isFadingOut)
         {
             UIAnimationManager.Instance.HideWindow(gameObjectsToHide , 0.5f );
+            gameObjectsToShow.SetActive(false);
             bool done = FadeTo(0f);
             if (done)
             {
