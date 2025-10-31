@@ -19,7 +19,7 @@ public class Shekofteh : BaseProfessors
     public SkipButton SkipButton;
     public CircleTimerAnimation buttonBackground;
     public SpeechTypeWriterShekofteh mission;
-    public int nextLevelWaitDuration;
+    public float nextLevelWaitDuration;
     
     private bool _isNextLevelRunning = false;
 
@@ -28,6 +28,15 @@ public class Shekofteh : BaseProfessors
     public GameObject counter;
     
     private Animator _UIAnimator;
+
+    private SoundPlayer _soundPlayer;
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        _soundPlayer = GetComponent<SoundPlayer>();
+    }
     
     protected override void Start()
     {
@@ -120,11 +129,12 @@ public class Shekofteh : BaseProfessors
         _isNextLevelRunning = true;
 
         float originalSpeed = mission.typeCharTime;
-        mission.typeCharTime /= 5;
+        mission.typeCharTime /= 10;
 
         UIUtils.SetAlpha(SkipButton.gameObject, 0f);
         UIUtils.SetAlpha(buttonBackground.gameObject, 0f);
         
+        _soundPlayer.Play("Skip");
         yield return new WaitForSecondsRealtime(nextLevelWaitDuration);
         mission.typeCharTime = originalSpeed;
         UIUtils.SetAlpha(SkipButton.gameObject, 1f);
