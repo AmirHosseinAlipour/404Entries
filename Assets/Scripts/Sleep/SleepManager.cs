@@ -6,11 +6,16 @@ using TMPro;
 
 public class SleepManager : MonoBehaviour
 {
+    [Header("Professor")]
+    public SleepProfessor prof;
+    
+    [Header("Bar Settings")]
     public RectTransform barRect;
     public RectTransform pointerRect;
     public float totalTime = 90f; 
     public int redClicksToSleep = 3;
-    public RectTransform MainCanvas; 
+    public RectTransform MainCanvas;
+    
     [Header("Sleep / Inactivity")]
     public float inactivityThreshold = 3f; 
     public float inactivitySleepRate = 0.02f;
@@ -39,7 +44,7 @@ public class SleepManager : MonoBehaviour
 
     void Update()
     {
-        if (IsLose) return; 
+        if (IsLose) return;
         elapsed += Time.deltaTime;
         float left = Mathf.Max(0f, totalTime - elapsed);
         if (Time.time - lastInteractionTime > inactivityThreshold)
@@ -81,8 +86,6 @@ public class SleepManager : MonoBehaviour
         targetSleepProgress = 1f;
         sleepProgress = Mathf.Lerp(sleepProgress, 1f, Time.deltaTime * smoothSpeed);
         StartCoroutine(JustWait());
-
-        
     }
 
     IEnumerator JustWait()
@@ -94,11 +97,13 @@ public class SleepManager : MonoBehaviour
         PanelToChange.sprite = Loosing_Sprite;
         yield return new WaitForSeconds(0.5f);
         IsLose = true;
+        UIAnimationManager.Instance.HideWindow(MainCanvas , 0.5f);
     }
 
     void OnWin()
     {
         gameObject.SetActive(false);
         UIAnimationManager.Instance.HideWindow(MainCanvas , 0.5f);
+        TaskManager.Instance.CompleteTask(prof.TaskOrderNumber);
     }
 }
