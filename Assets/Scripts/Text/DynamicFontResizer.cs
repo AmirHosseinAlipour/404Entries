@@ -30,6 +30,27 @@ public class DynamicFontResizer : MonoBehaviour
         // Adjust font size if the container's size changes
         AdjustFontSize();
     }
+    
+    public void SetTextAndResize(string newText)
+    {
+        if (textComponent == null)
+        {
+            // Fallback in case Awake hasn't run yet or component was added dynamically
+            textComponent = GetComponent<Text>();
+            rectTransform = GetComponent<RectTransform>();
+            
+            if (textComponent.horizontalOverflow != HorizontalWrapMode.Overflow)
+            {
+                textComponent.horizontalOverflow = HorizontalWrapMode.Overflow;
+            }
+        }
+        
+        // 1. Set the new text
+        textComponent.text = newText;
+        
+        // 2. Adjust the font size
+        AdjustFontSize();
+    }
 
     // ---
     // You MUST call this function manually from your other scripts
