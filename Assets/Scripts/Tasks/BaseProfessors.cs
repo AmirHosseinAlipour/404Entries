@@ -29,6 +29,7 @@ public class BaseProfessors : MonoBehaviour
     // Task UI
     protected Button _allTasksBackButton;
     protected Button _currentTaskButton;
+    protected GameObject _joyStick;
     
     protected PlayerController _player;
 
@@ -38,6 +39,7 @@ public class BaseProfessors : MonoBehaviour
         
         _allTasksBackButton = GameObject.FindWithTag("AllTasksBackButton").GetComponent<Button>();
         _currentTaskButton = GameObject.FindWithTag("CurrentTaskButton").GetComponent<Button>();
+        _joyStick = GameObject.FindWithTag("JoyStick");
     }
 
     protected virtual void Start()
@@ -58,6 +60,8 @@ public class BaseProfessors : MonoBehaviour
             {
                 PlayerUIModeHelper.PlayerEnterUIMode(_player);
                 PlayerUIModeHelper.DisableTasksButton(_allTasksBackButton, _currentTaskButton);
+                UIUtils.SetAlpha(_currentTaskButton.gameObject, 0f);
+                UIUtils.SetAlpha(_joyStick, 0f);
                 
                 UIAnimationManager.Instance.ShowWindow(StartPanel, 0.5f);
                 
@@ -103,6 +107,16 @@ public class BaseProfessors : MonoBehaviour
         {
             PlayerUIModeHelper.PlayerExitUIMode(_player);
             PlayerUIModeHelper.EnableTasksButton(_allTasksBackButton, _currentTaskButton);
+            UIUtils.SetAlpha(_currentTaskButton.gameObject, 1f);
+            UIUtils.SetAlpha(_joyStick, 1f);
         }
+    }
+
+    public void GetBackToNormal()
+    {
+        PlayerUIModeHelper.PlayerExitUIMode(_player);
+        PlayerUIModeHelper.EnableTasksButton(_allTasksBackButton, _currentTaskButton);
+        UIUtils.SetAlpha(_currentTaskButton.gameObject, 1f);
+        UIUtils.SetAlpha(_joyStick, 1f);
     }
 }

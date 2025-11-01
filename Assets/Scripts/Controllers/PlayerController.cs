@@ -114,5 +114,4 @@ public class PlayerController : MonoBehaviour
     {
         _lastMove = idleDirection.normalized; 
     }
-
 }
