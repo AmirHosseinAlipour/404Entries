@@ -111,4 +111,12 @@ public class BaseProfessors : MonoBehaviour
             UIUtils.SetAlpha(_joyStick, 1f);
         }
     }
+
+    public void GetBackToNormal()
+    {
+        PlayerUIModeHelper.PlayerExitUIMode(_player);
+        PlayerUIModeHelper.EnableTasksButton(_allTasksBackButton, _currentTaskButton);
+        UIUtils.SetAlpha(_currentTaskButton.gameObject, 1f);
+        UIUtils.SetAlpha(_joyStick, 1f);
+    }
 }

@@ -138,7 +138,5 @@ public class SpaceInvadersManager : MonoBehaviour
 
         // Apply the scales independently to stretch the sprite
         background.transform.localScale = new Vector3(scaleX, scaleY, 1f);
-    
-        background.sortingOrder = 10;
     }
 }
