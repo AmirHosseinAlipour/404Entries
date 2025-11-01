@@ -3,22 +3,21 @@ using UnityEngine.UI;
 using System.Collections;
 using TMPro;
 
+[System.Serializable]
+public class PhaseOptions
+{
+    [TextArea(3, 10)]
+    public string[] options = new string[3];
+}
 public class Safaei : BaseProfessors
 {
-    public TMP_Text dialogueText;
+    public Text dialogueText;
     public RectTransform textPanel;
     public Button[] optionButtons;
-    public TypeWriterEffect typewriter;
+    public FarsiTypewriter typewriter;
     public RectTransform ButtonCanvas;
     [TextArea(3, 10)] public string[] phaseTexts;
-    public string[,] phaseOptions = new string[5, 3]
-    {
-        { "Option 1-1", "Option 1-2", "Option 1-3" },
-        { "Option 2-1", "Option 2-2", "Option 2-3" },
-        { "Option 3-1", "Option 3-2", "Option 3-3" }, 
-        { "Option 4-1", "Option 4-2", "Option 4-3" }, 
-        { "Option 5-1", "Option 5-2", "Option 5-3" }
-    };
+    public PhaseOptions[] phaseOptions;
 
     public int[] correctOptionIndex;
 
@@ -37,6 +36,7 @@ public class Safaei : BaseProfessors
     public void StartGame()
     {
         currentPhase = 0;
+        textPanel.gameObject.SetActive(true);
         StartCoroutine(StartPhase());
     }
 
@@ -56,9 +56,8 @@ public class Safaei : BaseProfessors
         }
 
         HideAllOptions();
-        isTyping = true;
-        yield return typewriter.PlayText(dialogueText, phaseTexts[currentPhase], currentSpeed);
-        isTyping = false;
+        typewriter.SetText(phaseTexts[currentPhase]);
+        typewriter.GetComponent<DynamicFontResizer>().AdjustFontSize();
         ShowOptions();
     }
 
@@ -76,7 +75,8 @@ public class Safaei : BaseProfessors
             int index = i;
             optionButtons[i].onClick.RemoveAllListeners();
             optionButtons[i].onClick.AddListener(() => OnOptionSelected(index));
-            optionButtons[i].GetComponentInChildren<TMP_Text>().text = phaseOptions[currentPhase, i];
+            optionButtons[i].GetComponentInChildren<FarsiTypewriter>().SetText(phaseOptions[currentPhase].options[i]);
+            optionButtons[i].GetComponentInChildren<DynamicFontResizer>().AdjustFontSize();
         }
     }
 

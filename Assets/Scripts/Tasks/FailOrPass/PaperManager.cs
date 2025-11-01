@@ -50,6 +50,8 @@ public class PaperManager : MonoBehaviour
     private int _papersLength;
     private int _counter;
 
+    private SoundPlayer _soundPlayer;
+
     private void Awake()
     {
         if (Instance == null)
@@ -67,6 +69,8 @@ public class PaperManager : MonoBehaviour
         
         _failedPapers = new List<GameObject>();
         _passedPapers = new List<GameObject>();
+
+        _soundPlayer = GetComponent<SoundPlayer>();
         
         letterLow.OnTypingFinished += EnableButton;
         letterMedium.OnTypingFinished += EnableButton;
@@ -169,6 +173,8 @@ public class PaperManager : MonoBehaviour
     {
         Transform paperToRotate1 = null;
         Transform paperToRotate2 = null;
+        
+        _soundPlayer.Play("Paper");
 
         if (_currentItemIndex + 1 < listOfPapers.Count && listOfPapers[_currentItemIndex + 1] != null)
         {
