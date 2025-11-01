@@ -32,7 +32,7 @@ public class BaseProfessors : MonoBehaviour
     
     protected PlayerController _player;
 
-    private void Awake()
+    protected virtual void Awake()
     {
         _player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
         

@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [Serializable]
 public class Level
@@ -15,12 +16,14 @@ public class Masoumi : BaseProfessors
     public BaseDropZone[] initialZones;
     public BaseDropZone[] zonesToDrop;
     public BaseDraggableItem[] items;
+    [TextArea] public string[] texts;
 
     public List<Level> levelKeys;
 
     [Header("References")] 
     public RectTransform speechPanel;
     public RectTransform missionPanel;
+    public Text textLevels;
 
     private int _currentLevel = 0;
 
@@ -91,6 +94,9 @@ public class Masoumi : BaseProfessors
             items[i].rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
             items[i].rectTransform.anchoredPosition = Vector2.zero;
         }
+
+        textLevels.text = texts[_currentLevel];
+        textLevels.GetComponent<FarsiTypewriter>().StartTyping();
     }
 
     private void HandleEnding()

@@ -6,7 +6,7 @@ public class SpaceInvadersManager : MonoBehaviour
     public GameObject gameObjectsToShow; 
     public RectTransform gameObjectsToHide;
     public float fadeSpeed = 2f;
-    public RectTransform ErorWindow;
+    public RectTransform[] ErorWindow;
     [Header("Enemy Setting")]
     public int totalEnemies = 10;
 
@@ -102,13 +102,13 @@ public class SpaceInvadersManager : MonoBehaviour
         }
     }
 
-    public void ShowErorwindow()
+    public void ShowErorwindow(int i )
     {
-        UIAnimationManager.Instance.ShowWindow(ErorWindow , 0.5f );
+        UIAnimationManager.Instance.ShowWindow(ErorWindow[i] , 0.5f );
     }
 
-    public void HideErorwindow()
+    public void HideErorwindow(int i)
     {
-        UIAnimationManager.Instance.HideWindow(ErorWindow , 0.5f);
+        UIAnimationManager.Instance.HideWindow(ErorWindow[i] , 0.5f);
     }
 }
