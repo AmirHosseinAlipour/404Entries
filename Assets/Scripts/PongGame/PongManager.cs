@@ -1,3 +1,4 @@
+using System;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -8,6 +9,13 @@ public class PongManager : MonoBehaviour
     public float fadeSpeed = 2f;
     public GameObject PongGameObject;
     public CinemachineCamera cam;
+    public SpriteRenderer blackBackground;
+
+    public void InitialSettings()
+    {
+        cam.Priority = 20;
+        ScaleSpriteToCamera();
+    }
 
     [Header("Professor")] 
     public AliAkbari prof;
@@ -48,6 +56,7 @@ public class PongManager : MonoBehaviour
                 PongGameObject.SetActive(false);
                 UIUtils.SetAlpha(_currentTaskButton.gameObject, 1f);
                 cam.Priority = 0;
+                blackBackground.sortingOrder = -10;
                 TaskManager.Instance.CompleteTask(prof.TaskOrderNumber);
                 UIAnimationManager.Instance.ShowDialogueWindow(prof.firstWinDialogue, 0.5f, prof.firstWinDialogueFtw);
             }
@@ -95,5 +104,21 @@ public class PongManager : MonoBehaviour
             c.a = alpha;
             rend.material.color = c;
         }
+    }
+    private void ScaleSpriteToCamera()
+    {
+        float cameraHeight = cam.Lens.OrthographicSize * 2f;
+        float cameraWidth = cameraHeight * cam.Lens.Aspect;
+
+        float spriteHeight = blackBackground.sprite.bounds.size.y;
+        float spriteWidth = blackBackground.sprite.bounds.size.x;
+
+        float scaleX = cameraWidth / spriteWidth;
+        float scaleY = cameraHeight / spriteHeight;
+
+        float finalScale = Mathf.Max(scaleX, scaleY);
+
+        blackBackground.transform.localScale = new Vector3(finalScale, finalScale, 1f);
+        blackBackground.sortingOrder = 10;
     }
 }

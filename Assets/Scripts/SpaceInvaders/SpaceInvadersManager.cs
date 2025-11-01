@@ -1,12 +1,18 @@
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class SpaceInvadersManager : MonoBehaviour
 {
+    [Header("Camera Settings")] 
+    public CinemachineCamera cam;
+    public SpriteRenderer background;
+    
     [Header("FadeSetting")]
     public GameObject gameObjectsToShow; 
-    public RectTransform gameObjectsToHide;
+    public GameObject gameObjectsToHide;
     public float fadeSpeed = 2f;
     public RectTransform[] ErorWindow;
+    
     [Header("Enemy Setting")]
     public int totalEnemies = 10;
 
@@ -19,12 +25,17 @@ public class SpaceInvadersManager : MonoBehaviour
     [Header("Music")]
     public GameObject oneShotAudioPrefab;
     public AudioClip WindowsXp;
+    
+    public void InitialSettings()
+    {
+        cam.Priority = 20;
+        ScaleSpriteToCamera();
+    }
     void Awake()
     {
         if (gameObjectsToShow != null)
         {
             renderers = gameObjectsToShow.GetComponentsInChildren<Renderer>();
-
             
             gameObjectsToShow.SetActive(false);
         }
@@ -39,13 +50,13 @@ public class SpaceInvadersManager : MonoBehaviour
         }
         else if (isFadingOut)
         {
-            UIAnimationManager.Instance.HideWindow(gameObjectsToHide , 0.5f );
+            gameObjectsToHide.SetActive(false);
             gameObjectsToShow.SetActive(false);
+            cam.Priority = 0;
             bool done = FadeTo(0f);
             if (done)
             {
                 isFadingOut = false;
-                
             }
 
             TaskManager.Instance.CompleteTask(m.TaskOrderNumber);
@@ -110,5 +121,24 @@ public class SpaceInvadersManager : MonoBehaviour
     public void HideErorwindow(int i)
     {
         UIAnimationManager.Instance.HideWindow(ErorWindow[i] , 0.5f);
+    }
+    
+    private void ScaleSpriteToCamera()
+    {
+        float cameraHeight = cam.Lens.OrthographicSize * 2f;
+        float cameraWidth = cameraHeight * cam.Lens.Aspect;
+
+        background.gameObject.SetActive(true);
+    
+        float spriteHeight = background.sprite.bounds.size.y;
+        float spriteWidth = background.sprite.bounds.size.x;
+
+        float scaleX = cameraWidth / spriteWidth;
+        float scaleY = cameraHeight / spriteHeight;
+
+        // Apply the scales independently to stretch the sprite
+        background.transform.localScale = new Vector3(scaleX, scaleY, 1f);
+    
+        background.sortingOrder = 10;
     }
 }

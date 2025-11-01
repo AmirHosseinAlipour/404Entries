@@ -3,12 +3,13 @@ using System.Collections; // حتماً برای Coroutine اضافه شود
 
 public class Mazaheri : BaseProfessors
 {
+    [Header("Mini Game")]
     public SpaceInvadersManager game;
-    public RectTransform Boot_Panel; 
+    public RectTransform bootPanel; 
     public void StartGame()
     {
-        UIAnimationManager.Instance.ShowWindow(Boot_Panel, 0.5f);
-        
+        UIAnimationManager.Instance.ShowWindow(bootPanel, 0.5f);
+        game.InitialSettings();
     }
 
     public void HandleEnding()
