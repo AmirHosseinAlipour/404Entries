@@ -99,4 +99,31 @@ public class SwitchWindow : MonoBehaviour
             }
         }
     }
+    
+    public int currentDialogueIndex = 0;
+    public Amozesh amozesh;
+
+    public void ShowNextDialogue()
+    {
+        int nextIndex = currentDialogueIndex + 1;
+        if (amozesh == null)
+        {
+            Debug.LogError("Amozesh reference is missing!");
+            return;
+        }
+        
+        if (amozesh.dialoguePhases[amozesh.getCrrrentIndex()].dialogues.Count <= currentDialogueIndex)
+        {
+            Debug.Log(amozesh.dialoguePhases[amozesh.getCrrrentIndex()].dialogues.Count);
+            Debug.Log(currentDialogueIndex);
+            
+            shouldInvoke = true;
+            HideWindow();
+            return;
+        }
+        
+        UIAnimationManager.Instance.ShowDialogueWindow(dialogueWindowToShow, 0.5f, dialogueTypeWriter);
+        
+        HideWindow();
+    }
 }
