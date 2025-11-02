@@ -12,6 +12,13 @@ public class TeacherController : BaseProfessors
 
     private bool _isActive = false; 
     private Coroutine lookRoutine;
+    private SoundPlayer soundPlayer;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        soundPlayer = GetComponent<SoundPlayer>();
+    }
 
     private void Start()
     {
@@ -33,6 +40,8 @@ public class TeacherController : BaseProfessors
         
             if (isFacingPlayer)
             {
+                //Green light
+                soundPlayer.Play("GreenLight");
                 // Player is safe immediately
                 isFacingPlayer = false; 
                 animator.SetTrigger("FacingBack");
@@ -49,6 +58,8 @@ public class TeacherController : BaseProfessors
     public void OnFacingFrontComplete()
     {
         isFacingPlayer = true;
+        soundPlayer.Play("RedLight");
+        //
     }
 
     public void StopLooking()

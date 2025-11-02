@@ -32,11 +32,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3630590047161030163}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0}
-  m_AnchorMax: {x: 0.5, y: 0}
-  m_AnchoredPosition: {x: 0, y: -1500}
+  m_AnchorMin: {x: 0.5, y: 1}
+  m_AnchorMax: {x: 0.5, y: 1}
+  m_AnchoredPosition: {x: 0, y: 10000}
   m_SizeDelta: {x: 10000, y: 3000}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &1831125628639198950
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -442,7 +442,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 3630590047161030163}
-  m_Father: {fileID: 3255838662052157660}
+  - {fileID: 8920781787941199746}
+  m_Father: {fileID: 2086242248889418234}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1160,11 +1161,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 3630590047161030163}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 1}
-  m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 0, y: 1500}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0}
+  m_AnchoredPosition: {x: 0, y: 100000}
   m_SizeDelta: {x: 10000, y: 3000}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!222 &1343777537926692217
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1448,7 +1449,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2086242248889418234
 Transform:
   m_ObjectHideFlags: 0
@@ -1461,7 +1462,8 @@ Transform:
   m_LocalPosition: {x: 1278.7822, y: 1429.8187, z: -8.372704}
   m_LocalScale: {x: 0.6666667, y: 0.6666667, z: 0.6666667}
   m_ConstrainProportionsScale: 0
-  m_Children: []
+  m_Children:
+  - {fileID: 3715526114122320969}
   m_Father: {fileID: 3255838662052157660}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &6789046351710936193
@@ -1491,7 +1493,7 @@ RectTransform:
   m_GameObject: {fileID: 6789046351710936193}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5929033082067117815}
@@ -1550,6 +1552,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8920781787941199746}
   - component: {fileID: 5343813396448654570}
+  - component: {fileID: 3562054055522146750}
   m_Layer: 0
   m_Name: SleepManager
   m_TagString: Untagged
@@ -1566,11 +1569,11 @@ Transform:
   m_GameObject: {fileID: 6987300095757264226}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.6134033, y: -3.9732666, z: 0}
-  m_LocalScale: {x: 0.6666667, y: 0.6666667, z: 0.6666667}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 3255838662052157660}
+  m_Father: {fileID: 3715526114122320969}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &5343813396448654570
 MonoBehaviour:
@@ -1603,6 +1606,25 @@ MonoBehaviour:
   PanelToChange: {fileID: 7492336154941856454}
   main_Sprite: {fileID: -1548288261333306064, guid: 27d9185111f9b394ca08a0658667e4e8, type: 3}
   Loosing_Sprite: {fileID: -4207430566970557079, guid: d1ace4992f4c66a4f89f23c79dea885b, type: 3}
+  upperCover: {fileID: 3750415049095113968}
+  lowerCover: {fileID: 4485389118040361146}
+--- !u!114 &3562054055522146750
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6987300095757264226}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb179c0f44dd90b48985501ea6a3b75a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Music3D: {fileID: 0}
+  MusicToChange: {fileID: 8300000, guid: 65d713682babe2f4db13bd12edf72630, type: 3}
+  ThemeMusic: {fileID: 0}
+  Main_Music: {fileID: 8300000, guid: 38eafbd8c7f618448984ad95f5367f3a, type: 3}
+  fadeDuration: 1.5
 --- !u!1 &7250398669802367449
 GameObject:
   m_ObjectHideFlags: 0

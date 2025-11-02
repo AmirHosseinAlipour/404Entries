@@ -25,6 +25,7 @@ public class SpaceInvadersManager : MonoBehaviour
     [Header("Music")]
     public GameObject oneShotAudioPrefab;
     public AudioClip WindowsXp;
+    private MusicChange musicChange;
     
     public void InitialSettings()
     {
@@ -39,6 +40,8 @@ public class SpaceInvadersManager : MonoBehaviour
             
             gameObjectsToShow.SetActive(false);
         }
+
+        musicChange = GetComponent<MusicChange>();
     }
 
     void Update()
@@ -58,6 +61,8 @@ public class SpaceInvadersManager : MonoBehaviour
             {
                 isFadingOut = false;
             }
+            musicChange.ToggleMusic();
+            musicChange.PlayMainMusic();
 
             TaskManager.Instance.CompleteTask(m.TaskOrderNumber);
             m.HandleEnding();

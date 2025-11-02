@@ -13,7 +13,7 @@ public class ElevatorUI : MonoBehaviour
     public int currentFloor = 1;
     public RectTransform buttonsPanel;
     public ElevatorUI AnotherInstace; 
-
+    private MusicChange musicChange;
     private void Start()
     {
         for (int i = 0; i < floorButtons.Length; i++)
@@ -24,6 +24,7 @@ public class ElevatorUI : MonoBehaviour
         player = GameObject.FindGameObjectWithTag("Player").transform;
         //gameObject.SetActive(false);
         messageText.gameObject.SetActive(false);
+        musicChange = GetComponent<MusicChange>();
     }
 
     private void OnFloorButtonPressed(int floorIndex)
@@ -48,8 +49,11 @@ public class ElevatorUI : MonoBehaviour
         PlayerController p = player.GetComponent<PlayerController>();
         p.SetIdleDirection(new Vector2(0 , -1));
         UIAnimationManager.Instance.HideWindow(buttonsPanel , 0.5f );
-        UIAnimationManager.Instance.HideWindow(gameObject.GetComponent<RectTransform>() , 0.5f);    
+        UIAnimationManager.Instance.HideWindow(gameObject.GetComponent<RectTransform>() , 0.5f); 
+        musicChange.ToggleMusic();
+        Debug.Log("Music Change");
         doorAnimation.OpenDoors();
+        musicChange.PlayMainMusic();
         player.position = floorPositions[floorIndex].transform.position;
         currentFloor = floorIndex;
         AnotherInstace.currentFloor = floorIndex;
