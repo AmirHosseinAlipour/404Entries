@@ -26438,6 +26438,7 @@ GameObject:
   - component: {fileID: 3985653068098128956}
   - component: {fileID: 7744707601361800971}
   - component: {fileID: 8423261781344404474}
+  - component: {fileID: 5470857029617703338}
   m_Layer: 5
   m_Name: MiniMapWindow
   m_TagString: Untagged
@@ -26454,7 +26455,7 @@ RectTransform:
   m_GameObject: {fileID: 7203004238064338198}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0, y: 0, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7658781185917312457}
@@ -26462,9 +26463,9 @@ RectTransform:
   - {fileID: 774208789924536753}
   m_Father: {fileID: 3048337337449794920}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 1, y: 1}
-  m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -30, y: -30}
+  m_AnchorMin: {x: 0.92, y: 0.92}
+  m_AnchorMax: {x: 0.92, y: 0.92}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 250, y: 250}
   m_Pivot: {x: 1, y: 1}
 --- !u!222 &7744707601361800971
@@ -26505,6 +26506,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &5470857029617703338
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7203004238064338198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fa00fdfe8da10e45b039d9e1f21a83a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  X_Percent: 92
+  Y_Percent: 92
+  Size_Percent: 10
+  Base_Size: 100
 --- !u!1 &7451801350400448861
 GameObject:
   m_ObjectHideFlags: 0
