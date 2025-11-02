@@ -1332,6 +1332,7 @@ GameObject:
   - component: {fileID: 7418864386829572805}
   - component: {fileID: 7152077613557436967}
   - component: {fileID: 8388138435638479053}
+  - component: {fileID: 4306483382999416582}
   m_Layer: 0
   m_Name: AliAkbari
   m_TagString: Untagged
@@ -1469,7 +1470,7 @@ Animator:
   m_GameObject: {fileID: 9120164631875005205}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 71a33eec8d40a3748b9a63567e93491a, type: 2}
+  m_Controller: {fileID: 9100000, guid: 47a6da2c7d801425286c7e6b61736e44, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -1499,7 +1500,7 @@ MonoBehaviour:
   - {fileID: 2164154158666383203}
   - {fileID: 5013839990748303886}
   - {fileID: 986587748987978081}
-  TaskOrderNumber: 9
+  TaskOrderNumber: 7
   afterWinDialogue: {fileID: 0}
   firstWinDialogue: {fileID: 0}
   firstWinDialogueFtw: {fileID: 0}
@@ -1508,6 +1509,23 @@ MonoBehaviour:
   firstFailDialogueFtw: {fileID: 0}
   pongGame: {fileID: 7901893087331763776}
   fadeActivator: {fileID: 5997254468553234150}
+--- !u!114 &4306483382999416582
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9120164631875005205}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb179c0f44dd90b48985501ea6a3b75a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Music3D: {fileID: 0}
+  MusicToChange: {fileID: 8300000, guid: e381747aa7178ac48ac4578a30ae7f16, type: 3}
+  ThemeMusic: {fileID: 0}
+  Main_Music: {fileID: 8300000, guid: 38eafbd8c7f618448984ad95f5367f3a, type: 3}
+  fadeDuration: 1.5
 --- !u!1001 &3515702949038539055
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2096,14 +2114,39 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2002900235031899768, guid: 2632020a8fecad246ab0baad1c91d09c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 8431432089523572483}
   m_SourcePrefab: {fileID: 100100000, guid: 2632020a8fecad246ab0baad1c91d09c, type: 3}
+--- !u!1 &5976292843605547945 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2002900235031899768, guid: 2632020a8fecad246ab0baad1c91d09c, type: 3}
+  m_PrefabInstance: {fileID: 5277010999504680401}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &8431432089523572483
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5976292843605547945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb179c0f44dd90b48985501ea6a3b75a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Music3D: {fileID: 0}
+  MusicToChange: {fileID: 8300000, guid: e381747aa7178ac48ac4578a30ae7f16, type: 3}
+  ThemeMusic: {fileID: 0}
+  Main_Music: {fileID: 8300000, guid: 38eafbd8c7f618448984ad95f5367f3a, type: 3}
+  fadeDuration: 1.5
 --- !u!114 &5997254468553234150 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1873834589264503607, guid: 2632020a8fecad246ab0baad1c91d09c, type: 3}
   m_PrefabInstance: {fileID: 5277010999504680401}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
+  m_GameObject: {fileID: 5976292843605547945}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 3308a0c82aeb511429f2c34555021aeb, type: 3}
