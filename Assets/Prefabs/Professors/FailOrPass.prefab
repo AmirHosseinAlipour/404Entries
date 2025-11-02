@@ -2332,6 +2332,7 @@ GameObject:
   - component: {fileID: 1334458343096579764}
   - component: {fileID: 7389126849961484785}
   - component: {fileID: 2396881363582364074}
+  - component: {fileID: 2146761327779966510}
   m_Layer: 5
   m_Name: PaperManager
   m_TagString: Untagged
@@ -2509,6 +2510,23 @@ MonoBehaviour:
   clips:
   - name: Paper
     clip: {fileID: 8300000, guid: b25d9806e441b704a8cfce8f11846e82, type: 3}
+--- !u!114 &2146761327779966510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2553322198047019022}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb179c0f44dd90b48985501ea6a3b75a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Music3D: {fileID: 0}
+  MusicToChange: {fileID: 8300000, guid: 7d865b72f9531d24e97f91132f621913, type: 3}
+  ThemeMusic: {fileID: 0}
+  Main_Music: {fileID: 8300000, guid: 38eafbd8c7f618448984ad95f5367f3a, type: 3}
+  fadeDuration: 1.5
 --- !u!1 &2639611978212839962
 GameObject:
   m_ObjectHideFlags: 0
@@ -7248,6 +7266,7 @@ GameObject:
   - component: {fileID: 4080325948237347017}
   - component: {fileID: 5387318197549735426}
   - component: {fileID: 7726592498218947102}
+  - component: {fileID: 6782660959618737408}
   m_Layer: 0
   m_Name: FailOrPass
   m_TagString: Untagged
@@ -7392,7 +7411,7 @@ MonoBehaviour:
   - {fileID: 5883180478965722852}
   - {fileID: 8500849317289427228}
   - {fileID: 356406509551710317}
-  TaskOrderNumber: 11
+  TaskOrderNumber: 15
   afterWinDialogue: {fileID: 0}
   firstWinDialogue: {fileID: 0}
   firstWinDialogueFtw: {fileID: 0}
@@ -7424,6 +7443,23 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &6782660959618737408
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8761836400562274719}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb179c0f44dd90b48985501ea6a3b75a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Music3D: {fileID: 0}
+  MusicToChange: {fileID: 8300000, guid: 7d865b72f9531d24e97f91132f621913, type: 3}
+  ThemeMusic: {fileID: 0}
+  Main_Music: {fileID: 8300000, guid: 38eafbd8c7f618448984ad95f5367f3a, type: 3}
+  fadeDuration: 1.5
 --- !u!1 &8798973791405477675
 GameObject:
   m_ObjectHideFlags: 0
