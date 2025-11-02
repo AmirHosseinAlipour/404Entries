@@ -488,10 +488,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: RndomPeople 3
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 2030628656912347794, guid: e8dc6831d3be7481ab3832f985a38441, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 7760808219104365538, guid: e8dc6831d3be7481ab3832f985a38441, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6751603571219728358}
   m_SourcePrefab: {fileID: 100100000, guid: e8dc6831d3be7481ab3832f985a38441, type: 3}
 --- !u!1001 &877381435741552022
 PrefabInstance:
@@ -815,6 +819,24 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 58e7b4a8872464b2fb44d261c0e1f7b1, type: 3}
+--- !u!1 &6751603571219728357 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7760808219104365538, guid: e8dc6831d3be7481ab3832f985a38441, type: 3}
+  m_PrefabInstance: {fileID: 432759558995919083}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6751603571219728358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6751603571219728357}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a21374e08d842614aa63a8d76b24eaf7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  idleDirection: 0
 --- !u!1001 &7642005201220070057
 PrefabInstance:
   m_ObjectHideFlags: 0
