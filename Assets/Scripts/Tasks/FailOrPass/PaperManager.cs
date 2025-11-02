@@ -51,6 +51,7 @@ public class PaperManager : MonoBehaviour
     private int _counter;
 
     private SoundPlayer _soundPlayer;
+    private MusicChange _musicChange;
 
     private void Awake()
     {
@@ -75,6 +76,7 @@ public class PaperManager : MonoBehaviour
         letterLow.OnTypingFinished += EnableButton;
         letterMedium.OnTypingFinished += EnableButton;
         letterHigh.OnTypingFinished += EnableButton;
+        _musicChange = GetComponent<MusicChange>();
     }
 
     private void Start()
@@ -259,6 +261,8 @@ public class PaperManager : MonoBehaviour
     public void HandleEnding()
     {
         UIAnimationManager.Instance.HideWindow(task, 0.5f);
+        _musicChange.ToggleMusic();
+        _musicChange.PlayMainMusic();
         if (prof.firstWinDialogue != null && prof.firstWinDialogueFtw != null)
         {
             UIAnimationManager.Instance.ShowDialogueWindow(

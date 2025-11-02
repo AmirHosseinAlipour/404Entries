@@ -7,11 +7,11 @@ public class EyeLidController : MonoBehaviour
     public RectTransform bottomLid;
 
     [Header("Settings")]
-    [Range(0f, 1f)] public float closeAmount = 0f;
+    [Range(0f, 0.5f)] public float closeAmount = 0f;
     public Canvas canvas;
 
     private float canvasHeight;
-    private float halfHeight;
+    private float Height;
 
     void Start()
     {
@@ -27,15 +27,15 @@ public class EyeLidController : MonoBehaviour
 
         RectTransform canvasRect = canvas.GetComponent<RectTransform>();
         canvasHeight = canvasRect.rect.height;
-        halfHeight = canvasHeight / 2f;
+        Height = canvasHeight;
     }
 
     void Update()
     {
         if (topLid == null || bottomLid == null) return;
-        float moveDistance = halfHeight * closeAmount;
-        topLid.anchoredPosition = new Vector2(0, -moveDistance + halfHeight );
-        bottomLid.anchoredPosition = new Vector2(0, moveDistance - halfHeight );
+        float moveDistance = Height * closeAmount;
+        topLid.anchoredPosition = new Vector2(0, -moveDistance + Height);
+        bottomLid.anchoredPosition = new Vector2(0, moveDistance - Height);
     }
 
     public void SetCloseAmount(float amount)

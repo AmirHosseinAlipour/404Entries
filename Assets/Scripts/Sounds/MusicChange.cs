@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -6,12 +7,13 @@ public class MusicChange : MonoBehaviour
     public GameObject Music3D;
     public AudioClip MusicToChange;
     public AudioSource ThemeMusic;
-    private AudioClip Main_Music;
-    public float fadeDuration = 1.5f; 
+    public  AudioClip Main_Music;
+    public float fadeDuration = 0.3f;
+
 
     private void Start()
     {
-        Main_Music = ThemeMusic.clip;
+        fadeDuration = 0.3f;
     }
 
     public void ToggleMusic()
@@ -21,16 +23,21 @@ public class MusicChange : MonoBehaviour
 
     public void PlayThemeMusic()
     {
-        StartCoroutine(FadeToNewMusic(MusicToChange));
+        // ThemeMusic.clip = MusicToChange;
+        // ThemeMusic.Play();
+       StartCoroutine(FadeToNewMusic(MusicToChange));
     }
 
     public void PlayMainMusic()
     {
-        StartCoroutine(FadeToNewMusic(Main_Music));
+        ThemeMusic.Stop();
+         ThemeMusic.clip = Main_Music;
+         ThemeMusic.Play();
+        //StartCoroutine(FadeToNewMusic(Main_Music));
     }
-
     private IEnumerator FadeToNewMusic(AudioClip newClip)
     {
+        
         float startVolume = ThemeMusic.volume;
 
         for (float t = 0; t < fadeDuration; t += Time.deltaTime)
@@ -51,4 +58,6 @@ public class MusicChange : MonoBehaviour
 
         ThemeMusic.volume = startVolume;
     }
+
+    
 }

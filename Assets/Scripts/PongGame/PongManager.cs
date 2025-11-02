@@ -10,6 +10,7 @@ public class PongManager : MonoBehaviour
     public GameObject PongGameObject;
     public CinemachineCamera cam;
     public SpriteRenderer blackBackground;
+    private MusicChange musicChange;
 
     public void InitialSettings()
     {
@@ -36,6 +37,7 @@ public class PongManager : MonoBehaviour
         }
 
         _currentTaskButton = GameObject.FindWithTag("CurrentTaskButton");
+        musicChange = GetComponent<MusicChange>();
     }
 
     void Update()
@@ -59,6 +61,9 @@ public class PongManager : MonoBehaviour
                 blackBackground.sortingOrder = -10;
                 TaskManager.Instance.CompleteTask(prof.TaskOrderNumber);
                 UIAnimationManager.Instance.ShowDialogueWindow(prof.firstWinDialogue, 0.5f, prof.firstWinDialogueFtw);
+                musicChange.ToggleMusic();
+                musicChange.PlayMainMusic();
+                
             }
         }
     }

@@ -35,7 +35,7 @@ public class Shekofteh : BaseProfessors
     private Vector3 _characterStartPosition;
     
     private SoundPlayer _soundPlayer;
-
+    private MusicChange _musicChange;
     protected override void Awake()
     {
         base.Awake();
@@ -44,6 +44,7 @@ public class Shekofteh : BaseProfessors
         _soundPlayer = GetComponent<SoundPlayer>();
         
         mission.OnTypingFinished += MissionFailed;
+        _musicChange = GetComponent<MusicChange>();
     }
     
     protected override void Start()
@@ -75,6 +76,8 @@ public class Shekofteh : BaseProfessors
         parent.gameObject.SetActive(false);
         UIAnimationManager.Instance.HideWindow(parent, 0.5f);
         UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.5f, firstWinDialogueFtw);
+        _musicChange.ToggleMusic();
+        _musicChange.PlayMainMusic();
     }
 
     public void StartMission()
@@ -87,7 +90,8 @@ public class Shekofteh : BaseProfessors
         counter.SetActive(true);
 
         yield return new WaitForSeconds(1f);
-
+        _musicChange.ToggleMusic();
+        _musicChange.PlayThemeMusic();
         textPanel.transform.parent.gameObject.SetActive(true);
         textPanel.GetComponent<SpeechTypeWriterShekofteh>().StartTyping();
         
@@ -161,5 +165,7 @@ public class Shekofteh : BaseProfessors
         UIAnimationManager.Instance.HideWindow(StartPanel , 0.5f);
         UIAnimationManager.Instance.ShowWindow(acceptRect, 0.01f);
         UIAnimationManager.Instance.ShowDialogueWindow(firstFailDialogue, 0.5f, firstFailDialogueFtw);
+        _musicChange.ToggleMusic();
+        _musicChange.PlayMainMusic();
     }
 }

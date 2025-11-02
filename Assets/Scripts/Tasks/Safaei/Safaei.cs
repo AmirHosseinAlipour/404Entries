@@ -25,18 +25,22 @@ public class Safaei : BaseProfessors
     private bool isTyping = false;
     private float baseSpeed = 0.05f;
     private float currentSpeed;
+    private MusicChange musicChange;
 
     void Start()
     {
         base.Start();
         currentSpeed = baseSpeed;
         HideAllOptions();
+        musicChange = GetComponent<MusicChange>();
     }
 
     public void StartGame()
     {
         currentPhase = 0;
         textPanel.gameObject.SetActive(true);
+        musicChange.ToggleMusic();
+        musicChange.PlayThemeMusic();
         StartCoroutine(StartPhase());
     }
 
@@ -49,9 +53,11 @@ public class Safaei : BaseProfessors
             HideAllOptions();
             RectTransform parent = StartPanel.transform.parent.GetComponent<RectTransform>();
             parent.gameObject.SetActive(false);
+            musicChange.ToggleMusic();
+            musicChange.PlayMainMusic();
             UIAnimationManager.Instance.HideWindow(parent, 0.5f);
             UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.5f, firstWinDialogueFtw);
-
+            
             yield break;
         }
 
@@ -101,5 +107,7 @@ public class Safaei : BaseProfessors
         UIAnimationManager.Instance.ShowWindow(acceptRect, 0.01f);
         UIAnimationManager.Instance.HideWindow(textPanel, 0.01f);
         UIAnimationManager.Instance.ShowDialogueWindow(firstFailDialogue, 0.5f, firstFailDialogueFtw);
+        musicChange.ToggleMusic();
+        musicChange.PlayMainMusic();
     }
 }
