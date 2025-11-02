@@ -18,7 +18,6 @@ public class Amozesh : MonoBehaviour
 
     [Header("Dialogue UI")]
     public List<Text> listOfTexts;
-    public int listLength;
     public RectTransform firstDialogue;
     
     
@@ -51,15 +50,27 @@ public class Amozesh : MonoBehaviour
 
     private void SetDialogues()
     {
-        for (int i = 0; i < listLength; i++)
+        var currentPhase = dialoguePhases[currentIndex / 2];
+    
+        for (int i = 0; i < currentPhase.dialogues.Count; i++)
         {
-            string text = dialoguePhases[currentIndex / 2].dialogues[i];
-            listOfTexts[i].transform.parent.parent.gameObject.SetActive(true);
-            listOfTexts[i].text = text;
-            listOfTexts[i].GetComponent<FarsiTypewriter>().SetText(text);
-            listOfTexts[i].transform.parent.parent.gameObject.SetActive(false);
+            // If this index exists in the dialogue list, use it
+            if (i < currentPhase.dialogues.Count)
+            {
+                string text = currentPhase.dialogues[i];
+                listOfTexts[i].transform.parent.parent.gameObject.SetActive(true);
+                listOfTexts[i].text = text;
+                listOfTexts[i].GetComponent<FarsiTypewriter>().SetText(text);
+                listOfTexts[i].transform.parent.parent.gameObject.SetActive(false);
+            }
+            else
+            {
+                // Mark this slot as "empty" so the next-node check can detect it
+                listOfTexts[i].text = "";
+            }
         }
     }
+
     
     public void ChangeCurrentIndex()
     {
@@ -104,5 +115,10 @@ public class Amozesh : MonoBehaviour
             PlayerUIModeHelper.PlayerExitUIMode(_player);
             PlayerUIModeHelper.EnableTasksButton(_allTasksBackButton, _currentTaskButton);
         }
+    }
+
+    public int getCrrrentIndex()
+    {
+        return currentIndex / 2;
     }
 }
