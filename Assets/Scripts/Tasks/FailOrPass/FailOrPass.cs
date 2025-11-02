@@ -7,6 +7,7 @@ public class FailOrPass : BaseProfessors
     public RectTransform task;
     public FarsiTypewriter letter;
     public Button firstLetter;
+    private MusicChange musicChange;
     
     private void Start()
     {
@@ -14,6 +15,8 @@ public class FailOrPass : BaseProfessors
         {
             letter.OnTypingFinished += EnableButton;
         }
+
+        musicChange = GetComponent<MusicChange>();
     }
 
     public void StartGame()
@@ -24,7 +27,8 @@ public class FailOrPass : BaseProfessors
         {
             firstLetter.interactable = false;
         }
-        
+        musicChange.ToggleMusic();
+        musicChange.PlayThemeMusic();
         letter.StartTyping();
     }
 

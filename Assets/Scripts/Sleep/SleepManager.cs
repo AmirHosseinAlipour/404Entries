@@ -46,10 +46,14 @@ public class SleepManager : MonoBehaviour
     public Sprite main_Sprite;
     public Sprite Loosing_Sprite;
     private bool isGameStarted = false;
-    
+
+    [Header("Covers")]
+    public RectTransform upperCover;
+    public RectTransform lowerCover;
     private float initialPointerSpeed;
     private float timePerSpeedIncrease;
     private int currentSpeedIncreaseCount;
+    private MusicChange _musicChange;
 
     void Start()
     {
@@ -60,6 +64,11 @@ public class SleepManager : MonoBehaviour
         {
             initialPointerSpeed = pointerMover.speed;
         }
+
+        _musicChange = GetComponent<MusicChange>();
+
+        //mainPanel = PanelToChange.GetComponent<RectTransform>();
+        SetInitialPos();
     }
 
     void Update()
@@ -93,7 +102,7 @@ public class SleepManager : MonoBehaviour
         if (eyelidController != null)
             eyelidController.SetCloseAmount(sleepProgress);
 
-        if (sleepProgress >= 0.99f || redClickCount >= redClicksToSleep)
+        if (sleepProgress >= 0.49f || redClickCount >= redClicksToSleep)
             OnSleep();
 
         if (left <= 0f && sleepProgress < sleepProgressToSleep && redClickCount < redClicksToSleep)
@@ -111,7 +120,7 @@ public class SleepManager : MonoBehaviour
         if (px < -(barHalf / 5) || px > (barHalf / 5))
         {
             redClickCount++;
-            targetSleepProgress += 0.33f;
+            targetSleepProgress += 0.15f;
         }
         else
         {
@@ -123,9 +132,10 @@ public class SleepManager : MonoBehaviour
 
     void OnSleep()
     {
+        barRect.gameObject.SetActive(false);
         Debug.Log("on sleep");
-        targetSleepProgress = 1f;
-        sleepProgress = Mathf.Lerp(sleepProgress, 1f, Time.deltaTime * smoothSpeed);
+        targetSleepProgress = 0.5f;
+        sleepProgress = Mathf.Lerp(sleepProgress, 0.5f, Time.deltaTime * smoothSpeed);
         StartCoroutine(JustWait());
     }
 
@@ -148,6 +158,9 @@ public class SleepManager : MonoBehaviour
         UIAnimationManager.Instance.HideWindow(mainPanel , 0.5f);
         TaskManager.Instance.CompleteTask(prof.TaskOrderNumber);
         UIAnimationManager.Instance.ShowDialogueWindow(prof.firstWinDialogue, 0.5f, prof.firstWinDialogueFtw);
+        _musicChange.ToggleMusic();
+        _musicChange.PlayMainMusic();
+        
     }
     public void StartGame()
     {
@@ -158,7 +171,7 @@ public class SleepManager : MonoBehaviour
         targetSleepProgress = 0f;
         lastInteractionTime = Time.time;
         IsLose = false;
-        
+        barRect.gameObject.SetActive(true);
         if (PanelToChange != null && main_Sprite != null)
         {
             PanelToChange.sprite = main_Sprite;
@@ -181,12 +194,32 @@ public class SleepManager : MonoBehaviour
             // Avoid division by zero; just set a huge time so it never triggers
             timePerSpeedIncrease = float.MaxValue;
         }
+        _musicChange.ToggleMusic();
+        _musicChange.PlayThemeMusic();
     }
     
     private void HandleLoose()
     {
-        UIAnimationManager.Instance.HideWindow(prof.StartPanel , 0.5f);
+       // UIAnimationManager.Instance.HideWindow(mainPanel , 0.5f);
         UIAnimationManager.Instance.ShowWindow(prof.acceptRect, 0.01f);
         UIAnimationManager.Instance.ShowDialogueWindow(prof.firstFailDialogue, 0.5f, prof.firstFailDialogueFtw);
+        _musicChange.ToggleMusic();
+        _musicChange.PlayMainMusic();
+    }
+
+    private void SetInitialPos()
+    {
+        float halfHeight = mainPanel.rect.height;
+
+        // Move upper cover UP
+        Vector2 upperPos = upperCover.anchoredPosition;
+        upperPos.y = halfHeight;
+        upperCover.anchoredPosition = upperPos;
+
+        // Move lower cover DOWN
+        Vector2 lowerPos = lowerCover.anchoredPosition;
+        lowerPos.y = -halfHeight;
+        lowerCover.anchoredPosition = lowerPos;
+
     }
 }

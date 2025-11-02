@@ -1,6 +1,8 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using Random = UnityEngine.Random;
 
 public class ShootingBullet : MonoBehaviour
 {
@@ -15,6 +17,12 @@ public class ShootingBullet : MonoBehaviour
 
     [Header("Optional UI")]
     public Button shootButton; 
+    private SoundPlayer soundPlayer;
+
+    private void Awake()
+    {
+        soundPlayer = GetComponent<SoundPlayer>();
+    }
 
     private void Start()
     {
@@ -38,6 +46,7 @@ public class ShootingBullet : MonoBehaviour
         int randomIndex = Random.Range(0, bulletPrefabs.Length);
         GameObject chosenBullet = bulletPrefabs[randomIndex];
         GameObject bulletInstance = Instantiate(chosenBullet, shootPoint.position, chosenBullet.transform.rotation);
+        soundPlayer.Play("Shoot");
         Rigidbody2D rb = bulletInstance.GetComponent<Rigidbody2D>();
         if (rb != null)
         {

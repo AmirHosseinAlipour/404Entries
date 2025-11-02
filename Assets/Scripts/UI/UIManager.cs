@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,13 +7,13 @@ public class UIManager : MonoBehaviour
     [Header("Buttons")]
     public Button button1;
     public Button button2;
-    public FarsiTypewriter farsiTypewriter;
     [Header("Panels")]
     public RectTransform panel1;
     public RectTransform panel2;
     
     private bool panel1Active = false;
     private bool panel2Active = false;
+
     void Start()
     {
         
@@ -31,7 +32,6 @@ public class UIManager : MonoBehaviour
         Deactive();
         panel2Active = true;
         UIAnimationManager.Instance.ShowWindow(panel2, 0.5f);
-        farsiTypewriter.StartTyping();
     }
     public void DeactivateAllPanels()
     {

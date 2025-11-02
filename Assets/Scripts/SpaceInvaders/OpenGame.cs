@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class OpenGame : MonoBehaviour
@@ -8,6 +9,13 @@ public class OpenGame : MonoBehaviour
     private Renderer[] renderers; 
     [SerializeField] private bool isFadingIn = false;
     private bool isFadingOut = false;
+    private MusicChange musicChange;
+
+    private void Start()
+    {
+        musicChange = GetComponent<MusicChange>();
+    }
+
     void Awake()
     {
         if (gameObjectsToShow != null)
@@ -33,6 +41,7 @@ public class OpenGame : MonoBehaviour
                 isFadingOut = false;
                 gameObject.SetActive(false); 
             }
+           
         }
     }
     public void OpeningGame()
@@ -40,6 +49,7 @@ public class OpenGame : MonoBehaviour
         if (gameObjectsToShow != null)
         {
             gameObjectsToShow.SetActive(true); 
+            musicChange.PlayThemeMusic();
             SetAlpha(0f);                      
             isFadingIn = true;   
           
