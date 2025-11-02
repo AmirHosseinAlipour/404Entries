@@ -12,6 +12,7 @@ public class ElevatorUI : MonoBehaviour
     public Button[] floorButtons;
     public int currentFloor = 1;
     public RectTransform buttonsPanel;
+    public ElevatorUI AnotherInstace; 
 
     private void Start()
     {
@@ -51,6 +52,7 @@ public class ElevatorUI : MonoBehaviour
         doorAnimation.OpenDoors();
         player.position = floorPositions[floorIndex].transform.position;
         currentFloor = floorIndex;
+        AnotherInstace.currentFloor = floorIndex;
 
         yield return new WaitForSeconds(0.5f);
         
