@@ -2614,6 +2614,7 @@ GameObject:
   - component: {fileID: 2827394235337319324}
   - component: {fileID: 6744825569526274729}
   - component: {fileID: 8037209256637358354}
+  - component: {fileID: 8561416043240664716}
   m_Layer: 0
   m_Name: Mazaheri
   m_TagString: Untagged
@@ -2782,7 +2783,7 @@ MonoBehaviour:
   - {fileID: 1986722546927921694}
   - {fileID: 6019986647203894536}
   - {fileID: 4514763484348412626}
-  TaskOrderNumber: 5
+  TaskOrderNumber: 1
   afterWinDialogue: {fileID: 0}
   firstWinDialogue: {fileID: 0}
   firstWinDialogueFtw: {fileID: 0}
@@ -2791,7 +2792,24 @@ MonoBehaviour:
   firstFailDialogueFtw: {fileID: 0}
   game: {fileID: 7270057265260313901}
   bootPanel: {fileID: 3158100570745116906}
-  musicChange: {fileID: 0}
+  musicChange: {fileID: 8561416043240664716}
+--- !u!114 &8561416043240664716
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4203174464238322724}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb179c0f44dd90b48985501ea6a3b75a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Music3D: {fileID: 0}
+  MusicToChange: {fileID: 8300000, guid: 3d15ab939941bc74295730aec4c41af5, type: 3}
+  ThemeMusic: {fileID: 0}
+  Main_Music: {fileID: 8300000, guid: 38eafbd8c7f618448984ad95f5367f3a, type: 3}
+  fadeDuration: 1.5
 --- !u!1 &4321381874593630114
 GameObject:
   m_ObjectHideFlags: 0
@@ -3223,6 +3241,7 @@ GameObject:
   - component: {fileID: 446519272405209985}
   - component: {fileID: 7270057265260313901}
   - component: {fileID: 7811288788253465554}
+  - component: {fileID: 7017157131855117401}
   m_Layer: 0
   m_Name: SpaceInvadersManager
   m_TagString: Untagged
@@ -3287,6 +3306,23 @@ MonoBehaviour:
   gameObjectsToShow: {fileID: 5995526623066939194}
   fadeSpeed: 2
   isFadingIn: 0
+--- !u!114 &7017157131855117401
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4762525063937405328}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fb179c0f44dd90b48985501ea6a3b75a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Music3D: {fileID: 0}
+  MusicToChange: {fileID: 8300000, guid: 3d15ab939941bc74295730aec4c41af5, type: 3}
+  ThemeMusic: {fileID: 0}
+  Main_Music: {fileID: 8300000, guid: 38eafbd8c7f618448984ad95f5367f3a, type: 3}
+  fadeDuration: 1.5
 --- !u!1 &4957754066230985020
 GameObject:
   m_ObjectHideFlags: 0
@@ -5329,8 +5365,131 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 675292481502755246, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8919013372278427121}
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 8081743175774514455, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4355042763481305198}
+    - targetCorrespondingSourceObject: {fileID: 8081743175774514455, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3945424635456059991}
   m_SourcePrefab: {fileID: 100100000, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
+--- !u!1 &756211873396034149 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8081743175774514455, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
+  m_PrefabInstance: {fileID: 8815378629254850418}
+  m_PrefabAsset: {fileID: 0}
+--- !u!82 &4355042763481305198
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 756211873396034149}
+  m_Enabled: 1
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 0}
+  m_Resource: {fileID: 0}
+  m_PlayOnAwake: 1
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 0
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+--- !u!114 &3945424635456059991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 756211873396034149}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d0e56dc6032fa0b4d90fc824dbdafcf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clips:
+  - name: Shoot
+    clip: {fileID: 8300000, guid: 57ba7eb374e98fd439880b34961e4dab, type: 3}
 --- !u!224 &1470630781708285457 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 7943855852416668003, guid: 0ba96137dd1aaeb47b4954cbb7affdfd, type: 3}
