@@ -10,13 +10,21 @@ public class Level
     public int[] keys;
 }
 
+[Serializable]
+public class Options
+{
+    [TextArea] public List<string> items;
+}
+
 public class Masoumi : BaseProfessors
 {
     [Header("Settings")]
     public BaseDropZone[] initialZones;
     public BaseDropZone[] zonesToDrop;
     public BaseDraggableItem[] items;
+    public Text[] itemsOptionsTexts;
     [TextArea] public string[] texts;
+    public Options[] textOptions;
 
     public List<Level> levelKeys;
 
@@ -26,6 +34,14 @@ public class Masoumi : BaseProfessors
     public Text textLevels;
 
     private int _currentLevel = 0;
+    private MusicChange _musicChange;
+
+    protected override void Awake()
+    {
+        base.Awake();
+
+        _musicChange = GetComponent<MusicChange>();
+    }
 
     private void OnEnable()
     {
@@ -95,8 +111,14 @@ public class Masoumi : BaseProfessors
             items[i].rectTransform.anchoredPosition = Vector2.zero;
         }
 
-        textLevels.text = texts[_currentLevel];
-        textLevels.GetComponent<FarsiTypewriter>().StartTyping();
+        // textLevels.text = texts[_currentLevel];
+        textLevels.GetComponent<FarsiTypewriter>().SetText(texts[_currentLevel]);
+
+        for (int i = 0; i < textOptions[_currentLevel].items.Count; i++)
+        {
+            itemsOptionsTexts[i].GetComponent<FarsiTypewriter>().SetText(textOptions[_currentLevel].items[i]);
+            // itemsOptionsTexts[i].GetComponent<FarsiTypewriter>().StartTyping();     
+        }
     }
 
     private void HandleEnding()
@@ -104,5 +126,7 @@ public class Masoumi : BaseProfessors
         UIAnimationManager.Instance.HideWindow(missionPanel, 0.5f);
         TaskManager.Instance.CompleteTask(TaskOrderNumber);
         UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.3f, firstWinDialogueFtw);
+        _musicChange.ToggleMusic();
+        _musicChange.PlayMainMusic();
     }
 }
