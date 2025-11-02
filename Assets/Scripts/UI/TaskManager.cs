@@ -1,4 +1,6 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
@@ -13,6 +15,7 @@ public class TaskManager : MonoBehaviour
     public Sprite Boy_image;
     public Sprite Girl_image;
     public Image Main_image;
+    
     public Action OnCurrentIndexChange;
 
     private void Start()
@@ -58,4 +61,9 @@ public class TaskManager : MonoBehaviour
             Main_image.sprite = Boy_image;
         }
     }
+
+    // private IEnumerator HandleEnding()
+    // {
+    //     
+    // }
 }
