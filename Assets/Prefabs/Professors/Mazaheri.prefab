@@ -461,6 +461,8 @@ MonoBehaviour:
   windowToShowAnimation: 0
   dialogueWindowToShow: {fileID: 0}
   dialogueTypeWriter: {fileID: 0}
+  currentDialogueIndex: 0
+  amozesh: {fileID: 0}
 --- !u!1 &1106392945347320036
 GameObject:
   m_ObjectHideFlags: 0
@@ -2683,7 +2685,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 5
-  m_Sprite: {fileID: 1092628676154287437, guid: 0289031a65c07d049b29049a3f561c9c, type: 3}
+  m_Sprite: {fileID: -2708082308099014714, guid: a995dc68d42c94b389c4094892b23c2b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -2731,8 +2733,8 @@ BoxCollider2D:
   m_Offset: {x: 0, y: -2}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.44, y: 0.5}
-    oldSize: {x: 4, y: 4}
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.375, y: 3.5}
     newSize: {x: 1, y: 1}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -2789,6 +2791,7 @@ MonoBehaviour:
   firstFailDialogueFtw: {fileID: 0}
   game: {fileID: 7270057265260313901}
   bootPanel: {fileID: 3158100570745116906}
+  musicChange: {fileID: 0}
 --- !u!1 &4321381874593630114
 GameObject:
   m_ObjectHideFlags: 0
@@ -3075,6 +3078,8 @@ MonoBehaviour:
   windowToShowAnimation: 0
   dialogueWindowToShow: {fileID: 0}
   dialogueTypeWriter: {fileID: 0}
+  currentDialogueIndex: 0
+  amozesh: {fileID: 0}
 --- !u!1 &4671536174633244607
 GameObject:
   m_ObjectHideFlags: 0

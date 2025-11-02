@@ -1185,6 +1185,8 @@ MonoBehaviour:
   windowToShowAnimation: 0
   dialogueWindowToShow: {fileID: 0}
   dialogueTypeWriter: {fileID: 0}
+  currentDialogueIndex: 0
+  amozesh: {fileID: 0}
 --- !u!1 &1244864721555621690
 GameObject:
   m_ObjectHideFlags: 0
@@ -1534,6 +1536,8 @@ MonoBehaviour:
   windowToShowAnimation: 0
   dialogueWindowToShow: {fileID: 0}
   dialogueTypeWriter: {fileID: 0}
+  currentDialogueIndex: 0
+  amozesh: {fileID: 0}
 --- !u!114 &5135092182011652992
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2703,6 +2707,8 @@ MonoBehaviour:
   windowToShowAnimation: 0
   dialogueWindowToShow: {fileID: 0}
   dialogueTypeWriter: {fileID: 0}
+  currentDialogueIndex: 0
+  amozesh: {fileID: 0}
 --- !u!114 &1381981832206122527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4396,6 +4402,8 @@ MonoBehaviour:
   windowToShowAnimation: 0
   dialogueWindowToShow: {fileID: 0}
   dialogueTypeWriter: {fileID: 0}
+  currentDialogueIndex: 0
+  amozesh: {fileID: 0}
 --- !u!114 &2891765672747121194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5610,6 +5618,8 @@ MonoBehaviour:
   windowToShowAnimation: 0
   dialogueWindowToShow: {fileID: 0}
   dialogueTypeWriter: {fileID: 0}
+  currentDialogueIndex: 0
+  amozesh: {fileID: 0}
 --- !u!114 &2054320634673409326
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6417,6 +6427,8 @@ MonoBehaviour:
   windowToShowAnimation: 0
   dialogueWindowToShow: {fileID: 0}
   dialogueTypeWriter: {fileID: 0}
+  currentDialogueIndex: 0
+  amozesh: {fileID: 0}
 --- !u!1 &7686777800768631741
 GameObject:
   m_ObjectHideFlags: 0
@@ -7235,6 +7247,7 @@ GameObject:
   - component: {fileID: 8077416821493714600}
   - component: {fileID: 4080325948237347017}
   - component: {fileID: 5387318197549735426}
+  - component: {fileID: 7726592498218947102}
   m_Layer: 0
   m_Name: FailOrPass
   m_TagString: Untagged
@@ -7353,7 +7366,7 @@ BoxCollider2D:
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 2, y: 3.5}
+    oldSize: {x: 1.3125, y: 3.5}
     newSize: {x: 4, y: 4}
     adaptiveTilingThreshold: 0.5
     drawMode: 0
@@ -7389,6 +7402,28 @@ MonoBehaviour:
   task: {fileID: 6735657379012363739}
   letter: {fileID: 1868087915958265971}
   firstLetter: {fileID: 4667570764735925208}
+--- !u!95 &7726592498218947102
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8761836400562274719}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: c4c1cb018fd3243caa5df120fb8d27b4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8798973791405477675
 GameObject:
   m_ObjectHideFlags: 0
