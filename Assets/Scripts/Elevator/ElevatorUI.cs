@@ -33,14 +33,7 @@ public class ElevatorUI : MonoBehaviour
         {
             
             return;
-        }
-
-        if (floorIndex == 2 || floorIndex == 4)
-        {
-            StartCoroutine((ShowMessage()));
-            return;
-        }
-
+        }   
         StartCoroutine(MoveToFloor(floorIndex));
     }
 
