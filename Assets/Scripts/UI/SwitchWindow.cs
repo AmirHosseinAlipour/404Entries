@@ -18,6 +18,7 @@ public class SwitchWindow : MonoBehaviour
     // Task UI 
     private Button _allTasksBackButton;
     private Button _currentTaskButton;
+    private TaskUI _taskUI;
 
     private PlayerController _player;
     
@@ -29,6 +30,8 @@ public class SwitchWindow : MonoBehaviour
 
         _allTasksBackButton = GameObject.FindWithTag("AllTasksBackButton").GetComponent<Button>();
         _currentTaskButton = GameObject.FindWithTag("CurrentTaskButton").GetComponent<Button>();
+        
+        _taskUI = GameObject.FindWithTag("TaskUI").GetComponent<TaskUI>();
     }
 
     // This method is only for closing the mini game UI!
@@ -119,6 +122,7 @@ public class SwitchWindow : MonoBehaviour
             
             shouldInvoke = true;
             HideWindow();
+            _taskUI.UpdateUI();
             return;
         }
         
