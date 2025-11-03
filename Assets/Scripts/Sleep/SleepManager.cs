@@ -222,4 +222,42 @@ public class SleepManager : MonoBehaviour
         lowerCover.anchoredPosition = lowerPos;
 
     }
+#if UNITY_EDITOR
+    void OnDrawGizmos()
+    {
+        if (barRect == null || pointerRect == null) return;
+
+        // گرفتن مرکز bar
+        Vector3 barCenter = barRect.position;
+
+        // عرض bar در فضای local
+        float barHalf = barRect.rect.width;
+
+        // نسبت محدوده‌ی مجاز (همون محدوده‌ی green zone)
+        float safeZone = barHalf / 5f;
+
+        // رنگ‌ها
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(
+            new Vector3(barCenter.x - safeZone, barCenter.y, barCenter.z),
+            new Vector3(barCenter.x + safeZone, barCenter.y, barCenter.z)
+        );
+
+        // خطوط قرمز سمت چپ و راست
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(
+            new Vector3(barCenter.x - barHalf / 2f, barCenter.y, barCenter.z),
+            new Vector3(barCenter.x - safeZone, barCenter.y, barCenter.z)
+        );
+        Gizmos.DrawLine(
+            new Vector3(barCenter.x + safeZone, barCenter.y, barCenter.z),
+            new Vector3(barCenter.x + barHalf / 2f, barCenter.y, barCenter.z)
+        );
+
+        // pointer (اختیاری)
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawSphere(pointerRect.position, 5f);
+    }
+#endif
+
 }
