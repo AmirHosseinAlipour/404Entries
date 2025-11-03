@@ -19,7 +19,7 @@ public class StaticNPC : MonoBehaviour
 
     private void Start()
     {
-        _animator.GetComponent<Animator>();
+        _animator = GetComponent<Animator>();
         
         Vector2 direction = Vector2.down;
 
