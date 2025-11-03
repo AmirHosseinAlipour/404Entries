@@ -86,10 +86,11 @@ public class Amozesh : MonoBehaviour
             PlayerUIModeHelper.PlayerEnterUIMode(_player);
             PlayerUIModeHelper.DisableTasksButton(_allTasksBackButton, _currentTaskButton);
             
-            if (_lastCurrentIndex != currentIndex)
-            {
-                SetDialogues();
-            }
+            SetDialogues();
+            // if (_lastCurrentIndex != currentIndex)
+            // {
+            //     SetDialogues();
+            // }
 
             UIAnimationManager.Instance.ShowDialogueWindow(
                 firstDialogue, 0.5f, listOfTexts[0].GetComponent<FarsiTypewriter>());
