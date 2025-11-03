@@ -25,7 +25,7 @@ public class StaticNPC : MonoBehaviour
 
         switch (idleDirection)
         {
-            case Direction.Front:
+            case Direction.Back:
                 direction = Vector2.up;
                 break;
             case Direction.Left:
