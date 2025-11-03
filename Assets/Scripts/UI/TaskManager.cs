@@ -4,9 +4,13 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class TaskManager : MonoBehaviour
 {
+    [Header("Ending")] 
+    public ScreenFaderEnd screenFaderEnd;
+    
     [Header("Task Data")]
     public string[] taskNames;
     public bool[] taskCompleted;
@@ -62,8 +66,10 @@ public class TaskManager : MonoBehaviour
         }
     }
 
-    // private IEnumerator HandleEnding()
-    // {
-    //     
-    // }
+    public void HandleEnding()
+    {
+        screenFaderEnd.gameObject.SetActive(true);
+        screenFaderEnd.StartFade(0f, 2);
+        SceneManager.LoadScene("Ending");
+    }
 }
