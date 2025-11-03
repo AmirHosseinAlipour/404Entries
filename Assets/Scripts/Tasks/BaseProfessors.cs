@@ -30,6 +30,7 @@ public class BaseProfessors : MonoBehaviour
     protected Button _allTasksBackButton;
     protected Button _currentTaskButton;
     protected GameObject _joyStick;
+    private GameObject _miniMap;
     
     protected PlayerController _player;
 
@@ -40,6 +41,7 @@ public class BaseProfessors : MonoBehaviour
         _allTasksBackButton = GameObject.FindWithTag("AllTasksBackButton").GetComponent<Button>();
         _currentTaskButton = GameObject.FindWithTag("CurrentTaskButton").GetComponent<Button>();
         _joyStick = GameObject.FindWithTag("JoyStick");
+        _miniMap = GameObject.FindWithTag("MiniMap");
     }
 
     protected virtual void Start()
@@ -109,6 +111,7 @@ public class BaseProfessors : MonoBehaviour
             PlayerUIModeHelper.EnableTasksButton(_allTasksBackButton, _currentTaskButton);
             UIUtils.SetAlpha(_currentTaskButton.gameObject, 1f);
             UIUtils.SetAlpha(_joyStick, 1f);
+            UIUtils.SetAlpha(_miniMap, 1f);
         }
     }
 
