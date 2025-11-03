@@ -101,7 +101,7 @@ public class Amozesh : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            if (TaskManager.Instance.taskCompleted[15] == true)
+            if (TaskManager.Instance.taskCompleted[16] == true)
             {
                 TaskManager.Instance.HandleEnding();
             }
