@@ -1,10 +1,16 @@
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class TaskManager : MonoBehaviour
 {
+    [Header("Ending")] 
+    public ScreenFaderEnd screenFaderEnd;
+    
     [Header("Task Data")]
     public string[] taskNames;
     public bool[] taskCompleted;
@@ -13,6 +19,7 @@ public class TaskManager : MonoBehaviour
     public Sprite Boy_image;
     public Sprite Girl_image;
     public Image Main_image;
+    
     public Action OnCurrentIndexChange;
 
     private void Start()
@@ -57,5 +64,12 @@ public class TaskManager : MonoBehaviour
         {
             Main_image.sprite = Boy_image;
         }
+    }
+
+    public void HandleEnding()
+    {
+        screenFaderEnd.gameObject.SetActive(true);
+        screenFaderEnd.StartFade(0f, 2);
+        SceneManager.LoadScene("Ending");
     }
 }
