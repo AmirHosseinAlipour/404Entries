@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 
@@ -7,9 +8,13 @@ public class MusicChange : MonoBehaviour
     public AudioClip MusicToChange;
     public AudioSource ThemeMusic;
     public  AudioClip Main_Music;
-    public float fadeDuration = 1.5f; 
+    public float fadeDuration = 0.3f;
 
-    
+
+    private void Start()
+    {
+        fadeDuration = 0.3f;
+    }
 
     public void ToggleMusic()
     {
