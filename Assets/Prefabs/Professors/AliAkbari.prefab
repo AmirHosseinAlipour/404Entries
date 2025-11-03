@@ -432,6 +432,7 @@ GameObject:
   - component: {fileID: 1700108034316935940}
   - component: {fileID: 5867433036121855804}
   - component: {fileID: 5596059717066198939}
+  - component: {fileID: 1088903870521539841}
   m_Layer: 5
   m_Name: Person1 (1)
   m_TagString: Untagged
@@ -589,6 +590,22 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1088903870521539841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 456731596901911441}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62e2a80b1705e3a41b2ca016fa2bcf10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 0}
+  sprites:
+  - {fileID: -7777177641172106769, guid: 93124c43cbd4fdf48891f86d1222b764, type: 3}
+  - {fileID: -394591486901757920, guid: 48fea61eca7a4fe4ca4e53c5a3f5aab9, type: 3}
 --- !u!1 &810335550632358418
 GameObject:
   m_ObjectHideFlags: 0
@@ -1028,6 +1045,7 @@ GameObject:
   - component: {fileID: 653456641537366570}
   - component: {fileID: 6010616699586893188}
   - component: {fileID: 7973158013526829580}
+  - component: {fileID: 643073282753679436}
   m_Layer: 5
   m_Name: Person1 (1)
   m_TagString: Untagged
@@ -1185,6 +1203,22 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &643073282753679436
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2473597636706791843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 62e2a80b1705e3a41b2ca016fa2bcf10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetImage: {fileID: 0}
+  sprites:
+  - {fileID: -7777177641172106769, guid: 93124c43cbd4fdf48891f86d1222b764, type: 3}
+  - {fileID: -394591486901757920, guid: 48fea61eca7a4fe4ca4e53c5a3f5aab9, type: 3}
 --- !u!1 &2506569752357402521
 GameObject:
   m_ObjectHideFlags: 0
@@ -1776,7 +1810,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &285760175414053903
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2696,7 +2730,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3525293284660645084
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3701,6 +3735,14 @@ PrefabInstance:
       propertyPath: m_LocalPosition.y
       value: 1497
       objectReference: {fileID: 0}
+    - target: {fileID: 1786338010732167760, guid: cf7b516af2763ef448a960eb0d0338b5, type: 3}
+      propertyPath: ballSprites.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1786338010732167760, guid: cf7b516af2763ef448a960eb0d0338b5, type: 3}
+      propertyPath: 'ballSprites.Array.data[3]'
+      value: 
+      objectReference: {fileID: 21300000, guid: a73dddefa4185564f98f67cfb2c0d473, type: 3}
     - target: {fileID: 1966004067014960450, guid: cf7b516af2763ef448a960eb0d0338b5, type: 3}
       propertyPath: m_LocalScale.y
       value: 9.810452
@@ -4041,6 +4083,14 @@ PrefabInstance:
       propertyPath: fadeActivator
       value: 
       objectReference: {fileID: 5997254468553234150}
+    - target: {fileID: 9126289095131557142, guid: cf7b516af2763ef448a960eb0d0338b5, type: 3}
+      propertyPath: scoreMilestones.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 9126289095131557142, guid: cf7b516af2763ef448a960eb0d0338b5, type: 3}
+      propertyPath: 'scoreMilestones.Array.data[3]'
+      value: 10
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
