@@ -53,6 +53,7 @@ public class SpaceInvadersManager : MonoBehaviour
         }
         else if (isFadingOut)
         {
+           
             gameObjectsToHide.SetActive(false);
             gameObjectsToShow.SetActive(false);
             cam.Priority = 0;
@@ -61,8 +62,7 @@ public class SpaceInvadersManager : MonoBehaviour
             {
                 isFadingOut = false;
             }
-            musicChange.ToggleMusic();
-            musicChange.PlayMainMusic();
+           
 
             TaskManager.Instance.CompleteTask(m.TaskOrderNumber);
             m.HandleEnding();
