@@ -40,11 +40,11 @@ public class TeacherController : BaseProfessors
         
             if (isFacingPlayer)
             {
-                //Green light
-                isFacingPlayer = false; 
-                soundPlayer.Play("GreenLight");
+                
                 // Player is safe immediately
                 animator.SetTrigger("FacingBack");
+                isFacingPlayer = false; 
+                soundPlayer.Play("GreenLight");
             }
             else
             {
