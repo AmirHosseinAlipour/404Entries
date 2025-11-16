@@ -127,6 +127,5 @@ public class SwitchWindow : MonoBehaviour
         UIAnimationManager.Instance.ShowDialogueWindow(dialogueWindowToShow, 0.5f, dialogueTypeWriter);
         
         HideWindow();
-        shouldInvoke = false;
     }
 }
