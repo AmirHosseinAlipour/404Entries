@@ -108,7 +108,6 @@ public class SwitchWindow : MonoBehaviour
 
     public void ShowNextDialogue()
     {
-        int nextIndex = currentDialogueIndex + 1;
         if (amozesh == null)
         {
             Debug.LogError("Amozesh reference is missing!");
@@ -117,8 +116,7 @@ public class SwitchWindow : MonoBehaviour
         
         if (amozesh.dialoguePhases[amozesh.getCrrrentIndex()].dialogues.Count <= currentDialogueIndex)
         {
-            Debug.Log(amozesh.dialoguePhases[amozesh.getCrrrentIndex()].dialogues.Count);
-            Debug.Log(currentDialogueIndex);
+            Debug.Log(amozesh.getCrrrentIndex());
             
             shouldInvoke = true;
             HideWindow();
@@ -129,5 +127,6 @@ public class SwitchWindow : MonoBehaviour
         UIAnimationManager.Instance.ShowDialogueWindow(dialogueWindowToShow, 0.5f, dialogueTypeWriter);
         
         HideWindow();
+        shouldInvoke = false;
     }
 }

@@ -25,7 +25,6 @@ public class Amozesh : MonoBehaviour
     private Button _allTasksBackButton;
     private Button _currentTaskButton;
 
-    private int _lastCurrentIndex;
     private int currentIndex;
 
     private PlayerController _player;
@@ -74,7 +73,6 @@ public class Amozesh : MonoBehaviour
     
     public void ChangeCurrentIndex()
     {
-        _lastCurrentIndex = currentIndex;
         currentIndex = TaskManager.Instance.GetCurrentTaskIndex();
     }
 
@@ -87,10 +85,6 @@ public class Amozesh : MonoBehaviour
             PlayerUIModeHelper.DisableTasksButton(_allTasksBackButton, _currentTaskButton);
             
             SetDialogues();
-            // if (_lastCurrentIndex != currentIndex)
-            // {
-            //     SetDialogues();
-            // }
 
             UIAnimationManager.Instance.ShowDialogueWindow(
                 firstDialogue, 0.5f, listOfTexts[0].GetComponent<FarsiTypewriter>());

@@ -34,6 +34,16 @@ public class TaskManager : MonoBehaviour
         else
             Destroy(gameObject);
     }
+    
+    // For debugging
+    private void OnValidate()
+    {
+        // Only invoke if we're in play mode
+        if (Application.isPlaying)
+        {
+            OnCurrentIndexChange?.Invoke();
+        }
+    }
     public void CompleteTask(int index)
     {
         if (index >= 0 && index < taskCompleted.Length)
