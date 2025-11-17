@@ -11,14 +11,12 @@ public class Mazaheri : BaseProfessors
     
     public void StartGame()
     {
-        musicChange.ToggleMusic();
         UIAnimationManager.Instance.ShowWindow(bootPanel, 0.5f);
         game.InitialSettings();
     }
 
     public void HandleEnding()
     {
-        musicChange.ToggleMusic();
         musicChange.PlayMainMusic();
         RectTransform parent = StartPanel.transform.parent.GetComponent<RectTransform>();
         parent.gameObject.SetActive(false);
