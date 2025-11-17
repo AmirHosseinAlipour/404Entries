@@ -12,4 +12,12 @@ public class enterdialouge : MonoBehaviour
             UIAnimationManager.Instance.ShowDialogueWindow(dialouge, 0.5f,dialougeFtw);
         }
     }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            UIAnimationManager.Instance.HideWindow(dialouge, 0.5f);
+        }
+    }
 }
