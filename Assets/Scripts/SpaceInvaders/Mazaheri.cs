@@ -22,5 +22,7 @@ public class Mazaheri : BaseProfessors
         parent.gameObject.SetActive(false);
         UIAnimationManager.Instance.HideWindow(parent, 0.5f);
         UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.5f, firstWinDialogueFtw);
+        musicChange.ToggleMusic();
+        musicChange.PlayMainMusic();
     }
 }
