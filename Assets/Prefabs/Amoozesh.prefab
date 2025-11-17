@@ -2117,7 +2117,7 @@ GameObject:
   - component: {fileID: 2578807532450214338}
   - component: {fileID: 4172809515908661337}
   - component: {fileID: 153493990024996255}
-  - component: {fileID: 3808953489853832357}
+  - component: {fileID: 4204755269166243658}
   m_Layer: 5
   m_Name: Person1 (2)
   m_TagString: Untagged
@@ -2275,7 +2275,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &3808953489853832357
+--- !u!114 &4204755269166243658
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2284,13 +2284,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4280395871205486388}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62e2a80b1705e3a41b2ca016fa2bcf10, type: 3}
+  m_Script: {fileID: 11500000, guid: 8cdc9b3329f291a40907f781d530da33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetImage: {fileID: 0}
-  sprites:
-  - {fileID: -7777177641172106769, guid: 93124c43cbd4fdf48891f86d1222b764, type: 3}
-  - {fileID: -394591486901757920, guid: 48fea61eca7a4fe4ca4e53c5a3f5aab9, type: 3}
+  targetImage: {fileID: 5412940589754936661}
+  Boy: {fileID: -394591486901757920, guid: 48fea61eca7a4fe4ca4e53c5a3f5aab9, type: 3}
 --- !u!1 &4317215324165253895
 GameObject:
   m_ObjectHideFlags: 0
@@ -2587,7 +2585,7 @@ GameObject:
   - component: {fileID: 4391906205926766345}
   - component: {fileID: 8473729422182575806}
   - component: {fileID: 2799613766096511822}
-  - component: {fileID: 8393411585439227311}
+  - component: {fileID: 4203298892230199365}
   m_Layer: 5
   m_Name: Person1 (1)
   m_TagString: Untagged
@@ -2745,7 +2743,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &8393411585439227311
+--- !u!114 &4203298892230199365
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2754,13 +2752,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 4929617170948210589}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62e2a80b1705e3a41b2ca016fa2bcf10, type: 3}
+  m_Script: {fileID: 11500000, guid: 8cdc9b3329f291a40907f781d530da33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetImage: {fileID: 0}
-  sprites:
-  - {fileID: -7777177641172106769, guid: 93124c43cbd4fdf48891f86d1222b764, type: 3}
-  - {fileID: -394591486901757920, guid: 48fea61eca7a4fe4ca4e53c5a3f5aab9, type: 3}
+  targetImage: {fileID: 5699401631538291121}
+  Boy: {fileID: -394591486901757920, guid: 48fea61eca7a4fe4ca4e53c5a3f5aab9, type: 3}
 --- !u!1 &5668598362581145217
 GameObject:
   m_ObjectHideFlags: 0
@@ -2914,41 +2910,37 @@ MonoBehaviour:
       \u0628\u0631\u06CC\u062F \u0628\u0639\u062F\u0627 \u0628\u06CC\u0627\u06CC\u062F"
     - "\u0627\u0644\u0627\u0646 \u06A9\u0647 \u06F8 \u0635\u0628\u062D\u0647 :| \u0627\u06CC\u0646
       \u0645\u062F\u0627\u0631\u06A9 \u0645\u0646 \u062E\u062F\u0645\u062A \u0634\u0645\u0627
-      \u06CC\u0647 \u0646\u06AF\u0627\u0647 \u0628\u0646\u062F\u0627\u0632\u06CC\u062F\r\n"
+      \n\u06CC\u0647 \u0646\u06AF\u0627\u0647 \u0628\u0646\u062F\u0627\u0632\u06CC\u062F\r\n"
     - "\u062E\u0627\u06A9 \u0628\u0631 \u0633\u0631\u062A \u0627\u06CC\u0646 \u0647\u0645\u0634
       \u0645\u0634\u06A9\u0644 \u062F\u0627\u0631\u0647 \u062A\u0648 \u0686\u0637\u0648\u0631\u06CC
-      \u0628\u0647\u0634\u062A\u06CC \u0642\u0628\u0648\u0644 \u0634\u062F\u06CC\u061F\r\n"
+      \n\u0628\u0647\u0634\u062A\u06CC \u0642\u0628\u0648\u0644 \u0634\u062F\u06CC\u061F\r\n"
     - "\u0686\u0647 \u0637\u0631\u0632 \u062D\u0631\u0641 \u0632\u062F\u0646\u0647.
       \u062D\u0627\u0644\u0627 \u0628\u0627\u06CC\u062F \u0686\u06CC\u06A9\u0627\u0631
       \u06A9\u0646\u0645\u061F\r\n"
     - "\u0628\u0628\u06CC\u0646\u2026 \u0628\u0633\u062A\u06AF\u06CC \u0628\u0647
       \u062E\u0648\u062F\u062A \u062F\u0627\u0631\u0647 \u0645\u06CC\u062A\u0648\u0646\u0647
-      \u06F5 \u062F\u0642\u06CC\u0642\u0647 \u0637\u0648\u0644 \u0628\u06A9\u0634\u0647
+      \u06F5\n \u062F\u0642\u06CC\u0642\u0647 \u0637\u0648\u0644 \u0628\u06A9\u0634\u0647
       \u06CC\u0627 \u06F5 \u0633\u0627\u0639\u062A.\r\n"
     - " \u06CC\u0639\u0646\u06CC \u0686\u06CC\u061F"
     - "\u0647\u0631 \u06A9\u062F\u0648\u0645 \u0627\u0632 \u0645\u062F\u0627\u0631\u06A9
-      \u062F\u0633\u062A \u06CC\u06A9\u06CC \u0627\u0632 \u0627\u0633\u0627\u062A\u06CC\u062F\u0647\u060C
-      \u0628\u0631\u0648 \u067E\u06CC\u0634 \n\u0647\u0631 \u06A9\u062F\u0648\u0645
-      \u0627\u0632 \u0627\u0633\u0627\u062A\u06CC\u062F\u060C \u0645\u062F\u0627\u0631\u06A9\u062A
-      \u0631\u0648 \u0628\u06AF\u06CC\u0631 \u0648 \u0628\u06CC\u0627\u0631\u0634\u0648\u0646
-      \n\u067E\u06CC\u0634 \u0645\u0646\u060C \u0645\u0641\u0647\u0648\u0645\u0647\u061F\r\n"
+      \u062F\u0633\u062A \u06CC\u06A9\u06CC \u0627\u0632 \u0627\u0633\u0627\u062A\u06CC\u062F\u0647\u060C\u0628\u0631\u0648
+      \u067E\u06CC\u0634 \n\u0647\u0631 \u06A9\u062F\u0648\u0645 \u0627\u0632 \u0627\u0633\u0627\u062A\u06CC\u062F\u060C
+      \u0645\u062F\u0627\u0631\u06A9\u062A \u0631\u0648 \u0628\u06AF\u06CC\u0631
+      \u0648 \u0628\u06CC\u0627\u0631\u0634\u0648\u0646 \r\n"
     - " \u0627\u0648\u06A9\u06CC \u062D\u0627\u0644\u0627 \u0628\u0627\u06CC\u062F
       \u0686\u06CC\u06A9\u0627\u0631 \u06A9\u0646\u0645\u061F\r\n"
     - "\u062E\u0628 \u0627\u0644\u0627\u0646 \u0628\u0627\u06CC\u062F \u0628\u0631\u06CC
       \u067E\u06CC\u0634 \u0627\u0633\u062A\u0627\u062F \u0645\u0638\u0627\u0647\u0631\u06CC\u060C
-      \u0627\u06CC\u0634\u0648\u0646 \u062F\u0631 \u06A9\u0644\u0627\u0633 \u06F0\u06F0\u06F9
+      \u0627\u06CC\u0634\u0648\u0646 \n\u062F\u0631 \u06A9\u0644\u0627\u0633 \u06F0\u06F0\u06F9
       \u062F\u0627\u0631\u0646 \u06A9\u0627\u0631\u0628\u06CC\u0646\u06CC \u062A\u062F\u0631\u06CC\u0633
       \u0645\u06CC \u06A9\u0646\u0646\r\n"
   - dialogues:
     - "\u062E\u0628 \u0627\u06CC\u0646\u0645 \u0627\u0632 \u0645\u062F\u0631\u06A9
       \u062D\u0627\u0644\u0627 \u0645\u06CC\u0634\u0647 \u062B\u0628\u062A \u0646\u0627\u0645\u0645
       \u06A9\u0646\u06CC\u061F\r\n"
-    - "\u0647\u0647 \u0641\u0634\u0627\u0631 \u0628\u062E\u0648\u0631\u060C \u0627\u06CC\u0646
-      \u0627\u0648\u0644\u06CC\u0634 \u0628\u0648\u062F \u0647\u0646\u0648\u0632
-      \u06A9\u0644\u06CC\u06CC\u06CC \u06A9\u0633\u0631\u06CC \u0645\u062F\u0631\u06A9
-      \u062F\u0627\u0631\u06CC\u060C \u0627\u0632 \u06F8 \n\u0645\u062F\u0631\u06A9\u06CC
-      \u06A9\u0647 \u0628\u0627\u06CC\u062F \u062A\u062D\u0648\u06CC\u0644 \u0628\u062F\u06CC
-      \u06F6 \u062A\u0627\u0634 \u0646\u0627\u0642\u0635\u0647.\r\n"
+    - "\u0641\u0634\u0627\u0631 \u0628\u062E\u0648\u0631\u060C\u0627\u06CC\u0646
+      \u0627\u0648\u0644\u06CC\u0634 \u0628\u0648\u062F \u0647\u0646\u0648\u0632\n
+      \u06A9\u0644\u06CC\n\u06A9\u0633\u0631\u06CC \u0645\u062F\u0631\u06A9 \u062F\u0627\u0631\u06CC\r\n"
     - "\u0686\u06CC\u06CC\u06CC\u06CC\u061F \u06CC\u0627\u0639\u0644\u06CC\u06CC\u06CC\u06CC.\r\n"
     - "\u0647\u0645\u06CC\u0646\u0633 \u06A9\u0647 \u0647\u0633\u062A."
     - "\u0639\u0647 \u0686\u0631\u0627 \u06CC\u0647 \u062F\u0641\u0639\u0639\u0647
@@ -2956,7 +2948,7 @@ MonoBehaviour:
       \u0627\u0635\u0627\u0644\u062A\u0627\n \u0627\u0635\u0641\u0647\u0627\u0646\u06CC
       \u0647\u0633\u062A\u06CC\u0646\u061F\r\n"
     - "\u0646\u0647  \u062A\u0642\u0635\u06CC\u0631 \u0627\u06CC\u0646 \u062F\u06CC\u0627\u0644\u0648\u06AF
-      \u0646\u0648\u06CC\u0633\u0645\u0647 \u062E\u0648\u062F\u0634 \u0627\u0635\u0641\u0647\u0627\u0646\u06CC\u0647
+      \u0646\u0648\u06CC\u0633\u0645\u0647 \u062E\u0648\u062F\u0634\n \u0627\u0635\u0641\u0647\u0627\u0646\u06CC\u0647
       \u0648\u06AF\u0631\u0646\u0647 \u062E\u0648\u062F\u0645 \u062A\u0648\u0631\u06A9\u0645.\r\n"
     - " \u0648\u0627\u0642\u0639\u0627 \u0646\u0645\u06CC\u0641\u0647\u0645\u0645
       \u0686\u06CC \u0645\u06CC\u06AF\u06CC"
@@ -2965,7 +2957,7 @@ MonoBehaviour:
       \u0628\u0639\u062F\u06CC \u06A9\u06CC\u0647\u061F\r\n"
     - "\u0627\u0633\u062A\u0627\u062F \u0628\u0639\u062F\u06CC \u062F\u06A9\u062A\u0631
       \u0645\u0644\u06A9\u060C \u062F\u0627\u0631\u0646 \u062F\u0631 \u06A9\u0644\u0627\u0633
-      \u06F1\u06F1\u06F1 \u06A9\u0627\u0631\u0628\u06CC\u0646\u06CC \u062A\u062F\u0631\u06CC\u0633
+      \u06F1\u06F1\u06F1 \n\u06A9\u0627\u0631\u0628\u06CC\u0646\u06CC \u062A\u062F\u0631\u06CC\u0633
       \u0645\u06CC \u06A9\u0646\u0646\u062F.\r\n"
   - dialogues:
     - " \u062E\u0628 \u0627\u06CC\u0646\u0645 \u0627\u0632 \u0645\u062F\u0631\u06A9
@@ -2995,7 +2987,7 @@ MonoBehaviour:
       \u062F\u06CC\u06AF\u0647 \u0628\u06CC\u0627\r\n"
     - "\u0686\u06CC\u061F \u062E\u0628 \u0627\u06CC\u0646\u0637\u0648\u0631\u06CC
       \u06A9\u0647 \u0645\u0646 \u062A\u0627 \u0622\u062E\u0631 \u0634\u0628 \u0647\u0645
-      \u0646\u0645\u06CC \u062A\u0648\u0646\u0645 \n\u062B\u0628\u062A \u0646\u0627\u0645
+      \u0646\u0645\u06CC \u062A\u0648\u0646\u0645\n \u062B\u0628\u062A \u0646\u0627\u0645
       \u0631\u0648 \u062A\u0645\u0648\u0645 \u06A9\u0646\u0645.\r\n"
     - "\u062E\u0628\u2026 \u0628\u0647 \u0645\u0646 \u0686\u0647\u061F"
     - "\u062E\u0628 \u06CC\u0639\u0646\u06CC \u0627\u06CC\u0646\u06A9\u0647 \u0622\u062F\u0645
@@ -3003,7 +2995,7 @@ MonoBehaviour:
     - "\u0686\u06CC\u061F \u0686\u06CC \u06AF\u0641\u062A\u06CC \u0639\u0632\u06CC\u0632\u0645\u061F"
     - " \u0647\u06CC\u0686\u06CC \u06AF\u0641\u062A\u0645 \u0627\u06AF\u0647 \u0645\u06CC\u0634\u0647\u2026
       \u0627\u0645\u06A9\u0627\u0646\u0634 \u0647\u0633\u062A\u2026 \u0644\u0637\u0641\u0627\u2026
-      \u06A9\u0627\u0631 \u0647\u0627\u06CC \u0645\u0646\u0648 \u067E\u06CC\u0634
+      \n\u06A9\u0627\u0631 \u0647\u0627\u06CC \u0645\u0646\u0648 \u067E\u06CC\u0634
       \u0628\u0628\u0631\u06CC\u062F."
     - "\u062D\u0627\u0644\u0627 \u06A9\u0647 \u062E\u0648\u0627\u0647\u0634 \u0645\u06CC
       \u06A9\u0646\u06CC \u06CC\u0647 \u06A9\u0627\u0631\u06CC \u0645\u06CC \u06A9\u0646\u0645
@@ -3013,7 +3005,7 @@ MonoBehaviour:
       \u0639\u0644\u06CC \u0627\u06A9\u0628\u0631\u06CC\u0647\u061F"
     - "\u0646\u0647\u060C \u0635\u0627\u062F\u0642 \u0639\u0644\u06CC \u0627\u06A9\u0628\u0631\u06CC
       \u06A9\u0644\u0627\u0633\u0634\u0648\u0646 \u0647\u0645 \u062F\u0631 \u06F1\u06F0\u06F1
-      \u062F\u0627\u0631\u0647 \u0628\u0631\u06AF\u0632\u0627\u0631 \u0645\u06CC\u0634\u0647."
+      \u062F\u0627\u0631\u0647\n \u0628\u0631\u06AF\u0632\u0627\u0631 \u0645\u06CC\u0634\u0647."
   - dialogues:
     - " \u062E\u0628 \u0627\u06CC\u0646\u0645 \u0627\u0632 \u0627\u0633\u062A\u0627\u062F
       \u0639\u0644\u06CC \u0627\u06A9\u0628\u0631\u06CC \u0648 \u0645\u062F\u0631\u06A9
@@ -3022,8 +3014,8 @@ MonoBehaviour:
     - "\u0647\u0646\u0648\u0632 \u0646\u06CC\u0648\u0645\u062F\u0647 \u0627\u0632\u0645
       \u06A9\u0648\u0626\u06CC\u0632 \u06AF\u0631\u0641\u062A\u0646:("
     - "\u062F\u0631\u0633\u062A\u0634 \u0647\u0645 \u0647\u0645\u06CC\u0646\u0647\u060C
-      \u062D\u0627\u0644\u0627 \u06A9\u062C\u0627\u0634\u0648 \u062F\u06CC\u062F\u06CC\u060C  
-      \u062F\u062F\u0644\u0627\u06CC\u0646 \n\u0647\u0627 \u062F\u0631 \u0627\u0646\u062A\u0638\u0627\u0631\u062A\u0647."
+      \u062D\u0627\u0644\u0627 \u06A9\u062C\u0627\u0634\u0648 \u062F\u06CC\u062F\u06CC\u060C\n\u062F\u062F\u0644\u0627\u06CC\u0646
+      \u0647\u0627 \u062F\u0631 \u0627\u0646\u062A\u0638\u0627\u0631\u062A\u0647."
     - "\u0647\u0639\u06CC.. \u062E\u0628 \u062D\u0627\u0644\u0627 \u0627\u0633\u062A\u0627\u062F
       \u0628\u0639\u062F\u06CC \u06A9\u06CC\u0647\u061F"
     - "\u0627\u0633\u062A\u0627\u062F \u0628\u0639\u062F\u06CC\u2026 \u062F\u06A9\u062A\u0631
@@ -3045,7 +3037,7 @@ MonoBehaviour:
   - dialogues:
     - "\u0641\u0642\u0637 \u0628\u06AF\u0648 \u0627\u0633\u062A\u0627\u062F \u0628\u0639\u062F\u06CC
       \u06A9\u06CC\u0647\u061F\r\n"
-    - "\u0639\u062F\u06CC \u0627\u0633\u062A\u0627\u062F \u0627\u0633\u0642\u0627\u06CC\u06CC\u060C
+    - "\u0628\u0639\u062F\u06CC \u0627\u0633\u062A\u0627\u062F \u0627\u0633\u0642\u0627\u06CC\u06CC\u060C
       \u062F\u0631 \u06A9\u0644\u0627\u0633\u06F1\u06F1\u06F2 \u0645\u0634\u063A\u0648\u0644
       \u062A\u062F\u0631\u06CC\u0633 \n\u0647\u0633\u062A\u0646.\r\n"
     - "\u062D\u0644\u0647 \u067E\u0633 \u0645\u0646 \u0631\u0641\u062A\u0645.\r\n"
@@ -3068,8 +3060,8 @@ MonoBehaviour:
     - "\u06CC\u0639\u0646\u06CC \u0686\u06CC\u061F \u0686\u06CC \u0634\u062F\u0647\u061F"
     - "\u062F\u0633\u062A\u0645 \u062E\u0648\u0631\u062F \u0647\u0645\u0647 \u0645\u062F\u0627\u0631\u06A9\u062A\u0648
       \u0627\u0634\u062A\u0628\u0627\u0647\u06CC \u067E\u0627\u06A9 \u06A9\u0631\u062F\u0645
-      \u062D\u0627\u0644\u0627 \n\u0628\u0627\u06CC\u062F \u0647\u0645\u0634\u0648\n
-      \u0627\u0632 \u0627\u0648\u0644 \u0628\u06AF\u06CC\u0631\u06CC"
+      \u062D\u0627\u0644\u0627 \n\u0628\u0627\u06CC\u062F \u0647\u0645\u0634\u0648\u0627\u0632
+      \u0627\u0648\u0644 \u0628\u06AF\u06CC\u0631\u06CC"
     - "\u0686\u06CC\u06CC\u06CC\u06CC\u061F:/"
     - "\u0646\u0645\u06CC \u062F\u0648\u0646\u0645 \u0648\u0627\u0644\u0627 \u0647\u0631\u0686\u06CC
       \u0633\u0631\u0686 \u0645\u06CC \u06A9\u0646\u0645 \u0645\u06CC \u0632\u0646\u0647\n
@@ -3083,15 +3075,13 @@ MonoBehaviour:
       \u0646\u06CC\u0633\u062A\u061F \u062F\u0648\u0628\u0627\u0631\u0647 \u0628\u0631\u0645
       \u067E\u06CC\u0634 \u0647\u0645\u0647 \n\u0627\u0633\u0627\u062A\u06CC\u062F\u061F"
     - "\u0686\u0631\u0627 \u06CC\u0647 \u0631\u0627\u0647 \u062F\u06CC\u06AF\u0647
-      \u0647\u0633\u062A\u2026 \u0628\u0628\u06CC\u0646 \u062F\u0627\u062E\u0644
-      \u06A9\u062A\u0627\u0628\u062E\n\u0648\u0646\u0647 \u0628\u0627\u06CC\u06AF\u0627\u0646\u06CC
-      \u0645\u062F\u0627\u0631\u06A9 \u0647\u0633\u062A\u060C \u0628\u0631\u0648
-      \u0637\u0628\u0642\u0647 \u0633\u0648\u0645 \u06A9\u067E\u06CC \n\u0645\u062F\u0627\u0631\u06A9\u062A\u0648
-      \u0628\u06AF\u06CC\u0631\u060C \u0628\u06CC\u0627\u0631."
+      \u0647\u0633\u062A\u2026 \u0628\u0628\u06CC\u0646 \u062F\u0627\u062E\u0644\n
+      \u06A9\u062A\u0627\u0628\u062E\u0648\u0646\u0647 \u0628\u0627\u06CC\u06AF\u0627\u0646\u06CC
+      \u0645\u062F\u0627\u0631\u06A9 \u0647\u0633\u062A \u0628\u0631\u0648 \u0627\u0648\u0646\u062C\u0627"
   - dialogues:
     - "\u062E\u0628 \u0627\u06CC\u0646\u0645 \u0627\u0632 \u06A9\u067E\u06CC \u0645\u062F\u0627\u0631\u06A9\u0645\u060C
-      \u062F\u06CC\u06AF\u0647 \u0686\u06CC\u061F \u0628\u0627\u0632 \u0628\u0627\u06CC\u062F
-      \n\u0686\u06CC\u06A9\u0627\u0631 \u06A9\u0646\u0645\u061F \n\u062D\u0627\u0644\u0627
+      \u062F\u06CC\u06AF\u0647 \u0686\u06CC\u061F \u0628\u0627\u0632 \u0628\u0627\u06CC\u062F\n
+      \u0686\u06CC\u06A9\u0627\u0631 \u06A9\u0646\u0645\u061F \u062D\u0627\u0644\u0627
       \u0647\u0645 \u062D\u062A\u0645\u0627 \u0633\u0627\u0645\u0627\u0646\u0647
       \u0642\u0637\u0639\u0647 \u0622\u0631\u0647\u061F\r\n"
     - "\u0633\u0627\u0645\u0627\u0646\u0647 \u06A9\u0647 \u06CC\u0647 \u06F3 \u0633\u0627\u0644\u06CC
@@ -3100,7 +3090,7 @@ MonoBehaviour:
     - "\u0628\u0641\u0631\u0645\u0627\u06CC\u06CC\u062F"
     - "\u062E\u0628\u2026 \u0627\u06CC\u0646\u0645 \u0627\u0632 \u0627\u06CC\u0646
       \u0639\u0632\u06CC\u0632\u0645 \u0647\u0645\u0647 \u0686\u06CC\u0632 \u062F\u0631\u0633\u062A
-      \u0628\u0647 \u0646\u0638\u0631 \n\u0645\u06CC\u0631\u0633\u0647 \n\u0641\u0642\u0637
+      \u0628\u0647\n\u0646\u0638\u0631 \u0645\u06CC\u0631\u0633\u0647 \u0641\u0642\u0637
       \u06CC\u0647 \u0686\u06CC\u0632\u06CC\u2026"
   listOfTexts:
   - {fileID: 402104702315675255}
@@ -3280,7 +3270,7 @@ GameObject:
   - component: {fileID: 8256822052125817895}
   - component: {fileID: 1417269205310681809}
   - component: {fileID: 1085241972329016080}
-  - component: {fileID: 8556413905446054624}
+  - component: {fileID: 267881553743912345}
   m_Layer: 5
   m_Name: Person1 (5)
   m_TagString: Untagged
@@ -3438,7 +3428,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &8556413905446054624
+--- !u!114 &267881553743912345
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3447,13 +3437,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6310293223066810178}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62e2a80b1705e3a41b2ca016fa2bcf10, type: 3}
+  m_Script: {fileID: 11500000, guid: 8cdc9b3329f291a40907f781d530da33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetImage: {fileID: 0}
-  sprites:
-  - {fileID: -7777177641172106769, guid: 93124c43cbd4fdf48891f86d1222b764, type: 3}
-  - {fileID: -394591486901757920, guid: 48fea61eca7a4fe4ca4e53c5a3f5aab9, type: 3}
+  targetImage: {fileID: 3717104289369252525}
+  Boy: {fileID: -394591486901757920, guid: 48fea61eca7a4fe4ca4e53c5a3f5aab9, type: 3}
 --- !u!1 &6382486475135769508
 GameObject:
   m_ObjectHideFlags: 0
@@ -3468,7 +3456,7 @@ GameObject:
   - component: {fileID: 1825779830706118584}
   - component: {fileID: 5033049648824560310}
   - component: {fileID: 7864390580116790739}
-  - component: {fileID: 3336797803558273908}
+  - component: {fileID: 2904168174260717213}
   m_Layer: 5
   m_Name: Person1 (4)
   m_TagString: Untagged
@@ -3626,7 +3614,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &3336797803558273908
+--- !u!114 &2904168174260717213
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3635,13 +3623,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6382486475135769508}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62e2a80b1705e3a41b2ca016fa2bcf10, type: 3}
+  m_Script: {fileID: 11500000, guid: 8cdc9b3329f291a40907f781d530da33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetImage: {fileID: 0}
-  sprites:
-  - {fileID: -7777177641172106769, guid: 93124c43cbd4fdf48891f86d1222b764, type: 3}
-  - {fileID: -394591486901757920, guid: 48fea61eca7a4fe4ca4e53c5a3f5aab9, type: 3}
+  targetImage: {fileID: 939987568361889182}
+  Boy: {fileID: -394591486901757920, guid: 48fea61eca7a4fe4ca4e53c5a3f5aab9, type: 3}
 --- !u!1 &6440985859995194372
 GameObject:
   m_ObjectHideFlags: 0
@@ -4282,7 +4268,7 @@ GameObject:
   - component: {fileID: 308360991532087799}
   - component: {fileID: 2021645893452552592}
   - component: {fileID: 2632262445127331097}
-  - component: {fileID: 2267035080503241600}
+  - component: {fileID: 2894727786581911669}
   m_Layer: 5
   m_Name: Person1 (3)
   m_TagString: Untagged
@@ -4440,7 +4426,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
---- !u!114 &2267035080503241600
+--- !u!114 &2894727786581911669
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -4449,13 +4435,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 7917801973964910855}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 62e2a80b1705e3a41b2ca016fa2bcf10, type: 3}
+  m_Script: {fileID: 11500000, guid: 8cdc9b3329f291a40907f781d530da33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetImage: {fileID: 0}
-  sprites:
-  - {fileID: -7777177641172106769, guid: 93124c43cbd4fdf48891f86d1222b764, type: 3}
-  - {fileID: -394591486901757920, guid: 48fea61eca7a4fe4ca4e53c5a3f5aab9, type: 3}
+  targetImage: {fileID: 8925261828611877148}
+  Boy: {fileID: -394591486901757920, guid: 48fea61eca7a4fe4ca4e53c5a3f5aab9, type: 3}
 --- !u!1 &8403836368083001383
 GameObject:
   m_ObjectHideFlags: 0
