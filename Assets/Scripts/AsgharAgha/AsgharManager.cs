@@ -48,7 +48,7 @@ public class AsgharManager : MonoBehaviour
     private IEnumerator WinRoutine()
     {
         fadePanel.SetActive(true);
-        
+        teacher.isFacingPlayer = false; 
         yield return new WaitForSeconds(fadeDuration);
         Debug.Log("You escaped the class!");
     }

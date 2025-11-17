@@ -18,11 +18,12 @@ public class Mazaheri : BaseProfessors
 
     public void HandleEnding()
     {
+        musicChange.ToggleMusic();
+        musicChange.PlayMainMusic();
         RectTransform parent = StartPanel.transform.parent.GetComponent<RectTransform>();
         parent.gameObject.SetActive(false);
         UIAnimationManager.Instance.HideWindow(parent, 0.5f);
         UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.5f, firstWinDialogueFtw);
-        musicChange.ToggleMusic();
-        musicChange.PlayMainMusic();
+        
     }
 }

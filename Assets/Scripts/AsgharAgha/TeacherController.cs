@@ -5,7 +5,7 @@ public class TeacherController : BaseProfessors
 {
     public Animator animator;
     public bool isFacingPlayer = false;
-
+    private bool flag = false; 
     [Header("Random Rotation Settings")]
     public float minWait = 1.5f;
     public float maxWait = 4f;
@@ -44,7 +44,6 @@ public class TeacherController : BaseProfessors
                 // Player is safe immediately
                 animator.SetTrigger("FacingBack");
                 isFacingPlayer = false; 
-                soundPlayer.Play("GreenLight");
             }
             else
             {
@@ -53,6 +52,19 @@ public class TeacherController : BaseProfessors
                 animator.SetTrigger("FacingFront");
             }
         }
+    }
+
+    public void PlayGreenLightSound()
+    {
+        if (flag == true)
+        {
+            soundPlayer.Play("GreenLight");
+        }
+        else
+        {
+            flag = true;
+        }
+        
     }
     
     public void OnFacingFrontComplete()
