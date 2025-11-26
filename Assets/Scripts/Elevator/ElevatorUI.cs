@@ -29,11 +29,6 @@ public class ElevatorUI : MonoBehaviour
 
     private void OnFloorButtonPressed(int floorIndex)
     {
-        if (floorIndex == currentFloor)
-        {
-            
-            return;
-        }   
         StartCoroutine(MoveToFloor(floorIndex));
     }
 
