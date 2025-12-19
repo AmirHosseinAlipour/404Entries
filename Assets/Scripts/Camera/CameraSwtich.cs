@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using Unity.Cinemachine;
 using Unity.VisualScripting;
 using UnityEngine;
@@ -6,26 +7,80 @@ using UnityEngine;
 public class CameraSwitch : MonoBehaviour
 {
     public CinemachineCamera roomCamera;
+    public GameObject voidParent;
+    private SpriteRenderer[] voidBackground;
+    public float fadeDuration;
     public bool isEnteringRoom;
+    private Coroutine currentFadeCoroutine;
+
+    private void Start()
+    {
+        voidBackground = voidParent.GetComponentsInChildren<SpriteRenderer>();
+        foreach (SpriteRenderer sp in voidBackground)
+        {
+            Color c = sp.color;
+            c.a = 0;
+            sp.color = c;
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
+            if (currentFadeCoroutine != null)
+            {
+                StopCoroutine(currentFadeCoroutine);
+            }
+
             if (isEnteringRoom)
             {
-                ScreenFader.Instance.FadeOut();
+                currentFadeCoroutine = StartCoroutine(FadeIn());
             }
             else
             {
-                ScreenFader.Instance.FadeIn();
+                currentFadeCoroutine = StartCoroutine(FadeOut());
             }
             
-            // If player enters the room switch to the room camera otherwise switch back to plaer VCam
             roomCamera.Priority = isEnteringRoom ? 19 : 0;
             
-            // Set the right calling mask to make the void effect
             CameraMaskSwitcher.Instance.roomVcam = roomCamera;
+        }
+    }
+
+    private IEnumerator FadeIn()
+    {
+        float elapsedTime = 0f;
+        float startAlpha = voidBackground[0].color.a;
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float alpha = Mathf.Lerp(startAlpha, 1f, elapsedTime / fadeDuration);
+            foreach (SpriteRenderer sp in voidBackground)
+            {
+                Color c = sp.color;
+                c.a = alpha;
+                sp.color = c;
+            }
+            yield return null;
+        }
+    }
+
+    private IEnumerator FadeOut()
+    {
+        float elapsedTime = 0f;
+        float startAlpha = voidBackground[0].color.a;
+        while (elapsedTime < fadeDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            float alpha = Mathf.Lerp(startAlpha, 0f, elapsedTime / fadeDuration);
+            foreach (SpriteRenderer sp in voidBackground)
+            {
+                Color c = sp.color;
+                c.a = alpha;
+                sp.color = c;
+            }
+            yield return null;
         }
     }
 }
