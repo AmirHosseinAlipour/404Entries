@@ -8,7 +8,7 @@ public class ExitDoor : MonoBehaviour
     public AsgharManager gameManager;
     public TeacherController teacher;
     public Collider2D door;
-    public Transform teleportPos;
+    [SerializeField] private Collider2D door2;
     public CinemachineCamera roomCamera;
     private MusicChange musicChange;
 
@@ -23,14 +23,14 @@ public class ExitDoor : MonoBehaviour
         {
             gameManager.WinGame();
             door.isTrigger = true;
+            door2.isTrigger = true;
             teacher.StopLooking();
+            gameManager._win = true;
             TaskManager.Instance.CompleteTask(teacher.TaskOrderNumber);
             roomCamera.Priority = 0;
-            other.gameObject.transform.position = teleportPos.position;
             UIAnimationManager.Instance.ShowDialogueWindow(teacher.firstWinDialogue, 0.5f, teacher.firstWinDialogueFtw);
             musicChange.ToggleMusic();
             musicChange.PlayMainMusic();
-            
         }
     }
 }
