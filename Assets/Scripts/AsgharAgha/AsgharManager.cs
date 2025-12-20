@@ -12,6 +12,8 @@ public class AsgharManager : MonoBehaviour
     public GameObject RespawnPoint;
     private CanvasGroup canvasGroup;
 
+    public bool _win = false;
+
     private void Awake()
     {
         canvasGroup = fadePanel.GetComponent<CanvasGroup>();
@@ -23,9 +25,7 @@ public class AsgharManager : MonoBehaviour
     private void Update()
     {
         
-
-        
-        if (teacher.isFacingPlayer && player.IsMoving())
+        if (teacher.isFacingPlayer && player.IsMoving() && !_win)
         {
             StartCoroutine(RestartGame());
         }
