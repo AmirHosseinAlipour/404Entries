@@ -15,7 +15,7 @@ public class StartGame : MonoBehaviour
         FindObjectOfType<VideoController>()
             .PlayVideo(() =>
             {
-                SceneManager.LoadScene("Prototype");
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
             });
     }
 }
