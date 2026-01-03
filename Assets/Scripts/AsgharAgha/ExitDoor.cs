@@ -12,6 +12,7 @@ public class ExitDoor : MonoBehaviour
     public CinemachineCamera roomCamera;
     private MusicChange musicChange;
 
+
     private void Start()
     {
         musicChange = GetComponent<MusicChange>();

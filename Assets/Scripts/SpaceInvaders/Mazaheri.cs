@@ -8,10 +8,12 @@ public class Mazaheri : BaseProfessors
     public SpaceInvadersManager game;
     public RectTransform bootPanel; 
     public  MusicChange musicChange;
+    public GameObject MiniMap; 
     
     public void StartGame()
     {
         UIAnimationManager.Instance.ShowWindow(bootPanel, 0.5f);
+        MiniMap.SetActive(false);
         game.InitialSettings();
     }
 

@@ -3,6 +3,7 @@ using UnityEngine;
 
 public class SpaceInvadersManager : MonoBehaviour
 {
+    public GameObject MiniMap; 
     [Header("Camera Settings")] 
     public CinemachineCamera cam;
     public SpriteRenderer background;
@@ -65,6 +66,7 @@ public class SpaceInvadersManager : MonoBehaviour
            
 
             TaskManager.Instance.CompleteTask(m.TaskOrderNumber);
+            MiniMap.SetActive(true);
             m.HandleEnding();
         }
     }

@@ -11,6 +11,7 @@ public class AsgharManager : MonoBehaviour
     public float fadeDuration = 1f;
     public GameObject RespawnPoint;
     private CanvasGroup canvasGroup;
+    
 
     public bool _win = false;
 
