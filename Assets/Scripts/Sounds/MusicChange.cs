@@ -7,7 +7,7 @@ public class MusicChange : MonoBehaviour
     public GameObject Music3D;
     public AudioClip MusicToChange;
     public AudioSource ThemeMusic;
-    public  AudioClip Main_Music;
+    public MainMusicConfig mainMusicConfig;
     public float fadeDuration = 0.3f;
 
 
@@ -31,7 +31,7 @@ public class MusicChange : MonoBehaviour
     public void PlayMainMusic()
     {
         ThemeMusic.Stop();
-         ThemeMusic.clip = Main_Music;
+        ThemeMusic.clip = mainMusicConfig.mainMusic;
          ThemeMusic.Play();
         //StartCoroutine(FadeToNewMusic(Main_Music));
     }
