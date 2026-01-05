@@ -14,3 +14,11 @@ To complete the enrollment, the student must visit different professors across t
 
 Getting accepted was the easy part.
 Registering… is a whole different challenge.
+
+## 🎮 Play the Game
+
+You can download and play the released builds of **Welcome to SBU** on itch.io:
+
+👉 [https://itch.io/game/edit/4070668](https://mohammadfarhadi.itch.io/wellcome-to-sbu)
+
+The itch.io page contains the latest playable versions of the game for supported platforms.
