@@ -852,6 +852,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1548,6 +1549,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1685,6 +1687,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2385,6 +2388,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -2942,6 +2946,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -3086,6 +3091,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1608700720126076700
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -3104,6 +3110,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -3125,9 +3133,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -10
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
   m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_FlipX: 0
@@ -3137,7 +3147,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!1 &4078844474629261904
 GameObject:
@@ -3242,6 +3251,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -3556,6 +3566,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6076657020774345687
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -3574,6 +3585,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -3595,9 +3608,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 5
+  m_MaskInteraction: 0
   m_Sprite: {fileID: -2708082308099014714, guid: a995dc68d42c94b389c4094892b23c2b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -3607,7 +3622,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!61 &2827394235337319324
 BoxCollider2D:
@@ -3705,6 +3719,7 @@ MonoBehaviour:
   game: {fileID: 7270057265260313901}
   bootPanel: {fileID: 3158100570745116906}
   musicChange: {fileID: 8561416043240664716}
+  MiniMap: {fileID: 0}
 --- !u!114 &8561416043240664716
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3720,7 +3735,7 @@ MonoBehaviour:
   Music3D: {fileID: 0}
   MusicToChange: {fileID: 8300000, guid: 3d15ab939941bc74295730aec4c41af5, type: 3}
   ThemeMusic: {fileID: 0}
-  Main_Music: {fileID: 8300000, guid: 38eafbd8c7f618448984ad95f5367f3a, type: 3}
+  mainMusicConfig: {fileID: 0}
   fadeDuration: 1.5
 --- !u!1 &4321381874593630114
 GameObject:
@@ -4188,6 +4203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3674965f122862b468a5eef915f56fc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  MiniMap: {fileID: 0}
   cam: {fileID: 8863783599758295359}
   background: {fileID: 8680038410383274346}
   gameObjectsToShow: {fileID: 5133747154577700309}
@@ -4233,7 +4249,7 @@ MonoBehaviour:
   Music3D: {fileID: 0}
   MusicToChange: {fileID: 8300000, guid: 3d15ab939941bc74295730aec4c41af5, type: 3}
   ThemeMusic: {fileID: 0}
-  Main_Music: {fileID: 8300000, guid: 38eafbd8c7f618448984ad95f5367f3a, type: 3}
+  mainMusicConfig: {fileID: 0}
   fadeDuration: 1.5
 --- !u!1 &4935786408948302684
 GameObject:
@@ -4324,7 +4340,7 @@ GameObject:
   - component: {fileID: 845044780415344364}
   - component: {fileID: 8404564633072845064}
   m_Layer: 5
-  m_Name: Shekofteh_UI
+  m_Name: Mazaheri_UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4339,15 +4355,15 @@ RectTransform:
   m_GameObject: {fileID: 4957754066230985020}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 12, y: 12, z: 12}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 974384082226214508}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -0.000061035156, y: 0}
-  m_SizeDelta: {x: 33.9735, y: 55.5184}
+  m_AnchoredPosition: {x: -58.25, y: 0}
+  m_SizeDelta: {x: 22, y: 56}
   m_Pivot: {x: 1, y: 0}
 --- !u!222 &273181679411151790
 CanvasRenderer:

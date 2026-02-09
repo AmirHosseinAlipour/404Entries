@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
             if (taskTriggers[currentTaskIndex] != null)
             {
                 taskTriggers[currentTaskIndex].GetComponent<Collider2D>().isTrigger = true;
+                taskTriggers[currentTaskIndex].GetComponent<Target>().EnableTarget();
             }
         }
     }
@@ -60,6 +61,7 @@ public class GameManager : MonoBehaviour
             if (taskTriggers[i] != null)
             {
                 taskTriggers[i].GetComponent<Collider2D>().isTrigger = false;
+                taskTriggers[i].GetComponent<Target>().DisableTarget();
             }
         }
     }
