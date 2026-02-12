@@ -940,7 +940,7 @@ GameObject:
   - component: {fileID: 6980300301611388480}
   - component: {fileID: 94581520394625782}
   m_Layer: 5
-  m_Name: Shekofteh_UI
+  m_Name: KetabKhone_UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -955,15 +955,15 @@ RectTransform:
   m_GameObject: {fileID: 771656507010811042}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 12, y: 12, z: 12}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 33354971649764664}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -89.96002, y: 51.58}
-  m_SizeDelta: {x: 22, y: 55}
+  m_AnchoredPosition: {x: 231.89001, y: -54.6}
+  m_SizeDelta: {x: 64, y: 64}
   m_Pivot: {x: 1, y: 0}
 --- !u!222 &5812422915466697723
 CanvasRenderer:
@@ -1013,7 +1013,7 @@ Animator:
   m_GameObject: {fileID: 771656507010811042}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 6b9ed8496a13e1f4d85c58e462606399, type: 2}
+  m_Controller: {fileID: 9100000, guid: 43f95fa4ce16447feb2cc70791fbdb03, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -2893,7 +2893,7 @@ MonoBehaviour:
   Music3D: {fileID: 0}
   MusicToChange: {fileID: 8300000, guid: 7d865b72f9531d24e97f91132f621913, type: 3}
   ThemeMusic: {fileID: 0}
-  Main_Music: {fileID: 8300000, guid: 38eafbd8c7f618448984ad95f5367f3a, type: 3}
+  mainMusicConfig: {fileID: 0}
   fadeDuration: 1.5
 --- !u!1 &2639611978212839962
 GameObject:
@@ -9343,6 +9343,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &8077416821493714600
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -9361,6 +9362,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -9382,9 +9385,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 5015876820876238961, guid: c4c92f5d61aac4a1f9fdf74d79ecc5d0, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -9394,7 +9399,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!61 &4080325948237347017
 BoxCollider2D:
@@ -9507,7 +9511,7 @@ MonoBehaviour:
   Music3D: {fileID: 0}
   MusicToChange: {fileID: 8300000, guid: 7d865b72f9531d24e97f91132f621913, type: 3}
   ThemeMusic: {fileID: 0}
-  Main_Music: {fileID: 8300000, guid: 38eafbd8c7f618448984ad95f5367f3a, type: 3}
+  mainMusicConfig: {fileID: 0}
   fadeDuration: 1.5
 --- !u!1 &8798973791405477675
 GameObject:

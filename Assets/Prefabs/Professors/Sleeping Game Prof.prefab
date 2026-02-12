@@ -3001,7 +3001,7 @@ MonoBehaviour:
   Music3D: {fileID: 0}
   MusicToChange: {fileID: 8300000, guid: 65d713682babe2f4db13bd12edf72630, type: 3}
   ThemeMusic: {fileID: 0}
-  Main_Music: {fileID: 8300000, guid: 38eafbd8c7f618448984ad95f5367f3a, type: 3}
+  mainMusicConfig: {fileID: 0}
   fadeDuration: 1.5
 --- !u!1 &7250398669802367449
 GameObject:
@@ -3579,6 +3579,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1094326947842696587
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -3597,6 +3598,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -3618,9 +3621,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 4145538264305932738, guid: 1517f5d2253dbe8499d6230f7aa237b5, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -3630,7 +3635,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!95 &8590500608407649291
 Animator:
@@ -3740,7 +3744,7 @@ GameObject:
   - component: {fileID: 9188913385437499182}
   - component: {fileID: 2709314150731141391}
   m_Layer: 5
-  m_Name: Masoumi_UI
+  m_Name: Malek_UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3755,15 +3759,15 @@ RectTransform:
   m_GameObject: {fileID: 8104692631282927486}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 12, y: 12, z: 12}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 5974749820216397622}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: 0, y: 5.901}
-  m_SizeDelta: {x: 31.254, y: 67.8262}
+  m_AnchoredPosition: {x: -54.53, y: 5.901001}
+  m_SizeDelta: {x: 21, y: 56}
   m_Pivot: {x: 1, y: 0}
 --- !u!222 &8276127547181137077
 CanvasRenderer:

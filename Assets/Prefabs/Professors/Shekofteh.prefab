@@ -722,6 +722,7 @@ MonoBehaviour:
   m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
+  m_characterHorizontalScale: 1
   m_wordSpacing: 0
   m_lineSpacing: 0
   m_lineSpacingMax: 0
@@ -1198,8 +1199,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   typeWriterEffect: 1
   typeCharTime: 0.05
-  autoResetText: 1
-  len: 0
+  newPageOnBottom: 1
+  pageClearPaddingPx: 150
 --- !u!1 &3154197251850630405
 GameObject:
   m_ObjectHideFlags: 0
@@ -1418,7 +1419,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &4611070828486924552
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1927,7 +1928,7 @@ RectTransform:
   m_GameObject: {fileID: 4390478491012484455}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 10, y: 10, z: 10}
+  m_LocalScale: {x: 12, y: 12, z: 12}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 4611070828486924552}
@@ -1935,7 +1936,7 @@ RectTransform:
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: -50, y: 0}
-  m_SizeDelta: {x: 32.6671, y: 75.121}
+  m_SizeDelta: {x: 21, y: 56}
   m_Pivot: {x: 1, y: 0}
 --- !u!222 &7158849267261251459
 CanvasRenderer:
@@ -2771,6 +2772,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &6778834353724527157
 SpriteRenderer:
+  serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -2789,6 +2791,8 @@ SpriteRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -2810,9 +2814,11 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 10
+  m_MaskInteraction: 0
   m_Sprite: {fileID: 1092628676154287437, guid: 51068c063e5314eea908948b538fd081, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -2822,7 +2828,6 @@ SpriteRenderer:
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!61 &7647064325839463616
 BoxCollider2D:
@@ -3056,7 +3061,7 @@ MonoBehaviour:
   Music3D: {fileID: 0}
   MusicToChange: {fileID: 8300000, guid: 35c521f618d64284da7f773afa82fe94, type: 3}
   ThemeMusic: {fileID: 0}
-  Main_Music: {fileID: 8300000, guid: 38eafbd8c7f618448984ad95f5367f3a, type: 3}
+  mainMusicConfig: {fileID: 0}
   fadeDuration: 1.5
 --- !u!1 &5644520524355874175
 GameObject:

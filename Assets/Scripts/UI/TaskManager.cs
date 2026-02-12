@@ -21,6 +21,9 @@ public class TaskManager : MonoBehaviour
     public Image Main_image;
     
     public Action OnCurrentIndexChange;
+    
+    [Header("Task Triggers")]
+    public List<GameObject> taskTriggers;
 
     private void Start()
     {
@@ -33,6 +36,8 @@ public class TaskManager : MonoBehaviour
             Instance = this;
         else
             Destroy(gameObject);
+        
+        taskTriggers[0].GetComponent<Target>().EnableTarget();
     }
     
     // For debugging
@@ -49,8 +54,10 @@ public class TaskManager : MonoBehaviour
         if (index >= 0 && index < taskCompleted.Length)
         {
             taskCompleted[index] = true;
-            
             OnCurrentIndexChange?.Invoke();
+            taskTriggers[index].GetComponent<Target>().DisableTarget();
+            taskTriggers[GetCurrentTaskIndex()].GetComponent<Target>().EnableTarget();
+            
         }
     }
     public int GetCurrentTaskIndex()

@@ -10,6 +10,7 @@ public class BaseProfessors : MonoBehaviour
     public RectTransform StartPanel;
     public RectTransform acceptRect;
     public Text[] listOfTexts;
+    public Target target;
 
     private const int InitialDialogueCount = 3;
     
@@ -40,6 +41,8 @@ public class BaseProfessors : MonoBehaviour
         _allTasksBackButton = GameObject.FindWithTag("AllTasksBackButton").GetComponent<Button>();
         _currentTaskButton = GameObject.FindWithTag("CurrentTaskButton").GetComponent<Button>();
         _joyStick = GameObject.FindWithTag("JoyStick");
+
+        target = gameObject.GetComponent<Target>();
     }
 
     protected virtual void Start()
