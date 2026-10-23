@@ -37,7 +37,7 @@ public class ElevatorUI : MonoBehaviour
             return;
         }
 
-        StartCoroutine(MoveToFloor(floorIndex));
+        UIAnimationManager.Instance.StartCoroutine(MoveToFloor(floorIndex));
     }
 
     private IEnumerator MoveToFloor(int floorIndex)
@@ -57,18 +57,24 @@ public class ElevatorUI : MonoBehaviour
             p.SetIdleDirection(new Vector2(0, -1));
         }
 
+        // Close doors first
+        if (doorAnimation != null)
+            doorAnimation.CloseDoors();
+
+        yield return new WaitForSeconds(1f);
+
+        // Hide UI panels
         if (buttonsPanel != null)
-            UIAnimationManager.Instance.HideWindow(buttonsPanel, 0.3f);
+            buttonsPanel.gameObject.SetActive(false);
         
         RectTransform myRect = gameObject.GetComponent<RectTransform>();
         if (myRect != null)
-            UIAnimationManager.Instance.HideWindow(myRect, 0.3f);
+            myRect.gameObject.SetActive(false);
 
         if (musicChange != null)
             musicChange.ToggleMusic();
 
-        yield return new WaitForSeconds(0.3f);
-
+        // Teleport player
         if (player != null && floorPositions[floorIndex] != null)
         {
             player.position = floorPositions[floorIndex].transform.position;

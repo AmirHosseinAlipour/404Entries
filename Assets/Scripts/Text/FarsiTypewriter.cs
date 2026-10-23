@@ -208,7 +208,19 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
         else if (isComplete)
         {
             // Click after text is fully shown → advance to next dialogue
-            OnClickWhenComplete?.Invoke();
+            if (OnClickWhenComplete != null)
+            {
+                OnClickWhenComplete.Invoke();
+            }
+            else
+            {
+                // Auto-find a Button in parent hierarchy and click it
+                var btn = GetComponentInParent<Button>();
+                if (btn != null && btn.interactable)
+                {
+                    btn.onClick.Invoke();
+                }
+            }
         }
     }
 
