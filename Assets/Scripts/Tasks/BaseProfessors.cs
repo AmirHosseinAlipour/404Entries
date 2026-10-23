@@ -36,10 +36,15 @@ public class BaseProfessors : MonoBehaviour
 
     protected virtual void Awake()
     {
-        _player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+        var playerObj = GameObject.FindWithTag("Player");
+        if (playerObj != null) _player = playerObj.GetComponent<PlayerController>();
         
-        _allTasksBackButton = GameObject.FindWithTag("AllTasksBackButton").GetComponent<Button>();
-        _currentTaskButton = GameObject.FindWithTag("CurrentTaskButton").GetComponent<Button>();
+        var backBtnObj = GameObject.FindWithTag("AllTasksBackButton");
+        if (backBtnObj != null) _allTasksBackButton = backBtnObj.GetComponent<Button>();
+
+        var currBtnObj = GameObject.FindWithTag("CurrentTaskButton");
+        if (currBtnObj != null) _currentTaskButton = currBtnObj.GetComponent<Button>();
+
         _joyStick = GameObject.FindWithTag("JoyStick");
 
         target = gameObject.GetComponent<Target>();
@@ -47,7 +52,11 @@ public class BaseProfessors : MonoBehaviour
 
     protected virtual void Start()
     {
-        _player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+        if (_player == null)
+        {
+            var playerObj = GameObject.FindWithTag("Player");
+            if (playerObj != null) _player = playerObj.GetComponent<PlayerController>();
+        }
     }
     
     // If player enters the trigger zone it's input get skipped and the UI panel would show up!
@@ -55,23 +64,30 @@ public class BaseProfessors : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            if (TaskManager.Instance.taskCompleted[TaskOrderNumber])
+            if (_player == null) _player = other.gameObject.GetComponent<PlayerController>();
+
+            if (TaskManager.Instance != null && TaskManager.Instance.taskCompleted != null && TaskOrderNumber < TaskManager.Instance.taskCompleted.Length && TaskManager.Instance.taskCompleted[TaskOrderNumber])
             {
-                UIAnimationManager.Instance.ShowWindow(afterWinDialogue, 0.5f);
+                if (afterWinDialogue != null) UIAnimationManager.Instance.ShowWindow(afterWinDialogue, 0.5f);
             }
             else
             {
                 PlayerUIModeHelper.PlayerEnterUIMode(_player);
                 PlayerUIModeHelper.DisableTasksButton(_allTasksBackButton, _currentTaskButton);
-                UIUtils.SetAlpha(_currentTaskButton.gameObject, 0f);
+                UIUtils.SetAlpha(_currentTaskButton != null ? _currentTaskButton.gameObject : null, 0f);
                 UIUtils.SetAlpha(_joyStick, 0f);
                 
-                UIAnimationManager.Instance.ShowWindow(StartPanel, 0.5f);
+                if (StartPanel != null) UIAnimationManager.Instance.ShowWindow(StartPanel, 0.5f);
                 
-                for (int i = 0; i < 3; i++)
+                if (listOfTexts != null)
                 {
-                    // Reset the text so each time the text would be written in type writer effect!
-                    listOfTexts[i].text = "";
+                    for (int i = 0; i < Mathf.Min(3, listOfTexts.Length); i++)
+                    {
+                        if (listOfTexts[i] != null)
+                        {
+                            listOfTexts[i].text = "";
+                        }
+                    }
                 }
             
                 StartCoroutine(TextSequence());
@@ -85,10 +101,16 @@ public class BaseProfessors : MonoBehaviour
         // First of all we write the first 3 text which is the accept message + yes/no option
         for (int i = 0; i < InitialDialogueCount; i++)
         {
-            FarsiTypewriter text = listOfTexts[i].gameObject.GetComponent<FarsiTypewriter>();
-            int len = text.len;
-            text.StartTyping();
-            yield return new WaitForSeconds(text.typeCharTime * len);
+            if (listOfTexts != null && i < listOfTexts.Length && listOfTexts[i] != null)
+            {
+                FarsiTypewriter text = listOfTexts[i].gameObject.GetComponent<FarsiTypewriter>();
+                if (text != null)
+                {
+                    int len = text.len;
+                    text.StartTyping();
+                    yield return new WaitForSeconds(text.typeCharTime * len);
+                }
+            }
         }
     }
     
@@ -110,8 +132,11 @@ public class BaseProfessors : MonoBehaviour
         {
             PlayerUIModeHelper.PlayerExitUIMode(_player);
             PlayerUIModeHelper.EnableTasksButton(_allTasksBackButton, _currentTaskButton);
-            UIUtils.SetAlpha(_currentTaskButton.gameObject, 1f);
-            UIUtils.SetAlpha(_joyStick, 1f);
+            UIUtils.SetAlpha(_currentTaskButton != null ? _currentTaskButton.gameObject : null, 1f);
+            if (PlatformHelper.IsMobile())
+            {
+                UIUtils.SetAlpha(_joyStick, 1f);
+            }
         }
     }
 
@@ -119,7 +144,10 @@ public class BaseProfessors : MonoBehaviour
     {
         PlayerUIModeHelper.PlayerExitUIMode(_player);
         PlayerUIModeHelper.EnableTasksButton(_allTasksBackButton, _currentTaskButton);
-        UIUtils.SetAlpha(_currentTaskButton.gameObject, 1f);
-        UIUtils.SetAlpha(_joyStick, 1f);
+        UIUtils.SetAlpha(_currentTaskButton != null ? _currentTaskButton.gameObject : null, 1f);
+        if (PlatformHelper.IsMobile())
+        {
+            UIUtils.SetAlpha(_joyStick, 1f);
+        }
     }
 }

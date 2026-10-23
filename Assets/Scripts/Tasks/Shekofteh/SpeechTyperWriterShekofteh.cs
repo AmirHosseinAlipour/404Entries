@@ -47,6 +47,36 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
         _textUI.text = "";
     }
 
+    private void OnEnable()
+    {
+        LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    private void OnDisable()
+    {
+        LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(GameLanguage newLang)
+    {
+        if (_typingCo != null)
+        {
+            StartTyping();
+        }
+        else
+        {
+            ApplyAlignment();
+        }
+    }
+
+    private void ApplyAlignment()
+    {
+        if (_textUI != null)
+        {
+            _textUI.alignment = LocalizationManager.IsRTL ? TextAnchor.UpperRight : TextAnchor.UpperLeft;
+        }
+    }
+
     private void Start()
     {
         _settings = _textUI.GetGenerationSettings(_textUI.rectTransform.rect.size);
@@ -57,9 +87,11 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
         _maxWidthPx = _textUI.rectTransform.rect.width * scale;
         _boxHeightPx = _textUI.rectTransform.rect.height * scale;
 
+        ApplyAlignment();
+
         if (!typeWriterEffect)
         {
-            string rawWrapped = ManualWrapWholeText(_originalText);
+            string rawWrapped = ManualWrapWholeText(LocalizationManager.Translate(_originalText));
             _textUI.text = FixLineByLine(rawWrapped);
         }
         else
@@ -78,6 +110,7 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
     {
         StopTyping();
 
+        ApplyAlignment();
         _textUI.text = "";
         _lines.Clear();
         _currentLine = "";
@@ -98,12 +131,13 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
 
     private IEnumerator TypeTextCoroutine()
     {
-        if (string.IsNullOrEmpty(_originalText))
+        string textToType = LocalizationManager.Translate(_originalText);
+        if (string.IsNullOrEmpty(textToType))
             yield break;
 
-        for (int i = 0; i < _originalText.Length; i++)
+        for (int i = 0; i < textToType.Length; i++)
         {
-            char c = _originalText[i];
+            char c = textToType[i];
 
             if (c == '\n')
             {
@@ -245,14 +279,14 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
 
     private bool LineExceedsWidth(string rawLine)
     {
-        string fixedLine = ArabicFixer.Fix(rawLine, true, true);
+        string fixedLine = LocalizationManager.IsRTL ? ArabicFixer.Fix(rawLine, true, true) : rawLine;
         float w = _textUI.cachedTextGeneratorForLayout.GetPreferredWidth(fixedLine, _settings);
         return w > (_maxWidthPx - 4f);
     }
 
     private bool WordAloneExceedsWidth(string rawWord)
     {
-        string fixedWord = ArabicFixer.Fix(rawWord, true, true);
+        string fixedWord = LocalizationManager.IsRTL ? ArabicFixer.Fix(rawWord, true, true) : rawWord;
         float w = _textUI.cachedTextGeneratorForLayout.GetPreferredWidth(fixedWord, _settings);
         return w > (_maxWidthPx - 4f);
     }
@@ -308,6 +342,7 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
 
     private string FixLineByLine(string rawText)
     {
+        if (!LocalizationManager.IsRTL) return rawText ?? "";
         string[] lines = (rawText ?? "").Split('\n');
         for (int i = 0; i < lines.Length; i++)
             lines[i] = ArabicFixer.Fix(lines[i], true, true);

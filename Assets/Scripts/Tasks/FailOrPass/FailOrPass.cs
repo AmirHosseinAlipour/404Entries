@@ -27,9 +27,12 @@ public class FailOrPass : BaseProfessors
         {
             firstLetter.interactable = false;
         }
-        musicChange.ToggleMusic();
-        musicChange.PlayThemeMusic();
-        letter.StartTyping();
+        if (musicChange != null)
+        {
+            musicChange.ToggleMusic();
+            musicChange.PlayThemeMusic();
+        }
+        if (letter != null) letter.StartTyping();
     }
 
     private void EnableButton()

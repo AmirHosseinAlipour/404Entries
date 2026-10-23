@@ -14,30 +14,51 @@ public class MusicChange : MonoBehaviour
     private void Start()
     {
         fadeDuration = 0.3f;
+        if (ThemeMusic != null && AudioController.Instance != null)
+        {
+            AudioController.Instance.RegisterMusic(ThemeMusic);
+        }
     }
 
     public void ToggleMusic()
     {
-        Music3D.SetActive(!Music3D.activeSelf);
+        if (Music3D != null)
+        {
+            Music3D.SetActive(!Music3D.activeSelf);
+        }
     }
 
     public void PlayThemeMusic()
     {
-        // ThemeMusic.clip = MusicToChange;
-        // ThemeMusic.Play();
-       StartCoroutine(FadeToNewMusic(MusicToChange));
+        if (ThemeMusic == null || MusicToChange == null) return;
+        StartCoroutine(FadeToNewMusic(MusicToChange));
     }
 
     public void PlayMainMusic()
     {
+        if (ThemeMusic == null) return;
         ThemeMusic.Stop();
-        ThemeMusic.clip = mainMusicConfig.mainMusic;
-         ThemeMusic.Play();
-        //StartCoroutine(FadeToNewMusic(Main_Music));
+        if (mainMusicConfig != null)
+        {
+            ThemeMusic.clip = mainMusicConfig.mainMusic;
+        }
+        ThemeMusic.volume = GetTargetVolume();
+        ThemeMusic.Play();
     }
+
+    private float GetTargetVolume()
+    {
+        if (AudioController.Instance != null)
+        {
+            return AudioController.Instance.isMusicMuted ? 0f : AudioController.Instance.musicVolume;
+        }
+        return (ThemeMusic != null) ? Mathf.Clamp01(ThemeMusic.volume) : 1f;
+    }
+
     private IEnumerator FadeToNewMusic(AudioClip newClip)
     {
-        
+        if (ThemeMusic == null) yield break;
+
         float startVolume = ThemeMusic.volume;
 
         for (float t = 0; t < fadeDuration; t += Time.deltaTime)
@@ -50,13 +71,15 @@ public class MusicChange : MonoBehaviour
         ThemeMusic.clip = newClip;
         ThemeMusic.Play();
 
+        float targetVolume = GetTargetVolume();
+
         for (float t = 0; t < fadeDuration; t += Time.deltaTime)
         {
-            ThemeMusic.volume = Mathf.Lerp(0, startVolume, t / fadeDuration);
+            ThemeMusic.volume = Mathf.Lerp(0, targetVolume, t / fadeDuration);
             yield return null;
         }
 
-        ThemeMusic.volume = startVolume;
+        ThemeMusic.volume = targetVolume;
     }
 
     

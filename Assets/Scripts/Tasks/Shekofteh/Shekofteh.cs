@@ -40,10 +40,12 @@ public class Shekofteh : BaseProfessors
     {
         base.Awake();
 
-        _characterStartPosition = UICharacterRectTransform.position;
+        if (UICharacterRectTransform != null)
+            _characterStartPosition = UICharacterRectTransform.position;
         _soundPlayer = GetComponent<SoundPlayer>();
         
-        mission.OnTypingFinished += MissionFailed;
+        if (mission != null)
+            mission.OnTypingFinished += MissionFailed;
         _musicChange = GetComponent<MusicChange>();
     }
     
@@ -51,11 +53,26 @@ public class Shekofteh : BaseProfessors
     {
         base.Start();
         
-        _UIAnimator = UICharacterRectTransform.GetComponent<Animator>();
+        if (UICharacterRectTransform != null)
+            _UIAnimator = UICharacterRectTransform.GetComponent<Animator>();
         
-        SkipButton.OnLevelGoalReached += HandleLevelGoalReached;
-        
-        SkipButton.OnMissionComplete += HandleEnding;
+        if (SkipButton != null)
+        {
+            SkipButton.OnLevelGoalReached += HandleLevelGoalReached;
+            SkipButton.OnMissionComplete += HandleEnding;
+        }
+    }
+
+    private void OnDestroy()
+    {
+        if (mission != null)
+            mission.OnTypingFinished -= MissionFailed;
+
+        if (SkipButton != null)
+        {
+            SkipButton.OnLevelGoalReached -= HandleLevelGoalReached;
+            SkipButton.OnMissionComplete -= HandleEnding;
+        }
     }
 
     private void HandleLevelGoalReached()
@@ -68,16 +85,31 @@ public class Shekofteh : BaseProfessors
 
     private void HandleEnding()
     {
-        TaskManager.Instance.CompleteTask(TaskOrderNumber);
+        if (TaskManager.Instance != null) TaskManager.Instance.CompleteTask(TaskOrderNumber);
         
-        RectTransform parent = StartPanel.transform.parent.GetComponent<RectTransform>();
-        textPanel.GetComponent<SpeechTypeWriterShekofteh>().StopTyping();
-        SkipButton.gameObject.SetActive(false);
-        parent.gameObject.SetActive(false);
-        UIAnimationManager.Instance.HideWindow(parent, 0.5f);
-        UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.5f, firstWinDialogueFtw);
-        _musicChange.ToggleMusic();
-        _musicChange.PlayMainMusic();
+        if (StartPanel != null && StartPanel.transform.parent != null)
+        {
+            RectTransform parent = StartPanel.transform.parent.GetComponent<RectTransform>();
+            if (parent != null)
+            {
+                parent.gameObject.SetActive(false);
+                UIAnimationManager.Instance.HideWindow(parent, 0.5f);
+            }
+        }
+
+        if (textPanel != null)
+        {
+            var st = textPanel.GetComponent<SpeechTypeWriterShekofteh>();
+            if (st != null) st.StopTyping();
+        }
+
+        if (SkipButton != null) SkipButton.gameObject.SetActive(false);
+        if (firstWinDialogue != null) UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.5f, firstWinDialogueFtw);
+        if (_musicChange != null)
+        {
+            _musicChange.ToggleMusic();
+            _musicChange.PlayMainMusic();
+        }
     }
 
     public void StartMission()
@@ -137,24 +169,31 @@ public class Shekofteh : BaseProfessors
         StopAllCoroutines();
     
         // Also stop the typewriter, just in case (though it just finished)
-        mission.StopTyping();
+        if (mission != null) mission.StopTyping();
 
         // Stop the video player if it's running
-        videoPlayer.Stop();
+        if (videoPlayer != null) videoPlayer.Stop();
         
-        
-        textPanel.transform.parent.gameObject.SetActive(false);
-        SkipButton.gameObject.SetActive(false);
-        buttonBackground.gameObject.SetActive(false);
-        counter.SetActive(false);
+        if (textPanel != null && textPanel.transform.parent != null)
+            textPanel.transform.parent.gameObject.SetActive(false);
+        if (SkipButton != null) SkipButton.gameObject.SetActive(false);
+        if (buttonBackground != null) buttonBackground.gameObject.SetActive(false);
+        if (counter != null) counter.SetActive(false);
 
         // Hide the video renderer (e.g., by setting alpha to 0)
-        RawImage r = videoRnderer.GetComponent<RawImage>();
-        Color c = r.color;
-        c.a = 0f;
-        r.color = c;
+        if (videoRnderer != null)
+        {
+            RawImage r = videoRnderer.GetComponent<RawImage>();
+            if (r != null)
+            {
+                Color c = r.color;
+                c.a = 0f;
+                r.color = c;
+            }
+        }
         
-        UICharacterRectTransform.position = _characterStartPosition;
+        if (UICharacterRectTransform != null)
+            UICharacterRectTransform.position = _characterStartPosition;
         _isNextLevelRunning = false;
 
         HandleLoose();
@@ -162,10 +201,13 @@ public class Shekofteh : BaseProfessors
     
     private void HandleLoose()
     {
-        UIAnimationManager.Instance.HideWindow(StartPanel , 0.5f);
-        UIAnimationManager.Instance.ShowWindow(acceptRect, 0.01f);
-        UIAnimationManager.Instance.ShowDialogueWindow(firstFailDialogue, 0.5f, firstFailDialogueFtw);
-        _musicChange.ToggleMusic();
-        _musicChange.PlayMainMusic();
+        if (StartPanel != null) UIAnimationManager.Instance.HideWindow(StartPanel , 0.5f);
+        if (acceptRect != null) UIAnimationManager.Instance.ShowWindow(acceptRect, 0.01f);
+        if (firstFailDialogue != null) UIAnimationManager.Instance.ShowDialogueWindow(firstFailDialogue, 0.5f, firstFailDialogueFtw);
+        if (_musicChange != null)
+        {
+            _musicChange.ToggleMusic();
+            _musicChange.PlayMainMusic();
+        }
     }
 }

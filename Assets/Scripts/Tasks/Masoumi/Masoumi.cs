@@ -99,34 +99,56 @@ public class Masoumi : BaseProfessors
             return;
         }
         
-        UIAnimationManager.Instance.ShowWindow(speechPanel, 0.5f);
+        if (speechPanel != null) UIAnimationManager.Instance.ShowWindow(speechPanel, 0.5f);
 
-        for (int i = 0; i < initialZones.Length; i++)
+        if (initialZones != null && items != null)
         {
-            items[i].currentDropZone = null;
-            items[i].transform.SetParent(initialZones[i].transform, false);
-            
-            items[i].rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
-            items[i].rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
-            items[i].rectTransform.anchoredPosition = Vector2.zero;
+            for (int i = 0; i < initialZones.Length; i++)
+            {
+                if (i < items.Length && items[i] != null && initialZones[i] != null)
+                {
+                    items[i].currentDropZone = null;
+                    items[i].transform.SetParent(initialZones[i].transform, false);
+                    
+                    if (items[i].rectTransform != null)
+                    {
+                        items[i].rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+                        items[i].rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+                        items[i].rectTransform.anchoredPosition = Vector2.zero;
+                    }
+                }
+            }
         }
 
-        // textLevels.text = texts[_currentLevel];
-        textLevels.GetComponent<FarsiTypewriter>().SetText(texts[_currentLevel]);
-
-        for (int i = 0; i < textOptions[_currentLevel].items.Count; i++)
+        if (textLevels != null && texts != null && _currentLevel < texts.Length)
         {
-            itemsOptionsTexts[i].GetComponent<FarsiTypewriter>().SetText(textOptions[_currentLevel].items[i]);
-            // itemsOptionsTexts[i].GetComponent<FarsiTypewriter>().StartTyping();     
+            var ftw = textLevels.GetComponent<FarsiTypewriter>();
+            if (ftw != null) ftw.SetText(texts[_currentLevel]);
+            else textLevels.text = texts[_currentLevel];
+        }
+
+        if (textOptions != null && _currentLevel < textOptions.Length && textOptions[_currentLevel].items != null)
+        {
+            for (int i = 0; i < textOptions[_currentLevel].items.Count; i++)
+            {
+                if (itemsOptionsTexts != null && i < itemsOptionsTexts.Length && itemsOptionsTexts[i] != null)
+                {
+                    var ftw = itemsOptionsTexts[i].GetComponent<FarsiTypewriter>();
+                    if (ftw != null) ftw.SetText(textOptions[_currentLevel].items[i]);
+                }
+            }
         }
     }
 
     private void HandleEnding()
     {
-        UIAnimationManager.Instance.HideWindow(missionPanel, 0.5f);
-        TaskManager.Instance.CompleteTask(TaskOrderNumber);
-        UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.3f, firstWinDialogueFtw);
-        _musicChange.ToggleMusic();
-        _musicChange.PlayMainMusic();
+        if (missionPanel != null) UIAnimationManager.Instance.HideWindow(missionPanel, 0.5f);
+        if (TaskManager.Instance != null) TaskManager.Instance.CompleteTask(TaskOrderNumber);
+        if (firstWinDialogue != null) UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.3f, firstWinDialogueFtw);
+        if (_musicChange != null)
+        {
+            _musicChange.ToggleMusic();
+            _musicChange.PlayMainMusic();
+        }
     }
 }

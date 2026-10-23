@@ -1,5 +1,4 @@
 using System;
-using UnityEditor;
 using UnityEngine;
 
 public enum Emotion
@@ -54,6 +53,8 @@ public class EmoteSystem : MonoBehaviour
     public Sprite sus;
     public Sprite wink;
 
+    private System.Collections.Generic.Dictionary<Emotion, Sprite> _emotionMap;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -64,83 +65,51 @@ public class EmoteSystem : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            InitializeMap();
         }
+    }
+
+    private void InitializeMap()
+    {
+        if (_emotionMap != null) return;
+        _emotionMap = new System.Collections.Generic.Dictionary<Emotion, Sprite>(21)
+        {
+            { Emotion.scary, scary },
+            { Emotion.clown, clown },
+            { Emotion.happy1, happy1 },
+            { Emotion.happy2, happy2 },
+            { Emotion.happy3, happy3 },
+            { Emotion.raisedEyebrow, raisedEyebrow },
+            { Emotion.heartKiss, heartKiss },
+            { Emotion.dahanKaj, dahanKaj },
+            { Emotion.blushLaugh, blushLaugh },
+            { Emotion.laughter, laughter },
+            { Emotion.blush, blush },
+            { Emotion.skeleton, skeleton },
+            { Emotion.sleepy, sleepy },
+            { Emotion.steamyNose, steamyNose },
+            { Emotion.heartEye, heartEye },
+            { Emotion.lovely, lovely },
+            { Emotion.happyKajEyebrow, happyKajEyebrow },
+            { Emotion.coolSunGlass, coolSunGlass },
+            { Emotion.smirk, smirk },
+            { Emotion.sus, sus },
+            { Emotion.wink, wink }
+        };
     }
 
     public Sprite SetChosenSprite(Emotion emotion)
     {
-        Sprite chosenSprite;
-
-        switch (emotion)
+        if (_emotionMap == null)
         {
-            case Emotion.scary:
-                chosenSprite = EmoteSystem.Instance.scary;
-                break;
-            case Emotion.clown:
-                chosenSprite = EmoteSystem.Instance.clown;
-                break;
-            case Emotion.happy1:
-                chosenSprite = EmoteSystem.Instance.happy1;
-                break;
-            case Emotion.happy2:
-                chosenSprite = EmoteSystem.Instance.happy2;
-                break;
-            case Emotion.happy3:
-                chosenSprite = EmoteSystem.Instance.happy3;
-                break;
-            case Emotion.raisedEyebrow:
-                chosenSprite = EmoteSystem.Instance.raisedEyebrow;
-                break;
-            case Emotion.heartKiss:
-                chosenSprite = EmoteSystem.Instance.heartKiss;
-                break;
-            case Emotion.dahanKaj:
-                chosenSprite = EmoteSystem.Instance.dahanKaj;
-                break;
-            case Emotion.blushLaugh:
-                chosenSprite = EmoteSystem.Instance.blushLaugh;
-                break;
-            case Emotion.laughter:
-                chosenSprite = EmoteSystem.Instance.laughter;
-                break;
-            case Emotion.blush:
-                chosenSprite = EmoteSystem.Instance.blush;
-                break;
-            case Emotion.skeleton:
-                chosenSprite = EmoteSystem.Instance.skeleton;
-                break;
-            case Emotion.sleepy:
-                chosenSprite = EmoteSystem.Instance.sleepy;
-                break;
-            case Emotion.steamyNose:
-                chosenSprite = EmoteSystem.Instance.steamyNose;
-                break;
-            case Emotion.heartEye:
-                chosenSprite = EmoteSystem.Instance.heartEye;
-                break;
-            case Emotion.lovely:
-                chosenSprite = EmoteSystem.Instance.lovely;
-                break;
-            case Emotion.happyKajEyebrow:
-                chosenSprite = EmoteSystem.Instance.happyKajEyebrow;
-                break;
-            case Emotion.coolSunGlass:
-                chosenSprite = EmoteSystem.Instance.coolSunGlass;
-                break;
-            case Emotion.smirk:
-                chosenSprite = EmoteSystem.Instance.smirk;
-                break;
-            case Emotion.sus:
-                chosenSprite = EmoteSystem.Instance.sus;
-                break;
-            case Emotion.wink:
-                chosenSprite = EmoteSystem.Instance.wink;
-                break;
-            default:
-                chosenSprite = null;
-                break;
+            InitializeMap();
         }
 
-        return chosenSprite;
+        if (_emotionMap.TryGetValue(emotion, out Sprite chosenSprite))
+        {
+            return chosenSprite;
+        }
+
+        return null;
     }
 }

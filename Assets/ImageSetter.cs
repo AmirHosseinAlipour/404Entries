@@ -15,9 +15,12 @@ public class ImageSetter : MonoBehaviour
             targetImage = GetComponentInChildren<Image>();
         }
 
-        if (!set  && SelectionPlayer.instance.PlayerID == 1)
+        if (!set && SelectionPlayer.instance != null && SelectionPlayer.instance.PlayerID == 1)
         {
-            targetImage.sprite = Boy;
+            if (targetImage != null && Boy != null)
+            {
+                targetImage.sprite = Boy;
+            }
             set = true;
         }
         

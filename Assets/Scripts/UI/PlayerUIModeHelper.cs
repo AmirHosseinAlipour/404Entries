@@ -7,23 +7,23 @@ public static class PlayerUIModeHelper
     
     public static void PlayerEnterUIMode(PlayerController player)
     {
-        player.isUIActive = true;
+        if (player != null) player.isUIActive = true;
     }
 
     public static void PlayerExitUIMode(PlayerController player)
     {
-        player.isUIActive = false;
+        if (player != null) player.isUIActive = false;
     }
 
     public static void DisableTasksButton(Button allTasksBackButton, Button currentTaskButton)
     {
-        currentTaskButton.interactable = false;
-        allTasksBackButton.interactable = false;
+        if (currentTaskButton != null) currentTaskButton.interactable = false;
+        if (allTasksBackButton != null) allTasksBackButton.interactable = false;
     }
     
     public static void EnableTasksButton(Button allTasksBackButton, Button currentTaskButton)
     {
-        currentTaskButton.interactable = true;
-        allTasksBackButton.interactable = true;
+        if (currentTaskButton != null) currentTaskButton.interactable = true;
+        if (allTasksBackButton != null) allTasksBackButton.interactable = true;
     }
 }

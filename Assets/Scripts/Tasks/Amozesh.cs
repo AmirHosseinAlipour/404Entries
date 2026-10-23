@@ -31,10 +31,14 @@ public class Amozesh : MonoBehaviour
 
     private void Awake()
     {
-        _player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+        var playerObj = GameObject.FindWithTag("Player");
+        if (playerObj != null) _player = playerObj.GetComponent<PlayerController>();
         
-        _allTasksBackButton = GameObject.FindWithTag("AllTasksBackButton").GetComponent<Button>();
-        _currentTaskButton = GameObject.FindWithTag("CurrentTaskButton").GetComponent<Button>();
+        var backBtnObj = GameObject.FindWithTag("AllTasksBackButton");
+        if (backBtnObj != null) _allTasksBackButton = backBtnObj.GetComponent<Button>();
+
+        var currBtnObj = GameObject.FindWithTag("CurrentTaskButton");
+        if (currBtnObj != null) _currentTaskButton = currBtnObj.GetComponent<Button>();
     }
 
     private void Start()
@@ -49,18 +53,29 @@ public class Amozesh : MonoBehaviour
 
     private void SetDialogues()
     {
-        var currentPhase = dialoguePhases[currentIndex / 2];
+        if (dialoguePhases == null || dialoguePhases.Count == 0) return;
+        int phaseIdx = Mathf.Clamp(currentIndex / 2, 0, dialoguePhases.Count - 1);
+        var currentPhase = dialoguePhases[phaseIdx];
+        if (currentPhase == null || currentPhase.dialogues == null) return;
     
-        for (int i = 0; i < currentPhase.dialogues.Count; i++)
+        for (int i = 0; i < listOfTexts.Count; i++)
         {
-            // If this index exists in the dialogue list, use it
+            if (listOfTexts[i] == null) continue;
+
             if (i < currentPhase.dialogues.Count)
             {
                 string text = currentPhase.dialogues[i];
-                listOfTexts[i].transform.parent.parent.gameObject.SetActive(true);
+                if (listOfTexts[i].transform.parent != null && listOfTexts[i].transform.parent.parent != null)
+                {
+                    listOfTexts[i].transform.parent.parent.gameObject.SetActive(true);
+                }
                 listOfTexts[i].text = text;
-                listOfTexts[i].GetComponent<FarsiTypewriter>().SetText(text);
-                listOfTexts[i].transform.parent.parent.gameObject.SetActive(false);
+                var ftw = listOfTexts[i].GetComponent<FarsiTypewriter>();
+                if (ftw != null) ftw.SetText(text);
+                if (listOfTexts[i].transform.parent != null && listOfTexts[i].transform.parent.parent != null)
+                {
+                    listOfTexts[i].transform.parent.parent.gameObject.SetActive(false);
+                }
             }
             else
             {
@@ -73,21 +88,29 @@ public class Amozesh : MonoBehaviour
     
     public void ChangeCurrentIndex()
     {
-        currentIndex = TaskManager.Instance.GetCurrentTaskIndex();
+        if (TaskManager.Instance != null)
+        {
+            currentIndex = TaskManager.Instance.GetCurrentTaskIndex();
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
+            if (_player == null) _player = other.gameObject.GetComponent<PlayerController>();
+
             // Disable player movement + UI task interactions
             PlayerUIModeHelper.PlayerEnterUIMode(_player);
             PlayerUIModeHelper.DisableTasksButton(_allTasksBackButton, _currentTaskButton);
             
             SetDialogues();
 
-            UIAnimationManager.Instance.ShowDialogueWindow(
-                firstDialogue, 0.5f, listOfTexts[0].GetComponent<FarsiTypewriter>());
+            if (firstDialogue != null && listOfTexts != null && listOfTexts.Count > 0 && listOfTexts[0] != null)
+            {
+                UIAnimationManager.Instance.ShowDialogueWindow(
+                    firstDialogue, 0.5f, listOfTexts[0].GetComponent<FarsiTypewriter>());
+            }
         }
     }
 
@@ -95,9 +118,12 @@ public class Amozesh : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            if (TaskManager.Instance.taskCompleted[16] == true)
+            if (TaskManager.Instance != null && TaskManager.Instance.taskCompleted != null && TaskManager.Instance.taskCompleted.Length > 16)
             {
-                TaskManager.Instance.HandleEnding();
+                if (TaskManager.Instance.taskCompleted[16] == true)
+                {
+                    TaskManager.Instance.HandleEnding();
+                }
             }
         }
     }
@@ -125,6 +151,7 @@ public class Amozesh : MonoBehaviour
 
     public int getCrrrentIndex()
     {
-        return currentIndex / 2;
+        if (dialoguePhases == null || dialoguePhases.Count == 0) return 0;
+        return Mathf.Clamp(currentIndex / 2, 0, dialoguePhases.Count - 1);
     }
 }

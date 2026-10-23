@@ -8,16 +8,23 @@ public class ChangingSprite : MonoBehaviour
 
     private void Start()
     {
-        if (SelectionPlayer.instance.PlayerID == 1)
+        if (SelectionPlayer.instance != null && SelectionPlayer.instance.PlayerID == 1)
         {
-            // Change sprite
-            Player.GetComponent<SpriteRenderer>().sprite = boy_Sprite;
-
-            // Assign new animator controller
-            Animator playerAnimator = Player.GetComponent<Animator>();
-            if (playerAnimator != null && boy_AnimatorController != null)
+            if (Player != null)
             {
-                playerAnimator.runtimeAnimatorController = boy_AnimatorController;
+                // Change sprite
+                SpriteRenderer sr = Player.GetComponent<SpriteRenderer>();
+                if (sr != null && boy_Sprite != null)
+                {
+                    sr.sprite = boy_Sprite;
+                }
+
+                // Assign new animator controller
+                Animator playerAnimator = Player.GetComponent<Animator>();
+                if (playerAnimator != null && boy_AnimatorController != null)
+                {
+                    playerAnimator.runtimeAnimatorController = boy_AnimatorController;
+                }
             }
         }
     }

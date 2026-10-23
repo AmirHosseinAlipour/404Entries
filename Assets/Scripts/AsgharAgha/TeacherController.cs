@@ -22,7 +22,8 @@ public class TeacherController : BaseProfessors
 
     private void Start()
     {
-        animator.Play("FacingBack");
+        if (animator == null) animator = GetComponent<Animator>();
+        if (animator != null) animator.Play("FacingBack");
     }
 
     public void StartLooking()
@@ -40,16 +41,15 @@ public class TeacherController : BaseProfessors
         
             if (isFacingPlayer)
             {
-                
                 // Player is safe immediately
-                animator.SetTrigger("FacingBack");
+                if (animator != null) animator.SetTrigger("FacingBack");
                 isFacingPlayer = false; 
             }
             else
             {
                 // Just trigger the animation.
                 // The Animation Event will call OnFacingFrontComplete() when it's done.
-                animator.SetTrigger("FacingFront");
+                if (animator != null) animator.SetTrigger("FacingFront");
             }
         }
     }
@@ -58,20 +58,18 @@ public class TeacherController : BaseProfessors
     {
         if (flag == true)
         {
-            soundPlayer.Play("GreenLight");
+            if (soundPlayer != null) soundPlayer.Play("GreenLight");
         }
         else
         {
             flag = true;
         }
-        
     }
     
     public void OnFacingFrontComplete()
     {
         isFacingPlayer = true;
-        soundPlayer.Play("RedLight");
-        //
+        if (soundPlayer != null) soundPlayer.Play("RedLight");
     }
 
     public void StopLooking()
@@ -79,7 +77,8 @@ public class TeacherController : BaseProfessors
         _isActive = false;
         if (lookRoutine != null)
             StopCoroutine(lookRoutine);
-        animator.Play("FaocingBack");
+        if (animator != null)
+            animator.Play("FacingBack");
     }
 
     protected override void OnTriggerEnter2D(Collider2D other)

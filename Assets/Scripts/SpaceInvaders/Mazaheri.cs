@@ -12,18 +12,26 @@ public class Mazaheri : BaseProfessors
     
     public void StartGame()
     {
-        UIAnimationManager.Instance.ShowWindow(bootPanel, 0.5f);
-        MiniMap.SetActive(false);
-        game.InitialSettings();
+        if (bootPanel != null) UIAnimationManager.Instance.ShowWindow(bootPanel, 0.5f);
+        if (MiniMap != null) MiniMap.SetActive(false);
+        if (game != null) game.InitialSettings();
     }
 
     public void HandleEnding()
     {
-        musicChange.PlayMainMusic();
-        RectTransform parent = StartPanel.transform.parent.GetComponent<RectTransform>();
-        parent.gameObject.SetActive(false);
-        UIAnimationManager.Instance.HideWindow(parent, 0.5f);
-        UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.5f, firstWinDialogueFtw);
-        
+        if (musicChange != null) musicChange.PlayMainMusic();
+        if (StartPanel != null && StartPanel.transform.parent != null)
+        {
+            RectTransform parent = StartPanel.transform.parent.GetComponent<RectTransform>();
+            if (parent != null)
+            {
+                parent.gameObject.SetActive(false);
+                UIAnimationManager.Instance.HideWindow(parent, 0.5f);
+            }
+        }
+        if (firstWinDialogue != null)
+        {
+            UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.5f, firstWinDialogueFtw);
+        }
     }
 }

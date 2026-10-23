@@ -13,9 +13,32 @@ public class MinimapIndicator2D : MonoBehaviour
 
     private static List<Target> targets = new List<Target>();
     private Dictionary<Target, RectTransform> indicators = new Dictionary<Target, RectTransform>();
+    private List<Target> keysToRemove = new List<Target>();
+
+    private void OnDestroy()
+    {
+        targets.Clear();
+        foreach (var pair in indicators)
+        {
+            if (pair.Value != null)
+            {
+                Destroy(pair.Value.gameObject);
+            }
+        }
+        indicators.Clear();
+    }
 
     private void Update()
     {
+        if (playerTransform == null)
+        {
+            var p = GameObject.FindWithTag("Player");
+            if (p != null) playerTransform = p.transform;
+        }
+        if (holderRect == null)
+        {
+            holderRect = GetComponent<RectTransform>();
+        }
         if (playerTransform == null || holderRect == null) return;
 
         // 1. Update existing indicators or create new ones
@@ -25,15 +48,21 @@ public class MinimapIndicator2D : MonoBehaviour
 
             if (!indicators.ContainsKey(target))
             {
-                GameObject ind = Instantiate(indicatorPrefab, holderRect);
-                indicators.Add(target, ind.GetComponent<RectTransform>());
+                if (indicatorPrefab != null)
+                {
+                    GameObject ind = Instantiate(indicatorPrefab, holderRect);
+                    indicators.Add(target, ind.GetComponent<RectTransform>());
+                }
             }
 
-            UpdateUIIndicator(target, indicators[target]);
+            if (indicators.ContainsKey(target) && indicators[target] != null)
+            {
+                UpdateUIIndicator(target, indicators[target]);
+            }
         }
 
         // 2. CLEANUP: Remove indicators that no longer have a target in the list
-        List<Target> keysToRemove = new List<Target>();
+        keysToRemove.Clear();
 
         foreach (var pair in indicators)
         {
@@ -46,11 +75,14 @@ public class MinimapIndicator2D : MonoBehaviour
 
         foreach (Target key in keysToRemove)
         {
-            if (indicators[key] != null)
+            if (indicators.ContainsKey(key))
             {
-                Destroy(indicators[key].gameObject);
+                if (indicators[key] != null)
+                {
+                    Destroy(indicators[key].gameObject);
+                }
+                indicators.Remove(key);
             }
-            indicators.Remove(key);
         }
     }
 

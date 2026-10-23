@@ -18,13 +18,15 @@ public class OnTriggerRandomEmote : MonoBehaviour
         HideEmote();
     }
 
+    private static readonly Emotion[] _cachedEmotions = (Emotion[])System.Enum.GetValues(typeof(Emotion));
+
     private void RandomEmoteSelector()
     {
-        Array allEmotions = System.Enum.GetValues(typeof(Emotion));
-        int randomIndex = UnityEngine.Random.Range(0, allEmotions.Length);
-        Emotion randomEmotion = (Emotion)allEmotions.GetValue(randomIndex);
+        if (EmoteSystem.Instance == null || _cachedEmotions.Length == 0) return;
+        int randomIndex = UnityEngine.Random.Range(0, _cachedEmotions.Length);
+        Emotion randomEmotion = _cachedEmotions[randomIndex];
         Sprite chosenSprite = EmoteSystem.Instance.SetChosenSprite(randomEmotion);
-        if (chosenSprite != null)
+        if (chosenSprite != null && _image != null)
         {
             _image.sprite = chosenSprite;
         }

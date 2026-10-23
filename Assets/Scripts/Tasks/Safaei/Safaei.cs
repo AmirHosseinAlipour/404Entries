@@ -38,51 +38,80 @@ public class Safaei : BaseProfessors
     public void StartGame()
     {
         currentPhase = 0;
-        textPanel.gameObject.SetActive(true);
-        musicChange.ToggleMusic();
-        musicChange.PlayThemeMusic();
+        if (textPanel != null) textPanel.gameObject.SetActive(true);
+        if (musicChange != null)
+        {
+            musicChange.ToggleMusic();
+            musicChange.PlayThemeMusic();
+        }
         StartCoroutine(StartPhase());
     }
 
     IEnumerator StartPhase()
     {
-        if (currentPhase >= phaseTexts.Length)
+        if (phaseTexts == null || currentPhase >= phaseTexts.Length)
         {
-            TaskManager.Instance.CompleteTask(TaskOrderNumber);
+            if (TaskManager.Instance != null)
+                TaskManager.Instance.CompleteTask(TaskOrderNumber);
     
             HideAllOptions();
-            RectTransform parent = StartPanel.transform.parent.GetComponent<RectTransform>();
-            parent.gameObject.SetActive(false);
-            musicChange.ToggleMusic();
-            musicChange.PlayMainMusic();
-            UIAnimationManager.Instance.HideWindow(parent, 0.5f);
-            UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.5f, firstWinDialogueFtw);
+            if (StartPanel != null && StartPanel.transform.parent != null)
+            {
+                RectTransform parent = StartPanel.transform.parent.GetComponent<RectTransform>();
+                if (parent != null)
+                {
+                    parent.gameObject.SetActive(false);
+                    UIAnimationManager.Instance.HideWindow(parent, 0.5f);
+                }
+            }
+            if (musicChange != null)
+            {
+                musicChange.ToggleMusic();
+                musicChange.PlayMainMusic();
+            }
+            if (firstWinDialogue != null)
+                UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.5f, firstWinDialogueFtw);
             
             yield break;
         }
 
         HideAllOptions();
-        typewriter.SetText(phaseTexts[currentPhase]);
-        typewriter.GetComponent<DynamicFontResizer>().AdjustFontSize();
+        if (typewriter != null)
+        {
+            typewriter.SetText(phaseTexts[currentPhase]);
+            var dfr = typewriter.GetComponent<DynamicFontResizer>();
+            if (dfr != null) dfr.AdjustFontSize();
+        }
         ShowOptions();
     }
 
     void HideAllOptions()
     {
-       UIAnimationManager.Instance.HideWindow(ButtonCanvas, 0.5f);
+        if (ButtonCanvas != null)
+            UIAnimationManager.Instance.HideWindow(ButtonCanvas, 0.5f);
     }
 
     void ShowOptions()
     {
-        UIAnimationManager.Instance.ShowWindow(ButtonCanvas, 0.5f);
+        if (ButtonCanvas != null)
+            UIAnimationManager.Instance.ShowWindow(ButtonCanvas, 0.5f);
         
+        if (optionButtons == null) return;
+
         for (int i = 0; i < optionButtons.Length; i++)
         {
+            if (optionButtons[i] == null) continue;
             int index = i;
             optionButtons[i].onClick.RemoveAllListeners();
             optionButtons[i].onClick.AddListener(() => OnOptionSelected(index));
-            optionButtons[i].GetComponentInChildren<FarsiTypewriter>().SetText(phaseOptions[currentPhase].options[i]);
-            optionButtons[i].GetComponentInChildren<DynamicFontResizer>().AdjustFontSize();
+            
+            if (phaseOptions != null && currentPhase >= 0 && currentPhase < phaseOptions.Length && phaseOptions[currentPhase].options != null && i < phaseOptions[currentPhase].options.Length)
+            {
+                var ftw = optionButtons[i].GetComponentInChildren<FarsiTypewriter>();
+                if (ftw != null) ftw.SetText(phaseOptions[currentPhase].options[i]);
+                var dfr = optionButtons[i].GetComponentInChildren<DynamicFontResizer>();
+                if (dfr != null) dfr.AdjustFontSize();
+            }
         }
     }
 
@@ -103,11 +132,14 @@ public class Safaei : BaseProfessors
 
     private void HandleLoose()
     {
-        UIAnimationManager.Instance.HideWindow(StartPanel , 0.5f);
-        UIAnimationManager.Instance.ShowWindow(acceptRect, 0.01f);
-        UIAnimationManager.Instance.HideWindow(textPanel, 0.01f);
-        UIAnimationManager.Instance.ShowDialogueWindow(firstFailDialogue, 0.5f, firstFailDialogueFtw);
-        musicChange.ToggleMusic();
-        musicChange.PlayMainMusic();
+        if (StartPanel != null) UIAnimationManager.Instance.HideWindow(StartPanel, 0.5f);
+        if (acceptRect != null) UIAnimationManager.Instance.ShowWindow(acceptRect, 0.01f);
+        if (textPanel != null) UIAnimationManager.Instance.HideWindow(textPanel, 0.01f);
+        if (firstFailDialogue != null) UIAnimationManager.Instance.ShowDialogueWindow(firstFailDialogue, 0.5f, firstFailDialogueFtw);
+        if (musicChange != null)
+        {
+            musicChange.ToggleMusic();
+            musicChange.PlayMainMusic();
+        }
     }
 }

@@ -73,16 +73,26 @@ public class PaperManager : MonoBehaviour
 
         _soundPlayer = GetComponent<SoundPlayer>();
         
-        letterLow.OnTypingFinished += EnableButton;
-        letterMedium.OnTypingFinished += EnableButton;
-        letterHigh.OnTypingFinished += EnableButton;
+        if (letterLow != null) letterLow.OnTypingFinished += EnableButton;
+        if (letterMedium != null) letterMedium.OnTypingFinished += EnableButton;
+        if (letterHigh != null) letterHigh.OnTypingFinished += EnableButton;
         _musicChange = GetComponent<MusicChange>();
+    }
+
+    private void OnDestroy()
+    {
+        if (letterLow != null) letterLow.OnTypingFinished -= EnableButton;
+        if (letterMedium != null) letterMedium.OnTypingFinished -= EnableButton;
+        if (letterHigh != null) letterHigh.OnTypingFinished -= EnableButton;
     }
 
     private void Start()
     {
-        counterFtw.SetText(_papersLength + " / " + _counter);
-        counterFtw.StartTyping();
+        if (counterFtw != null)
+        {
+            counterFtw.SetText(_papersLength + " / " + _counter);
+            counterFtw.StartTyping();
+        }
         
         foreach (GameObject paper in listOfPapers)
         {
@@ -228,42 +238,62 @@ public class PaperManager : MonoBehaviour
 
         _currentItemIndex++;
         
-        counterFtw.SetText(_papersLength + " / " + _counter);
-        counterFtw.StartTyping();
+        if (counterFtw != null)
+        {
+            counterFtw.SetText(_papersLength + " / " + _counter);
+            counterFtw.StartTyping();
+        }
         
         // End logic
         if (_counter == 0)
         {
-            TaskManager.Instance.CompleteTask(prof.TaskOrderNumber);
-            
-            if (_passedCount <= counts[0]) // e.g., if _passedCount is 0-3
+            if (TaskManager.Instance != null && prof != null)
             {
-                chosen = letterLow;
-                chosenButton = lastLetterLow;
+                TaskManager.Instance.CompleteTask(prof.TaskOrderNumber);
             }
-            else if (_passedCount <= counts[1]) // e.g., if _passedCount is 4-6
+            
+            if (counts != null && counts.Length >= 2)
+            {
+                if (_passedCount <= counts[0]) // e.g., if _passedCount is 0-3
+                {
+                    chosen = letterLow;
+                    chosenButton = lastLetterLow;
+                }
+                else if (_passedCount <= counts[1]) // e.g., if _passedCount is 4-6
+                {
+                    chosen = letterMedium;
+                    chosenButton = lastLetterMedium;
+                }
+                else // e.g., if _passedCount is 7+
+                {
+                    chosen = letterHigh;
+                    chosenButton = lastLetterHigh;
+                }
+            }
+            else
             {
                 chosen = letterMedium;
                 chosenButton = lastLetterMedium;
             }
-            else // e.g., if _passedCount is 7+
+            
+            if (chosenButton != null)
             {
-                chosen = letterHigh;
-                chosenButton = lastLetterHigh;
+                var rt = chosenButton.GetComponent<RectTransform>();
+                if (rt != null) UIAnimationManager.Instance.ShowWindow(rt, 0.5f);
             }
-            
-            UIAnimationManager.Instance.ShowWindow(chosenButton.GetComponent<RectTransform>(), 0.5f);
             DisableButton();
-            
         }
     }
 
     public void HandleEnding()
     {
-        UIAnimationManager.Instance.HideWindow(task, 0.5f);
-        _musicChange.ToggleMusic();
-        _musicChange.PlayMainMusic();
-        if (prof.firstWinDialogue != null && prof.firstWinDialogueFtw != null)
+        if (task != null) UIAnimationManager.Instance.HideWindow(task, 0.5f);
+        if (_musicChange != null)
+        {
+            _musicChange.ToggleMusic();
+            _musicChange.PlayMainMusic();
+        }
+        if (prof != null && prof.firstWinDialogue != null && prof.firstWinDialogueFtw != null)
         {
             UIAnimationManager.Instance.ShowDialogueWindow(
                 prof.firstWinDialogue, 0.5f, prof.firstWinDialogueFtw

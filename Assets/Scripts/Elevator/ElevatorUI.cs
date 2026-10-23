@@ -21,40 +21,89 @@ public class ElevatorUI : MonoBehaviour
             int index = i;
             floorButtons[i].onClick.AddListener(() => OnFloorButtonPressed(index));
         }
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null) player = playerObj.transform;
         //gameObject.SetActive(false);
-        messageText.gameObject.SetActive(false);
+        if (messageText != null) messageText.gameObject.SetActive(false);
         musicChange = GetComponent<MusicChange>();
     }
 
     private void OnFloorButtonPressed(int floorIndex)
     {
+        if (floorIndex == currentFloor)
+        {
+            StopCoroutine("ShowMessageRoutine");
+            StartCoroutine(ShowMessageRoutine("شما در همین طبقه هستید!"));
+            return;
+        }
+
         StartCoroutine(MoveToFloor(floorIndex));
     }
 
     private IEnumerator MoveToFloor(int floorIndex)
     {
-        PlayerController p = player.GetComponent<PlayerController>();
-        p.SetIdleDirection(new Vector2(0 , -1));
-        UIAnimationManager.Instance.HideWindow(buttonsPanel , 0.5f );
-        UIAnimationManager.Instance.HideWindow(gameObject.GetComponent<RectTransform>() , 0.5f); 
-        musicChange.ToggleMusic();
-        Debug.Log("Music Change");
-        doorAnimation.OpenDoors();
-        musicChange.PlayMainMusic();
-        player.position = floorPositions[floorIndex].transform.position;
-        currentFloor = floorIndex;
-        AnotherInstace.currentFloor = floorIndex;
+        if (floorIndex < 0 || floorIndex >= floorPositions.Length || floorPositions[floorIndex] == null)
+            yield break;
 
-        yield return new WaitForSeconds(0.5f);
+        if (player == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null) player = playerObj.transform;
+        }
+
+        PlayerController p = (player != null) ? player.GetComponent<PlayerController>() : null;
+        if (p != null)
+        {
+            p.SetIdleDirection(new Vector2(0, -1));
+        }
+
+        if (buttonsPanel != null)
+            UIAnimationManager.Instance.HideWindow(buttonsPanel, 0.3f);
         
-        
+        RectTransform myRect = gameObject.GetComponent<RectTransform>();
+        if (myRect != null)
+            UIAnimationManager.Instance.HideWindow(myRect, 0.3f);
+
+        if (musicChange != null)
+            musicChange.ToggleMusic();
+
+        yield return new WaitForSeconds(0.3f);
+
+        if (player != null && floorPositions[floorIndex] != null)
+        {
+            player.position = floorPositions[floorIndex].transform.position;
+        }
+
+        currentFloor = floorIndex;
+        if (AnotherInstace != null)
+        {
+            AnotherInstace.currentFloor = floorIndex;
+        }
+
+        yield return new WaitForSeconds(0.2f);
+
+        if (doorAnimation != null)
+            doorAnimation.OpenDoors();
+
+        if (musicChange != null)
+            musicChange.PlayMainMusic();
+    }
+
+    private IEnumerator ShowMessageRoutine(string message)
+    {
+        if (messageText != null)
+        {
+            string translated = LocalizationManager.Translate(message);
+            messageText.text = LocalizationManager.IsRTL ? ArabicSupport.ArabicFixer.Fix(translated, true, true) : translated;
+            messageText.alignment = LocalizationManager.IsRTL ? TextAnchor.MiddleCenter : TextAnchor.MiddleCenter;
+            messageText.gameObject.SetActive(true);
+            yield return new WaitForSeconds(1.5f);
+            messageText.gameObject.SetActive(false);
+        }
     }
 
     private IEnumerator ShowMessage()
     {
-        messageText.gameObject.SetActive(true);
-        yield return new WaitForSeconds(1.5f);
-        messageText.gameObject.SetActive(false);
+        return ShowMessageRoutine("شما در همین طبقه هستید!");
     }
 }

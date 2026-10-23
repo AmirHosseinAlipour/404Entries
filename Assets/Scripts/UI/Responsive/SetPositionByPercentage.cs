@@ -24,8 +24,28 @@ public class SetTransformByPercentage : MonoBehaviour
     [Tooltip("The design-time size of this panel (in pixels) that equals a scale of 1. All children should be designed relative to this size.")]
     public float Base_Size = 100f; // IMPORTANT: Set this in the Inspector!
 
+    private void OnEnable()
+    {
+        Initialize();
+        UpdateTransform();
+    }
+
     void Start()
     {
+        if (Application.isPlaying && CompareTag("JoyStick") && !PlatformHelper.IsMobile())
+        {
+            Canvas canvas = GetComponentInParent<Canvas>();
+            if (canvas != null)
+            {
+                canvas.gameObject.SetActive(false);
+            }
+            else
+            {
+                gameObject.SetActive(false);
+            }
+            return;
+        }
+
         Initialize();
         UpdateTransform();
     }

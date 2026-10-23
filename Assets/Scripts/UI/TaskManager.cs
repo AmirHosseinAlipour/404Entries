@@ -25,9 +25,30 @@ public class TaskManager : MonoBehaviour
     [Header("Task Triggers")]
     public List<GameObject> taskTriggers;
 
+    [Header("Testing & Mobile Controls")]
+    [Tooltip("Tick this box to force the mobile virtual joystick to appear on PC so you can test it with the mouse.")]
+    public bool forceShowJoystick = false;
+
+    [Header("Language / دو زبانه")]
+    [Tooltip("Choose game dialogue language (Persian / English). You can also press F3 at runtime!")]
+    public GameLanguage gameLanguage = GameLanguage.Persian;
+
     private void Start()
     {
+        if (forceShowJoystick)
+        {
+            PlatformHelper.SetForceShowJoystick(true);
+        }
+        LocalizationManager.SetLanguage(gameLanguage);
         SetImage();
+    }
+
+    private void Update()
+    {
+        if (LocalizationManager.CurrentLanguage != gameLanguage)
+        {
+            gameLanguage = LocalizationManager.CurrentLanguage;
+        }
     }
 
     private void Awake()
@@ -37,7 +58,11 @@ public class TaskManager : MonoBehaviour
         else
             Destroy(gameObject);
         
-        taskTriggers[0].GetComponent<Target>().EnableTarget();
+        if (taskTriggers != null && taskTriggers.Count > 0 && taskTriggers[0] != null)
+        {
+            Target target = taskTriggers[0].GetComponent<Target>();
+            if (target != null) target.EnableTarget();
+        }
     }
     
     // For debugging
@@ -46,6 +71,8 @@ public class TaskManager : MonoBehaviour
         // Only invoke if we're in play mode
         if (Application.isPlaying)
         {
+            PlatformHelper.SetForceShowJoystick(forceShowJoystick);
+            LocalizationManager.SetLanguage(gameLanguage);
             OnCurrentIndexChange?.Invoke();
         }
     }
@@ -55,9 +82,22 @@ public class TaskManager : MonoBehaviour
         {
             taskCompleted[index] = true;
             OnCurrentIndexChange?.Invoke();
-            taskTriggers[index].GetComponent<Target>().DisableTarget();
-            taskTriggers[GetCurrentTaskIndex()].GetComponent<Target>().EnableTarget();
             
+            if (taskTriggers != null)
+            {
+                if (index < taskTriggers.Count && taskTriggers[index] != null)
+                {
+                    Target currentTarget = taskTriggers[index].GetComponent<Target>();
+                    if (currentTarget != null) currentTarget.DisableTarget();
+                }
+
+                int nextIndex = GetCurrentTaskIndex();
+                if (nextIndex >= 0 && nextIndex < taskTriggers.Count && taskTriggers[nextIndex] != null)
+                {
+                    Target nextTarget = taskTriggers[nextIndex].GetComponent<Target>();
+                    if (nextTarget != null) nextTarget.EnableTarget();
+                }
+            }
         }
     }
     public int GetCurrentTaskIndex()
@@ -72,21 +112,37 @@ public class TaskManager : MonoBehaviour
 
     public void SetImage()
     {
-        int index = SelectionPlayer.instance.PlayerID;
-        if (index == 0)
+        int index = (SelectionPlayer.instance != null) ? SelectionPlayer.instance.PlayerID : 0;
+        if (Main_image != null)
         {
-            Main_image.sprite = Girl_image;
-        }
-        else
-        {
-            Main_image.sprite = Boy_image;
+            if (index == 0)
+            {
+                if (Girl_image != null) Main_image.sprite = Girl_image;
+            }
+            else
+            {
+                if (Boy_image != null) Main_image.sprite = Boy_image;
+            }
         }
     }
 
     public void HandleEnding()
     {
-        screenFaderEnd.gameObject.SetActive(true);
-        screenFaderEnd.StartFade(0f, 2);
+        if (screenFaderEnd != null)
+        {
+            screenFaderEnd.gameObject.SetActive(true);
+            StartCoroutine(FadeAndEndRoutine());
+        }
+        else
+        {
+            SceneManager.LoadScene("Ending");
+        }
+    }
+
+    private IEnumerator FadeAndEndRoutine()
+    {
+        screenFaderEnd.StartFade(1f, 1.5f);
+        yield return new WaitForSeconds(1.5f);
         SceneManager.LoadScene("Ending");
     }
 }

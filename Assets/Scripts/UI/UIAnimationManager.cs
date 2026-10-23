@@ -40,10 +40,13 @@ public class UIAnimationManager : MonoBehaviour
             .SetUpdate(true)
             .OnComplete(() =>
             {
-                if (!fw.gameObject.activeInHierarchy)
-                    fw.gameObject.SetActive(true);
-                
-                fw.StartTyping();
+                if (fw != null)
+                {
+                    if (!fw.gameObject.activeInHierarchy)
+                        fw.gameObject.SetActive(true);
+                    
+                    fw.StartTyping();
+                }
             });
     }
     

@@ -17,16 +17,20 @@ public class AsgharManager : MonoBehaviour
 
     private void Awake()
     {
-        canvasGroup = fadePanel.GetComponent<CanvasGroup>();
-        if (canvasGroup == null)
-            Debug.LogError("CanvasGroup component not found on FadePanel!");
-        player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+        if (fadePanel != null)
+        {
+            canvasGroup = fadePanel.GetComponent<CanvasGroup>();
+            if (canvasGroup == null) canvasGroup = fadePanel.AddComponent<CanvasGroup>();
+        }
+        var playerObj = GameObject.FindWithTag("Player");
+        if (playerObj != null) player = playerObj.GetComponent<PlayerController>();
     }
+
+    private bool _isRestarting = false;
 
     private void Update()
     {
-        
-        if (teacher.isFacingPlayer && player.IsMoving() && !_win)
+        if (teacher != null && player != null && teacher.isFacingPlayer && player.IsMoving() && !_win && !_isRestarting)
         {
             StartCoroutine(RestartGame());
         }
@@ -34,27 +38,45 @@ public class AsgharManager : MonoBehaviour
 
     public void WinGame()
     {
+        _win = true;
         StartCoroutine(WinRoutine());
     }
 
     private IEnumerator RestartGame()
     {
-        
+        _isRestarting = true;
+        if (player != null)
+        {
+            player.isUIActive = true;
+        }
+
         yield return StartCoroutine(FadeIn(fadeDuration));
-        player.Respawn(RespawnPoint.transform.position);
+
+        if (player != null && RespawnPoint != null)
+        {
+            player.Respawn(RespawnPoint.transform.position);
+        }
+
         yield return StartCoroutine(FadeOut(fadeDuration));
-        
+
+        if (player != null)
+        {
+            player.isUIActive = false;
+        }
+
+        _isRestarting = false;
     }
 
     private IEnumerator WinRoutine()
     {
-        fadePanel.SetActive(true);
-        teacher.isFacingPlayer = false; 
+        if (fadePanel != null) fadePanel.SetActive(true);
+        if (teacher != null) teacher.isFacingPlayer = false; 
         yield return new WaitForSeconds(fadeDuration);
         Debug.Log("You escaped the class!");
     }
     public IEnumerator FadeIn(float duration)
     {
+        if (canvasGroup == null) yield break;
         float time = 0f;
         while (time < duration)
         {
@@ -66,6 +88,7 @@ public class AsgharManager : MonoBehaviour
     }
     public IEnumerator FadeOut(float duration)
     {
+        if (canvasGroup == null) yield break;
         float time = 0f;
         while (time < duration)
         {

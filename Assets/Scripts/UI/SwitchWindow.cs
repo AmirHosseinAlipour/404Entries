@@ -26,12 +26,17 @@ public class SwitchWindow : MonoBehaviour
     
     private void Awake()
     {
-        _player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
+        var playerObj = GameObject.FindWithTag("Player");
+        if (playerObj != null) _player = playerObj.GetComponent<PlayerController>();
 
-        _allTasksBackButton = GameObject.FindWithTag("AllTasksBackButton").GetComponent<Button>();
-        _currentTaskButton = GameObject.FindWithTag("CurrentTaskButton").GetComponent<Button>();
+        var backBtnObj = GameObject.FindWithTag("AllTasksBackButton");
+        if (backBtnObj != null) _allTasksBackButton = backBtnObj.GetComponent<Button>();
+
+        var currBtnObj = GameObject.FindWithTag("CurrentTaskButton");
+        if (currBtnObj != null) _currentTaskButton = currBtnObj.GetComponent<Button>();
         
-        _taskUI = GameObject.FindWithTag("TaskUI").GetComponent<TaskUI>();
+        var taskUiObj = GameObject.FindWithTag("TaskUI");
+        if (taskUiObj != null) _taskUI = taskUiObj.GetComponent<TaskUI>();
     }
 
     // This method is only for closing the mini game UI!
@@ -114,17 +119,22 @@ public class SwitchWindow : MonoBehaviour
             return;
         }
         
-        if (amozesh.dialoguePhases[amozesh.getCrrrentIndex()].dialogues.Count <= currentDialogueIndex)
+        int pIdx = amozesh.getCrrrentIndex();
+        if (amozesh.dialoguePhases != null && pIdx < amozesh.dialoguePhases.Count && amozesh.dialoguePhases[pIdx].dialogues != null)
         {
-            Debug.Log(amozesh.getCrrrentIndex());
-            
-            shouldInvoke = true;
-            HideWindow();
-            _taskUI.UpdateUI();
-            return;
+            if (amozesh.dialoguePhases[pIdx].dialogues.Count <= currentDialogueIndex)
+            {
+                shouldInvoke = true;
+                HideWindow();
+                if (_taskUI != null) _taskUI.UpdateUI();
+                return;
+            }
         }
         
-        UIAnimationManager.Instance.ShowDialogueWindow(dialogueWindowToShow, 0.5f, dialogueTypeWriter);
+        if (dialogueWindowToShow != null && dialogueTypeWriter != null)
+        {
+            UIAnimationManager.Instance.ShowDialogueWindow(dialogueWindowToShow, 0.5f, dialogueTypeWriter);
+        }
         
         HideWindow();
     }

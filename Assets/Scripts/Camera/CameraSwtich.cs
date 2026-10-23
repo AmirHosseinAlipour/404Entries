@@ -15,12 +15,18 @@ public class CameraSwitch : MonoBehaviour
 
     private void Start()
     {
-        voidBackground = voidParent.GetComponentsInChildren<SpriteRenderer>();
-        foreach (SpriteRenderer sp in voidBackground)
+        if (voidParent != null)
         {
-            Color c = sp.color;
-            c.a = 0;
-            sp.color = c;
+            voidBackground = voidParent.GetComponentsInChildren<SpriteRenderer>();
+            foreach (SpriteRenderer sp in voidBackground)
+            {
+                if (sp != null)
+                {
+                    Color c = sp.color;
+                    c.a = 0;
+                    sp.color = c;
+                }
+            }
         }
     }
 
@@ -42,45 +48,81 @@ public class CameraSwitch : MonoBehaviour
                 currentFadeCoroutine = StartCoroutine(FadeOut());
             }
             
-            roomCamera.Priority = isEnteringRoom ? 19 : 0;
+            if (roomCamera != null)
+            {
+                roomCamera.Priority = isEnteringRoom ? 19 : 0;
+            }
             
-            CameraMaskSwitcher.Instance.roomVcam = roomCamera;
+            if (CameraMaskSwitcher.Instance != null)
+            {
+                CameraMaskSwitcher.Instance.roomVcam = roomCamera;
+            }
         }
     }
 
     private IEnumerator FadeIn()
     {
+        if (voidBackground == null || voidBackground.Length == 0) yield break;
+
         float elapsedTime = 0f;
-        float startAlpha = voidBackground[0].color.a;
+        float startAlpha = (voidBackground[0] != null) ? voidBackground[0].color.a : 0f;
         while (elapsedTime < fadeDuration)
         {
             elapsedTime += Time.deltaTime;
             float alpha = Mathf.Lerp(startAlpha, 1f, elapsedTime / fadeDuration);
             foreach (SpriteRenderer sp in voidBackground)
             {
-                Color c = sp.color;
-                c.a = alpha;
-                sp.color = c;
+                if (sp != null)
+                {
+                    Color c = sp.color;
+                    c.a = alpha;
+                    sp.color = c;
+                }
             }
             yield return null;
+        }
+
+        foreach (SpriteRenderer sp in voidBackground)
+        {
+            if (sp != null)
+            {
+                Color c = sp.color;
+                c.a = 1f;
+                sp.color = c;
+            }
         }
     }
 
     private IEnumerator FadeOut()
     {
+        if (voidBackground == null || voidBackground.Length == 0) yield break;
+
         float elapsedTime = 0f;
-        float startAlpha = voidBackground[0].color.a;
+        float startAlpha = (voidBackground[0] != null) ? voidBackground[0].color.a : 1f;
         while (elapsedTime < fadeDuration)
         {
             elapsedTime += Time.deltaTime;
             float alpha = Mathf.Lerp(startAlpha, 0f, elapsedTime / fadeDuration);
             foreach (SpriteRenderer sp in voidBackground)
             {
-                Color c = sp.color;
-                c.a = alpha;
-                sp.color = c;
+                if (sp != null)
+                {
+                    Color c = sp.color;
+                    c.a = alpha;
+                    sp.color = c;
+                }
             }
             yield return null;
+        }
+
+        foreach (SpriteRenderer sp in voidBackground)
+        {
+            if (sp != null)
+            {
+                Color c = sp.color;
+                c.a = 0f;
+                sp.color = c;
+            }
         }
     }
 }

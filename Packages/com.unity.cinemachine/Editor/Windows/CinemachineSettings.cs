@@ -117,9 +117,9 @@ namespace Unity.Cinemachine.Editor
             string[] movedFromAssetPaths, bool didDomainReload)
         {
             if (didDomainReload)
-                EditorApplication.hierarchyWindowItemOnGUI += (instanceID, r) =>
+                EditorApplication.hierarchyWindowItemByEntityIdOnGUI += (instanceID, r) =>
                 {
-                    var instance = EditorUtility.InstanceIDToObject(instanceID) as GameObject;
+                    var instance = EditorUtility.EntityIdToObject(instanceID) as GameObject;
                     if (instance == null)
                         return; // object in process of being deleted
 

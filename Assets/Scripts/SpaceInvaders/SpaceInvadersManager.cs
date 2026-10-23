@@ -30,7 +30,7 @@ public class SpaceInvadersManager : MonoBehaviour
     
     public void InitialSettings()
     {
-        cam.Priority = 20;
+        if (cam != null) cam.Priority = 20;
         ScaleSpriteToCamera();
     }
     void Awake()
@@ -54,20 +54,20 @@ public class SpaceInvadersManager : MonoBehaviour
         }
         else if (isFadingOut)
         {
-           
-            gameObjectsToHide.SetActive(false);
-            gameObjectsToShow.SetActive(false);
-            cam.Priority = 0;
+            if (gameObjectsToHide != null) gameObjectsToHide.SetActive(false);
+            if (gameObjectsToShow != null) gameObjectsToShow.SetActive(false);
+            if (cam != null) cam.Priority = 0;
             bool done = FadeTo(0f);
             if (done)
             {
                 isFadingOut = false;
+                if (TaskManager.Instance != null && m != null)
+                {
+                    TaskManager.Instance.CompleteTask(m.TaskOrderNumber);
+                }
+                if (MiniMap != null) MiniMap.SetActive(true);
+                if (m != null) m.HandleEnding();
             }
-           
-
-            TaskManager.Instance.CompleteTask(m.TaskOrderNumber);
-            MiniMap.SetActive(true);
-            m.HandleEnding();
         }
     }
 
@@ -79,8 +79,12 @@ public class SpaceInvadersManager : MonoBehaviour
             gameObjectsToShow.SetActive(true); 
             SetAlpha(0f);                      
             isFadingIn = true;   
-            GameObject XP = Instantiate(oneShotAudioPrefab, transform.position, Quaternion.identity);
-            XP.GetComponent<OneShotSound>().Play(WindowsXp);
+            if (oneShotAudioPrefab != null)
+            {
+                GameObject XP = Instantiate(oneShotAudioPrefab, transform.position, Quaternion.identity);
+                var oss = XP.GetComponent<OneShotSound>();
+                if (oss != null) oss.Play(WindowsXp);
+            }
         }
     }
 
@@ -97,9 +101,11 @@ public class SpaceInvadersManager : MonoBehaviour
     
     private bool FadeTo(float targetAlpha)
     {
+        if (renderers == null || renderers.Length == 0) return true;
         bool allDone = true;
         foreach (var rend in renderers)
         {
+            if (rend == null || rend.material == null) continue;
             Color c = rend.material.color;
             float alpha = Mathf.MoveTowards(c.a, targetAlpha, fadeSpeed * Time.deltaTime);
             if (!Mathf.Approximately(alpha, c.a))
@@ -112,26 +118,35 @@ public class SpaceInvadersManager : MonoBehaviour
 
     private void SetAlpha(float a)
     {
+        if (renderers == null) return;
         foreach (var rend in renderers)
         {
+            if (rend == null || rend.material == null) continue;
             Color c = rend.material.color;
             c.a = a;
             rend.material.color = c;
         }
     }
 
-    public void ShowErorwindow(int i )
+    public void ShowErorwindow(int i)
     {
-        UIAnimationManager.Instance.ShowWindow(ErorWindow[i] , 0.5f );
+        if (ErorWindow != null && i >= 0 && i < ErorWindow.Length && ErorWindow[i] != null)
+        {
+            UIAnimationManager.Instance.ShowWindow(ErorWindow[i], 0.5f);
+        }
     }
 
     public void HideErorwindow(int i)
     {
-        UIAnimationManager.Instance.HideWindow(ErorWindow[i] , 0.5f);
+        if (ErorWindow != null && i >= 0 && i < ErorWindow.Length && ErorWindow[i] != null)
+        {
+            UIAnimationManager.Instance.HideWindow(ErorWindow[i], 0.5f);
+        }
     }
     
     private void ScaleSpriteToCamera()
     {
+        if (cam == null || background == null || background.sprite == null) return;
         float cameraHeight = cam.Lens.OrthographicSize * 2f;
         float cameraWidth = cameraHeight * cam.Lens.Aspect;
 
@@ -139,6 +154,8 @@ public class SpaceInvadersManager : MonoBehaviour
     
         float spriteHeight = background.sprite.bounds.size.y;
         float spriteWidth = background.sprite.bounds.size.x;
+
+        if (spriteHeight <= 0.001f || spriteWidth <= 0.001f) return;
 
         float scaleX = cameraWidth / spriteWidth;
         float scaleY = cameraHeight / spriteHeight;

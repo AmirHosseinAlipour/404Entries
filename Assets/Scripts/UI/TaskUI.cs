@@ -24,6 +24,21 @@ public class TaskUI : MonoBehaviour
     
     private bool firstTime = true;
 
+    private void OnEnable()
+    {
+        LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+    }
+
+    private void OnDisable()
+    {
+        LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+    }
+
+    private void HandleLanguageChanged(GameLanguage newLang)
+    {
+        UpdateUI();
+    }
+
     private void Start()
     {
         _currentTaskFtw = currentTaskText.GetComponent<FarsiTypewriter>();
@@ -45,28 +60,41 @@ public class TaskUI : MonoBehaviour
     public void UpdateUI()
     {
         var tm = TaskManager.Instance;
-
+        if (tm == null) return;
 
         int currentIndex = tm.GetCurrentTaskIndex();
         if (currentIndex != -1)
         {
-            _currentTaskFtw.SetText(tm.taskNames[currentIndex]);
+            if (_currentTaskFtw != null)
+                _currentTaskFtw.SetText(tm.taskNames[currentIndex]);
+            else
+                currentTaskText.text = LocalizationManager.Translate(tm.taskNames[currentIndex]);
         }
         else
         {
-            currentTaskText.text = "همه مدارک جمع آوری شد!";
+            string doneMsg = "همه مدارک جمع آوری شد!";
+            if (_currentTaskFtw != null)
+                _currentTaskFtw.SetText(doneMsg);
+            else
+                currentTaskText.text = LocalizationManager.Translate(doneMsg);
         }
         
-        _currentTaskDfr.AdjustFontSize();
-        _currentTaskFtw.StartTyping();
+        if (_currentTaskDfr != null)
+            _currentTaskDfr.AdjustFontSize();
+        if (_currentTaskFtw != null)
+            _currentTaskFtw.StartTyping();
         
-        
-        for (int i = 1; i < allTaskTexts.Length; i+=2)
+        for (int i = 1; i < allTaskTexts.Length; i += 2)
         {
-            string _fixedText;
-            _fixedText = ArabicFixer.Fix(tm.taskNames[i]);
-            allTaskTexts[i].text = _fixedText;
-            allTaskImages[i].sprite = tm.taskCompleted[i] ? doneSprite : notDoneSprite;
+            if (i < tm.taskNames.Length && allTaskTexts[i] != null)
+            {
+                string translated = LocalizationManager.Translate(tm.taskNames[i]);
+                string _fixedText = LocalizationManager.IsRTL ? ArabicFixer.Fix(translated) : translated;
+                allTaskTexts[i].text = _fixedText;
+                allTaskTexts[i].alignment = LocalizationManager.IsRTL ? TextAnchor.MiddleRight : TextAnchor.MiddleLeft;
+                if (allTaskImages[i] != null)
+                    allTaskImages[i].sprite = tm.taskCompleted[i] ? doneSprite : notDoneSprite;
+            }
         }
     }
     

@@ -24,19 +24,28 @@ public class CameraMaskSwitcher : MonoBehaviour
 
     private void Start()
     {
-        // Start with normal mask
-        mainCamera.cullingMask = normalMask;
+        if (mainCamera == null)
+            mainCamera = Camera.main;
+
+        if (mainCamera != null)
+            mainCamera.cullingMask = normalMask;
     }
 
     private void Update()
     {
-        if (roomVcam != null) // Null safety
+        if (mainCamera == null)
         {
-            // If room camera is currently the active vcam
-            if (roomVcam.Priority > 10)
-                mainCamera.cullingMask = roomMask;
-            else
-                mainCamera.cullingMask = normalMask;
+            mainCamera = Camera.main;
+            if (mainCamera == null) return;
+        }
+
+        if (roomVcam != null)
+        {
+            LayerMask targetMask = (roomVcam.Priority > 10) ? roomMask : normalMask;
+            if (mainCamera.cullingMask != targetMask)
+            {
+                mainCamera.cullingMask = targetMask;
+            }
         }
     }
 }

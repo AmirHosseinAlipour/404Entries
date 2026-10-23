@@ -1,4 +1,4 @@
-﻿#if CINEMACHINE_UGUI
+#if CINEMACHINE_UGUI
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.Serialization;
@@ -201,7 +201,7 @@ namespace Unity.Cinemachine
                 DestroyCanvas();
         }
 
-        string CanvasName => "_CM_canvas" + gameObject.GetInstanceID();
+        string CanvasName => "_CM_canvas" + gameObject.GetHashCode();
 
         void CameraUpdatedCallback(CinemachineBrain brain)
         {
