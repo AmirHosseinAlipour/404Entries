@@ -7,29 +7,59 @@ using UnityEngine.InputSystem;
 
 public class SaveManager : MonoBehaviour
 {
-    public static SaveManager Instance { get; private set; }
+    private static SaveManager _instance;
+    public static SaveManager Instance
+    {
+        get
+        {
+            if (_instance == null)
+            {
+                _instance = FindAnyObjectByType<SaveManager>();
+                if (_instance == null)
+                {
+                    GameObject go = new GameObject("SaveManager");
+                    _instance = go.AddComponent<SaveManager>();
+                    DontDestroyOnLoad(go);
+                }
+            }
+            return _instance;
+        }
+        private set
+        {
+            _instance = value;
+        }
+    }
+
     public const string SaveFileName = "gamesave.json";
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void AutoInitialize()
     {
-        if (Instance == null)
+        if (_instance == null)
         {
             GameObject go = new GameObject("SaveManager");
-            Instance = go.AddComponent<SaveManager>();
+            _instance = go.AddComponent<SaveManager>();
             DontDestroyOnLoad(go);
         }
     }
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
+        if (_instance != null && _instance != this)
         {
             Destroy(gameObject);
             return;
         }
-        Instance = this;
+        _instance = this;
         DontDestroyOnLoad(gameObject);
+    }
+
+    private void Start()
+    {
+        if (SceneManager.GetActiveScene().buildIndex != 0 && HasSaveFile())
+        {
+            StartCoroutine(ApplySaveNextFrame());
+        }
     }
 
     private void OnEnable()
@@ -108,6 +138,7 @@ public class SaveManager : MonoBehaviour
 
         string json = JsonUtility.ToJson(data, true);
         File.WriteAllText(GetSaveFilePath(), json);
+        Debug.Log("[SaveManager] Save written to: " + GetSaveFilePath() + " | Task Index: " + data.currentTaskIndex + " | Player Position: " + playerPosition);
     }
 
     public bool LoadGame()
@@ -131,6 +162,7 @@ public class SaveManager : MonoBehaviour
         }
 
         ApplySaveData(data);
+        Debug.Log("[SaveManager] Save loaded successfully! Task Index: " + data.currentTaskIndex + " | Player Position: (" + data.playerX + ", " + data.playerY + ", " + data.playerZ + ")");
         return true;
     }
 
@@ -147,20 +179,18 @@ public class SaveManager : MonoBehaviour
         if (player != null)
         {
             Vector3 targetPos = new Vector3(data.playerX, data.playerY, data.playerZ);
+            Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
+            if (rb != null)
+            {
+                rb.linearVelocity = Vector2.zero;
+                rb.angularVelocity = 0f;
+                rb.position = new Vector2(targetPos.x, targetPos.y);
+            }
+            player.transform.position = targetPos;
             PlayerController pc = player.GetComponent<PlayerController>();
             if (pc != null)
             {
                 pc.Respawn(targetPos);
-            }
-            else
-            {
-                player.transform.position = targetPos;
-                Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
-                if (rb != null)
-                {
-                    rb.position = new Vector2(targetPos.x, targetPos.y);
-                    rb.linearVelocity = Vector2.zero;
-                }
             }
         }
 
@@ -175,9 +205,43 @@ public class SaveManager : MonoBehaviour
                     TaskManager.Instance.taskDataList[i].isCompleted = data.taskCompleted[i];
                 }
             }
-            TaskManager.Instance.UpdateActiveTarget();
             TaskManager.Instance.SetImage();
-            TaskManager.Instance.OnCurrentIndexChange?.Invoke();
+            TaskManager.Instance.NotifyTasksUpdated();
+        }
+
+        BaseProfessors.IsAnyMinigameActive = false;
+        BaseProfessors.ActiveProfessor = null;
+        TaskUI.SetTopUIVisible(true);
+
+        TaskUI taskUI = FindAnyObjectByType<TaskUI>();
+        if (taskUI != null)
+        {
+            taskUI.UpdateUI();
+        }
+
+        if (GameManager.Instance != null && TaskManager.Instance != null)
+        {
+            GameManager.Instance.ChangeCurrentIndex();
+            int currentIdx = TaskManager.Instance.GetCurrentTaskIndex();
+            if (GameManager.Instance.taskTriggers != null)
+            {
+                for (int i = 0; i < GameManager.Instance.taskTriggers.Count; i++)
+                {
+                    if (GameManager.Instance.taskTriggers[i] == null) continue;
+                    Collider2D col = GameManager.Instance.taskTriggers[i].GetComponent<Collider2D>();
+                    Target target = GameManager.Instance.taskTriggers[i].GetComponent<Target>();
+                    if (i == currentIdx)
+                    {
+                        if (col != null) col.isTrigger = true;
+                        if (target != null) target.EnableTarget();
+                    }
+                    else
+                    {
+                        if (col != null) col.isTrigger = false;
+                        if (target != null) target.DisableTarget();
+                    }
+                }
+            }
         }
     }
 
@@ -192,6 +256,11 @@ public class SaveManager : MonoBehaviour
     private IEnumerator ApplySaveNextFrame()
     {
         yield return null;
+        if (HasSaveFile())
+        {
+            LoadGame();
+        }
+        yield return new WaitForFixedUpdate();
         if (HasSaveFile())
         {
             LoadGame();

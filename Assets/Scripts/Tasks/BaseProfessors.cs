@@ -26,6 +26,10 @@ public class BaseProfessors : MonoBehaviour
     public RectTransform firstFailDialogue;
     public FarsiTypewriter firstFailDialogueFtw;
     
+    public static bool IsAnyMinigameActive = false;
+    public static BaseProfessors ActiveProfessor = null;
+    public bool isMinigameActive = false;
+
     protected Button _allTasksBackButton;
     protected Button _currentTaskButton;
     protected GameObject _joyStick;
@@ -75,6 +79,11 @@ public class BaseProfessors : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
+            if (isMinigameActive || IsAnyMinigameActive)
+            {
+                return;
+            }
+
             if (_player == null) _player = other.gameObject.GetComponent<PlayerController>();
 
             bool isTaskDone = false;
@@ -97,10 +106,11 @@ public class BaseProfessors : MonoBehaviour
             }
             else
             {
+                ActiveProfessor = this;
                 FindReferences();
                 PlayerUIModeHelper.PlayerEnterUIMode(_player);
                 PlayerUIModeHelper.DisableTasksButton(_allTasksBackButton, _currentTaskButton);
-                UIUtils.SetAlpha(_currentTaskButton != null ? _currentTaskButton.gameObject : null, 0f);
+                TaskUI.SetTopUIVisible(false);
                 UIUtils.SetAlpha(_joyStick, 0f);
                 
                 if (StartPanel != null)
@@ -151,16 +161,47 @@ public class BaseProfessors : MonoBehaviour
         SwitchWindow.OnPanelStateChanged -= HandlePanelStateChange;
     }
 
+    public virtual void StartMinigame()
+    {
+        isMinigameActive = true;
+        IsAnyMinigameActive = true;
+        ActiveProfessor = this;
+        FindReferences();
+        PlayerUIModeHelper.PlayerEnterUIMode(_player);
+        PlayerUIModeHelper.DisableTasksButton(_allTasksBackButton, _currentTaskButton);
+        TaskUI.SetTopUIVisible(false);
+        UIUtils.SetAlpha(_joyStick, 0f);
+    }
+
     private void HandlePanelStateChange(bool isActive)
     {
         if (!isActive)
         {
+            if (IsAnyMinigameActive || isMinigameActive)
+            {
+                return;
+            }
+            if (ActiveProfessor != null && ActiveProfessor != this)
+            {
+                return;
+            }
             GetBackToNormal();
+            if (ActiveProfessor == this)
+            {
+                ActiveProfessor = null;
+            }
         }
     }
 
     public virtual void CompleteMission()
     {
+        isMinigameActive = false;
+        IsAnyMinigameActive = false;
+        if (ActiveProfessor == this)
+        {
+            ActiveProfessor = null;
+        }
+
         if (assignedTask != null && TaskManager.Instance != null)
         {
             TaskManager.Instance.CompleteTask(assignedTask);
@@ -192,6 +233,13 @@ public class BaseProfessors : MonoBehaviour
 
     public virtual void FailMission()
     {
+        isMinigameActive = false;
+        IsAnyMinigameActive = false;
+        if (ActiveProfessor == this)
+        {
+            ActiveProfessor = null;
+        }
+
         GetBackToNormal();
 
         if (firstFailDialogue != null && UIAnimationManager.Instance != null)
@@ -209,10 +257,15 @@ public class BaseProfessors : MonoBehaviour
 
     public void GetBackToNormal()
     {
+        if (IsAnyMinigameActive || isMinigameActive)
+        {
+            return;
+        }
+
         FindReferences();
         PlayerUIModeHelper.PlayerExitUIMode(_player);
         PlayerUIModeHelper.EnableTasksButton(_allTasksBackButton, _currentTaskButton);
-        UIUtils.SetAlpha(_currentTaskButton != null ? _currentTaskButton.gameObject : null, 1f);
+        TaskUI.SetTopUIVisible(true);
         if (PlatformHelper.IsMobile())
         {
             UIUtils.SetAlpha(_joyStick, 1f);

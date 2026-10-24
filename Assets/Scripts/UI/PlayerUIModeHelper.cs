@@ -28,11 +28,17 @@ public static class PlayerUIModeHelper
     {
         if (currentTaskButton != null) currentTaskButton.interactable = false;
         if (allTasksBackButton != null) allTasksBackButton.interactable = false;
+        TaskUI.SetTopUIVisible(false);
     }
     
     public static void EnableTasksButton(Button allTasksBackButton, Button currentTaskButton)
     {
+        if (BaseProfessors.IsAnyMinigameActive)
+        {
+            return;
+        }
         if (currentTaskButton != null) currentTaskButton.interactable = true;
         if (allTasksBackButton != null) allTasksBackButton.interactable = true;
+        TaskUI.SetTopUIVisible(true);
     }
 }

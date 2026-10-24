@@ -199,6 +199,7 @@ public class PlayerController : MonoBehaviour
         transform.position = position;
         if (_rb != null)
         {
+            _rb.position = new Vector2(position.x, position.y);
             _rb.linearVelocity = Vector2.zero;
             _rb.angularVelocity = 0f;
         }

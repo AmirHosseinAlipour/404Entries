@@ -21,6 +21,7 @@ public class FailOrPass : BaseProfessors
 
     public void StartGame()
     {
+        StartMinigame();
         UIAnimationManager.Instance.ShowWindow(task, 0.5f);
 
         if (firstLetter != null)

@@ -22,7 +22,18 @@ public class SaveTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (!other.CompareTag("Player"))
+        ProcessTrigger(other);
+    }
+
+    private void OnTriggerStay2D(Collider2D other)
+    {
+        ProcessTrigger(other);
+    }
+
+    private void ProcessTrigger(Collider2D other)
+    {
+        bool isPlayer = other.CompareTag("Player") || (other.attachedRigidbody != null && other.attachedRigidbody.CompareTag("Player"));
+        if (!isPlayer)
         {
             return;
         }
@@ -40,7 +51,20 @@ public class SaveTrigger : MonoBehaviour
         _lastSaveTime = Time.time;
         _hasTriggered = true;
 
-        Vector3? targetPosition = saveTriggerPosition ? (Vector3?)transform.position : (Vector3?)other.transform.position;
+        GameObject playerObj = GameObject.FindWithTag("Player");
+        Vector3 targetPosition = Vector3.zero;
+        if (saveTriggerPosition)
+        {
+            targetPosition = transform.position;
+        }
+        else if (playerObj != null)
+        {
+            targetPosition = playerObj.transform.position;
+        }
+        else
+        {
+            targetPosition = other.transform.root.position;
+        }
 
         if (SaveManager.Instance != null)
         {
@@ -51,6 +75,8 @@ public class SaveTrigger : MonoBehaviour
         {
             AudioSource.PlayClipAtPoint(saveSound, transform.position);
         }
+
+        Debug.Log("[SaveTrigger] Game saved at: " + targetPosition);
     }
 
     private void OnDrawGizmos()

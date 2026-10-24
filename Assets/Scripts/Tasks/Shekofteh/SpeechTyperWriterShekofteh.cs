@@ -84,6 +84,11 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
         UpdateSettings();
         ApplyAlignment();
 
+        if (string.IsNullOrEmpty(_originalText) && _textUI != null && !string.IsNullOrEmpty(_textUI.text))
+        {
+            _originalText = _textUI.text;
+        }
+
         if (!typeWriterEffect)
         {
             string rawWrapped = ManualWrapWholeText(LocalizationManager.Translate(_originalText));
@@ -99,22 +104,39 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
 
     public void StartTyping()
     {
+        gameObject.SetActive(true);
+        if (transform.parent != null)
+        {
+            transform.parent.gameObject.SetActive(true);
+        }
+        UIUtils.SetAlpha(gameObject, 1f);
+
         StopTyping();
         UpdateSettings();
         ApplyAlignment();
 
         if (string.IsNullOrEmpty(_originalText))
         {
-            _originalText = "بسم الله الرحمن الرحیم،\nضمن تبریک برای قبولی داخل دانشگاه بهشتی، این دانشگاه یکی از بهترین دانشگاه های سراسر کشور است که به تازگی از رتبه 500 به رتبه 447 صعود کرده، نکته ای که باید بهتون بگم: اینه که شما باید به چارت توجه کنید، خروج از چارت، خط قرمز ماست، شما باید هر طور شده در ۸ ترم دانشگاه رو تموم کنین شاید بپرسین چطوری؟ باید بگم ممنونم شما چطورین. اگر ۷ ترمه تموم کنین که چه بهتر. البته بعضی از دانشجویان هم هستن که میرن کار های متفرقه انجام می دن یا سر کار میرن ما این افراد رو کارشون رو تایید نمی کنیم و بعضا این افراد اصلا میرن سر کار و ۹ ترمه دانشگاه رو تموم میکنن باز هم میگم این افراد مورد تایید ما نیستند و ما تاییدشون نمی کنیم\n موضوع دیگه که باید بهش بپردازیم نمره هست. ببینید دانشگاه روی نمره خیلی حساسه و نمره براش اهمیت داره، سعی کنین نمرتون رو بالا نگه دارید این بعدا در دانشگاه و حتی کار کردن خیلی قراره تاثیر بذاره حالا درسته که هیچ جا به معدل دانشگاه نگاه دیگه نمی کنن و حتی برای اپلای هم مقاله داشتن مهم تر از نمره هست ولی خب تمام اینها دلیل نمیشه که شما نمرتون رو پایین نگه دارید.\nنکته دیگه که باید بهش بپردازیم در مورد زوج و فرد بودن هست ببینید دانشگاه برای آسانی مدیریت ورودی، شما رو به ۲ دسته تقسیم کردند: یک دسته گروه زوج و یک دسته گروه فرد. شما باید بدونید که توی کدوم دسته هستید و طبق اون عمل کنید. حالا اینکه چطور بفهمید کدوم هستید، به شماره دانشجوییتون بستگی داره. اگر رقم آخر شماره دانشجوییتون زوج باشه، شما در گروه زوج قرار میگیرید و اگر فرد باشه در گروه فرد. این موضوع در انتخاب واحد و زمان بندی کلاس ها خیلی مهمه و باید حتما بهش دقت داشته باشید.\nموضوع بعدی در مورد خوابگاه هست. دانشجویانی که از شهرستان میان باید حتما در مهلت مقرر برای خوابگاه ثبت نام کنند. خوابگاه های دانشگاه امکانات مناسبی دارند ولی ظرفیت محدوده، پس اولویت با کسانی هست که زودتر اقدام کنند و مدارکشون کامل باشه.\nدر نهایت امیدوارم دوران تحصیلی موفقی داشته باشید و بتونید از امکانات دانشگاه به بهترین نحو استفاده کنید.";
+            if (_textUI != null && !string.IsNullOrEmpty(_textUI.text))
+            {
+                _originalText = _textUI.text;
+            }
+            if (string.IsNullOrEmpty(_originalText))
+            {
+                _originalText = "بسم الله الرحمن الرحیم،\nضمن تبریک برای قبولی داخل دانشگاه بهشتی، این دانشگاه یکی از بهترین دانشگاه های سراسر کشور است که به تازگی از رتبه 500 به رتبه 447 صعود کرده، نکته ای که باید بهتون بگم: اینه که شما باید به چارت توجه کنید، خروج از چارت، خط قرمز ماست، شما باید هر طور شده در ۸ ترم دانشگاه رو تموم کنین شاید بپرسین چطوری؟ باید بگم ممنونم شما چطورین. اگر ۷ ترمه تموم کنین که چه بهتر. البته بعضی از دانشجویان هم هستن که میرن کار های متفرقه انجام می دن یا سر کار میرن ما این افراد رو کارشون رو تایید نمی کنیم و بعضا این افراد اصلا میرن سر کار و ۹ ترمه دانشگاه رو تموم میکنن باز هم میگم این افراد مورد تایید ما نیستند و ما تاییدشون نمی کنیم\n موضوع دیگه که باید بهش بپردازیم نمره هست. ببینید دانشگاه روی نمره خیلی حساسه و نمره براش اهمیت داره، سعی کنین نمرتون رو بالا نگه دارید این بعدا در دانشگاه و حتی کار کردن خیلی قراره تاثیر بذاره حالا درسته که هیچ جا به معدل دانشگاه نگاه دیگه نمی کنن و حتی برای اپلای هم مقاله داشتن مهم تر از نمره هست ولی خب تمام اینها دلیل نمیشه که شما نمرتون رو پایین نگه دارید.\nنکته دیگه که باید بهش بپردازیم در مورد زوج و فرد بودن هست ببینید دانشگاه برای آسانی مدیریت ورودی، شما رو به ۲ دسته تقسیم کردند: یک دسته گروه زوج و یک دسته گروه فرد. شما باید بدونید که توی کدوم دسته هستید و طبق اون عمل کنید. حالا اینکه چطور بفهمید کدوم هستید، به شماره دانشجوییتون بستگی داره. اگر رقم آخر شماره دانشجوییتون زوج باشه، شما در گروه زوج قرار میگیرید و اگر فرد باشه در گروه فرد. این موضوع در انتخاب واحد و زمان بندی کلاس ها خیلی مهمه و باید حتما بهش دقت داشته باشید.\nموضوع بعدی در مورد خوابگاه هست. دانشجویانی که از شهرستان میان باید حتما در مهلت مقرر برای خوابگاه ثبت نام کنند. خوابگاه های دانشگاه امکانات مناسبی دارند ولی ظرفیت محدوده، پس اولویت با کسانی هست که زودتر اقدام کنند و مدارکشون کامل باشه.\nدر نهایت امیدوارم دوران تحصیلی موفقی داشته باشید و بتونید از امکانات دانشگاه به بهترین نحو استفاده کنید.";
+            }
         }
 
-        _textUI.text = "";
+        if (_textUI != null) _textUI.text = "";
         _lines.Clear();
         _currentLine = "";
         _currentWord = "";
         _spaceBeforeWord = false;
 
-        _typingCo = StartCoroutine(TypeTextCoroutine());
+        if (gameObject.activeInHierarchy)
+        {
+            _typingCo = StartCoroutine(TypeTextCoroutine());
+        }
     }
 
     public void StopTyping()
@@ -134,23 +156,28 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
         _textUI.horizontalOverflow = HorizontalWrapMode.Overflow;
         _textUI.verticalOverflow = VerticalWrapMode.Overflow;
 
-        Vector2 size = _textUI.rectTransform.rect.size;
-        if (size.x < 50f || size.y < 50f)
+        float width = _textUI.rectTransform.rect.width;
+        float height = _textUI.rectTransform.rect.height;
+
+        if (width < 100f || height < 100f)
         {
             RectTransform parentRect = _textUI.rectTransform.parent as RectTransform;
-            if (parentRect != null && parentRect.rect.width > 50f)
+            if (parentRect != null && parentRect.rect.width > 100f)
             {
-                size = parentRect.rect.size;
+                width = parentRect.rect.width - 60f;
+                height = parentRect.rect.height - 40f;
             }
             else
             {
-                size = new Vector2(1000f, 600f);
+                width = 1100f;
+                height = 600f;
             }
         }
 
-        _settings = _textUI.GetGenerationSettings(size);
-        _maxWidthPx = size.x;
-        _boxHeightPx = size.y;
+        _maxWidthPx = Mathf.Max(500f, width);
+        _boxHeightPx = Mathf.Max(300f, height);
+        _settings = _textUI.GetGenerationSettings(new Vector2(_maxWidthPx, _boxHeightPx));
+        _settings.scaleFactor = 1f;
 
         if (_textUI.lineSpacing <= 0.05f)
         {
@@ -291,20 +318,24 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
 
     private bool LineExceedsWidth(string rawLine)
     {
+        if (_textUI == null || _maxWidthPx < 100f) return false;
         string fixedLine = LocalizationManager.IsRTL ? ArabicFixer.Fix(rawLine, true, true) : rawLine;
         float w = _textUI.cachedTextGeneratorForLayout.GetPreferredWidth(fixedLine, _settings);
-        return w > (_maxWidthPx - 4f);
+        return w > (_maxWidthPx - 10f);
     }
 
     private bool WordAloneExceedsWidth(string rawWord)
     {
+        if (_textUI == null || _maxWidthPx < 100f) return false;
         string fixedWord = LocalizationManager.IsRTL ? ArabicFixer.Fix(rawWord, true, true) : rawWord;
         float w = _textUI.cachedTextGeneratorForLayout.GetPreferredWidth(fixedWord, _settings);
-        return w > (_maxWidthPx - 4f);
+        return w > (_maxWidthPx - 10f);
     }
 
     private bool WouldOverflowIfAddLine(string newLineRaw)
     {
+        if (_textUI == null) return false;
+
         string raw;
 
         if (_lines.Count == 0)
@@ -314,7 +345,8 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
 
         string fixedText = FixLineByLine(raw);
         float h = _textUI.cachedTextGeneratorForLayout.GetPreferredHeight(fixedText, _settings);
-        return h > (_boxHeightPx - pageClearPaddingPx);
+        float allowedHeight = Mathf.Max(200f, _boxHeightPx - Mathf.Min(pageClearPaddingPx, _boxHeightPx * 0.35f));
+        return h > allowedHeight;
     }
 
     private void RenderNow()

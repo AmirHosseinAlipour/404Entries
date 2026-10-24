@@ -42,6 +42,26 @@ public class Masoumi : BaseProfessors
         _musicChange = GetComponent<MusicChange>();
     }
 
+    private void Update()
+    {
+        if (missionPanel != null && missionPanel.gameObject.activeSelf && !isMinigameActive)
+        {
+            StartMinigame();
+        }
+    }
+
+    public void StartGame()
+    {
+        StartMinigame();
+        if (missionPanel != null) UIAnimationManager.Instance.ShowWindow(missionPanel, 0.5f);
+        if (speechPanel != null) UIAnimationManager.Instance.ShowWindow(speechPanel, 0.5f);
+    }
+
+    public void StartMission()
+    {
+        StartGame();
+    }
+
     protected override void OnEnable()
     {
         base.OnEnable();

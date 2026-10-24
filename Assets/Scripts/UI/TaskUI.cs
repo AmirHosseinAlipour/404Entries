@@ -7,6 +7,8 @@ using ArabicSupport;
 
 public class TaskUI : MonoBehaviour
 {
+    public static TaskUI Instance { get; private set; }
+
     [Header("Panels")]
     public GameObject currentTaskPanel;
     public GameObject allTasksPanel;
@@ -25,6 +27,49 @@ public class TaskUI : MonoBehaviour
     private Button _currentTaskBtn;
     
     private bool firstTime = true;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+        {
+            Instance = null;
+        }
+    }
+
+    public void SetTopTaskUIVisible(bool visible)
+    {
+        if (currentTaskPanel != null)
+        {
+            currentTaskPanel.SetActive(visible);
+            UIUtils.SetAlpha(currentTaskPanel, visible ? 1f : 0f);
+        }
+        if (!visible && allTasksPanel != null)
+        {
+            allTasksPanel.SetActive(false);
+        }
+    }
+
+    public static void SetTopUIVisible(bool visible)
+    {
+        if (Instance != null)
+        {
+            Instance.SetTopTaskUIVisible(visible);
+        }
+        else
+        {
+            var curObj = GameObject.FindWithTag("CurrentTaskButton");
+            if (curObj != null)
+            {
+                curObj.SetActive(visible);
+                UIUtils.SetAlpha(curObj, visible ? 1f : 0f);
+            }
+        }
+    }
 
     private void OnEnable()
     {
@@ -96,6 +141,10 @@ public class TaskUI : MonoBehaviour
 
     private void HandleToggleTasksInput()
     {
+        if (BaseProfessors.IsAnyMinigameActive)
+        {
+            return;
+        }
         bool isTaskDisabled = (_currentTaskBtn != null && !_currentTaskBtn.interactable);
         if (!isTaskDisabled || (allTasksPanel != null && allTasksPanel.activeSelf))
         {

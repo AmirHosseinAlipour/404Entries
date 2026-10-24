@@ -28,6 +28,8 @@ public class TeacherController : BaseProfessors
 
     public void StartLooking()
     {
+        StartMinigame();
+        PlayerUIModeHelper.PlayerExitUIMode(_player);
         if (_isActive) return;
         _isActive = true;
         lookRoutine = StartCoroutine(RandomLookRoutine());

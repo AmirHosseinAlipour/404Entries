@@ -288,16 +288,22 @@ public class PaperManager : MonoBehaviour
     public void HandleEnding()
     {
         if (task != null) UIAnimationManager.Instance.HideWindow(task, 0.5f);
-        if (_musicChange != null)
+        if (prof != null)
         {
-            _musicChange.ToggleMusic();
-            _musicChange.PlayMainMusic();
+            prof.CompleteMission();
         }
-        if (prof != null && prof.firstWinDialogue != null && prof.firstWinDialogueFtw != null)
+        else
         {
-            UIAnimationManager.Instance.ShowDialogueWindow(
-                prof.firstWinDialogue, 0.5f, prof.firstWinDialogueFtw
-            );
+            if (_musicChange != null)
+            {
+                _musicChange.ToggleMusic();
+                _musicChange.PlayMainMusic();
+            }
+            if (TaskManager.Instance != null)
+            {
+                TaskManager.Instance.CompleteCurrentTask();
+                TaskUI.SetTopUIVisible(true);
+            }
         }
     }
 

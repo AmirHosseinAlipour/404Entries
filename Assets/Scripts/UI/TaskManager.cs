@@ -117,6 +117,13 @@ public class TaskManager : MonoBehaviour
         }
     }
 
+    public void NotifyTasksUpdated()
+    {
+        OnCurrentIndexChange?.Invoke();
+        OnTasksUpdated?.Invoke();
+        UpdateActiveTarget();
+    }
+
     public void CompleteTask(TaskData task)
     {
         if (task == null) return;

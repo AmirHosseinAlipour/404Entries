@@ -10,29 +10,41 @@ public class CircleTimerAnimation : MonoBehaviour
 
     private void Awake()
     {
+        EnsureFillImage();
+    }
+
+    private void EnsureFillImage()
+    {
         if (_fillImage == null)
         {
             _fillImage = GetComponent<Image>();
+            if (_fillImage == null)
+            {
+                _fillImage = GetComponentInChildren<Image>();
+            }
+        }
+
+        if (_fillImage != null)
+        {
+            _fillImage.type = Image.Type.Filled;
+            _fillImage.fillMethod = Image.FillMethod.Radial360;
         }
     }
 
     public void StartCountdown()
     {
         StopAllCoroutines();
-        if (_fillImage == null)
+        EnsureFillImage();
+        if (gameObject.activeInHierarchy)
         {
-            _fillImage = GetComponent<Image>();
+            StartCoroutine(AnimateCircleFill());
         }
-        StartCoroutine(AnimateCircleFill());
     }
     
     public void StopCountdown()
     {
         StopAllCoroutines();
-        if (_fillImage == null)
-        {
-            _fillImage = GetComponent<Image>();
-        }
+        EnsureFillImage();
         if (_fillImage != null)
         {
             _fillImage.fillAmount = 0f; 
@@ -41,10 +53,7 @@ public class CircleTimerAnimation : MonoBehaviour
 
     private IEnumerator AnimateCircleFill()
     {
-        if (_fillImage == null)
-        {
-            _fillImage = GetComponent<Image>();
-        }
+        EnsureFillImage();
         if (_fillImage == null) yield break;
 
         float dur = animationDuration > 0.05f ? animationDuration : 1f;
@@ -53,8 +62,8 @@ public class CircleTimerAnimation : MonoBehaviour
 
         while (elapsedTime < dur)
         {
-            elapsedTime += Time.deltaTime;
-            _fillImage.fillAmount = 1f - (elapsedTime / dur); 
+            elapsedTime += Time.unscaledDeltaTime;
+            _fillImage.fillAmount = Mathf.Clamp01(1f - (elapsedTime / dur)); 
             yield return null;
         }
 

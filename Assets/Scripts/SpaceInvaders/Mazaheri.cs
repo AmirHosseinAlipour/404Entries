@@ -11,6 +11,7 @@ public class Mazaheri : BaseProfessors
     
     public void StartGame()
     {
+        StartMinigame();
         if (bootPanel != null) UIAnimationManager.Instance.ShowWindow(bootPanel, 0.5f);
         if (MiniMap != null) MiniMap.SetActive(false);
         if (game != null) game.InitialSettings();

@@ -38,6 +38,7 @@ public class Safaei : BaseProfessors
 
     public void StartGame()
     {
+        StartMinigame();
         currentPhase = 0;
         if (textPanel != null) textPanel.gameObject.SetActive(true);
         if (musicChange != null)

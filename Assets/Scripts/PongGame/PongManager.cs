@@ -56,7 +56,6 @@ public class PongManager : MonoBehaviour
                 isFadingOut = false;
                 targetObject.SetActive(false);
                 PongGameObject.SetActive(false);
-                UIUtils.SetAlpha(_currentTaskButton.gameObject, 1f);
                 cam.Priority = 0;
                 blackBackground.sortingOrder = -10;
                 if (prof != null)
@@ -66,6 +65,7 @@ public class PongManager : MonoBehaviour
                 else if (TaskManager.Instance != null)
                 {
                     TaskManager.Instance.CompleteCurrentTask();
+                    TaskUI.SetTopUIVisible(true);
                 }
             }
         }

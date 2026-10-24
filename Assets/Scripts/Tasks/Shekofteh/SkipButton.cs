@@ -100,13 +100,25 @@ public class SkipButton : MonoBehaviour
     
     public void StartTeleportMovement()
     {
+        gameObject.SetActive(true);
+        if (buttonImage != null) UIUtils.SetAlpha(buttonImage.gameObject, 1f);
+        if (background != null)
+        {
+            background.gameObject.SetActive(true);
+            UIUtils.SetAlpha(background.gameObject, 1f);
+        }
+
         if (teleportCoroutine != null)
         {
             StopCoroutine(teleportCoroutine);
         }
 
         _firstLoop = true;
-        teleportCoroutine = StartCoroutine(RandomTeleportRoutine());
+        TeleportButton();
+        if (gameObject.activeInHierarchy)
+        {
+            teleportCoroutine = StartCoroutine(RandomTeleportRoutine());
+        }
     }
     
     public void StopTeleportMovement()
@@ -120,7 +132,7 @@ public class SkipButton : MonoBehaviour
     
     private void ChangeCounter()
     {
-        if (_canTouch)
+        if (_canTouch && !canGoToNextLevel && !isCompleted)
         {
             _canTouch = false;
             _count += _value;
@@ -131,6 +143,19 @@ public class SkipButton : MonoBehaviour
             }
             
             CheckForLevelCompletion();
+
+            if (!canGoToNextLevel && !isCompleted)
+            {
+                if (teleportCoroutine != null)
+                {
+                    StopCoroutine(teleportCoroutine);
+                }
+                TeleportButton();
+                if (gameObject.activeInHierarchy)
+                {
+                    teleportCoroutine = StartCoroutine(RandomTeleportRoutine());
+                }
+            }
         }
     }
 
@@ -147,9 +172,8 @@ public class SkipButton : MonoBehaviour
     {
         while (true)
         {
-            TeleportButton();
-            if (background != null) background.StartCountdown();
             yield return new WaitForSeconds(_currentTeleportInterval);
+            TeleportButton();
         }
     }
 
@@ -159,13 +183,14 @@ public class SkipButton : MonoBehaviour
         {
             if (rectTransform != null && rectTransform.parent != null)
                 parentRectTransform = rectTransform.parent.GetComponent<RectTransform>();
-            if (parentRectTransform == null) return;
         }
 
         _canTouch = true;
 
-        float parentWidth = parentRectTransform.rect.width;
-        float parentHeight = parentRectTransform.rect.height;
+        float parentWidth = parentRectTransform != null ? parentRectTransform.rect.width : 1536f;
+        if (parentWidth < 300f) parentWidth = 1536f;
+        float parentHeight = parentRectTransform != null ? parentRectTransform.rect.height : 864f;
+        if (parentHeight < 200f) parentHeight = 864f;
 
         float buttonWidth = 128f * Mathf.Abs(rectTransform.localScale.x);
         float buttonHeight = 128f * Mathf.Abs(rectTransform.localScale.y);
@@ -216,6 +241,8 @@ public class SkipButton : MonoBehaviour
         {
             background.gameObject.SetActive(true);
             UIUtils.SetAlpha(background.gameObject, 1f);
+            background.animationDuration = _currentTeleportInterval;
+            background.StartCountdown();
         }
 
         ChangeButton();
@@ -272,6 +299,7 @@ public class SkipButton : MonoBehaviour
         _currentLevel = 0;
         isCompleted = false;
         canGoToNextLevel = false;
+        _canTouch = true;
 
         if (counts == null || counts.Length == 0 || counts[0] > 5)
         {

@@ -145,6 +145,7 @@ public class Shekofteh : BaseProfessors
 
     public void StartMission()
     {
+        StartMinigame();
         _isMissionCompleted = false;
         _isNextLevelRunning = false;
         StartCoroutine(ExecuteSequence());
@@ -152,12 +153,27 @@ public class Shekofteh : BaseProfessors
     
     private IEnumerator ExecuteSequence()
     {
-        if (counter != null) counter.SetActive(true);
-
-        if (buttonBackground != null)
+        if (StartPanel != null)
         {
-            buttonBackground.gameObject.SetActive(true);
-            UIUtils.SetAlpha(buttonBackground.gameObject, 1f);
+            StartPanel.gameObject.SetActive(true);
+            UIUtils.SetAlpha(StartPanel.gameObject, 1f);
+        }
+
+        if (counter != null)
+        {
+            counter.SetActive(true);
+            UIUtils.SetAlpha(counter, 1f);
+        }
+
+        if (textPanel != null)
+        {
+            if (textPanel.transform.parent != null)
+            {
+                textPanel.transform.parent.gameObject.SetActive(true);
+                UIUtils.SetAlpha(textPanel.transform.parent.gameObject, 1f);
+            }
+            textPanel.SetActive(true);
+            UIUtils.SetAlpha(textPanel, 1f);
         }
 
         if (SkipButton != null)
@@ -167,6 +183,14 @@ public class Shekofteh : BaseProfessors
             SkipButton.ResetState();
         }
 
+        if (buttonBackground != null)
+        {
+            buttonBackground.gameObject.SetActive(true);
+            UIUtils.SetAlpha(buttonBackground.gameObject, 1f);
+        }
+
+        Canvas.ForceUpdateCanvases();
+
         yield return new WaitForSeconds(0.6f);
 
         if (_musicChange != null)
@@ -175,19 +199,34 @@ public class Shekofteh : BaseProfessors
             _musicChange.PlayThemeMusic();
         }
 
+        if (StartPanel != null)
+        {
+            StartPanel.gameObject.SetActive(true);
+            UIUtils.SetAlpha(StartPanel.gameObject, 1f);
+        }
+
         if (textPanel != null)
         {
             if (textPanel.transform.parent != null)
+            {
                 textPanel.transform.parent.gameObject.SetActive(true);
+                UIUtils.SetAlpha(textPanel.transform.parent.gameObject, 1f);
+            }
+            textPanel.SetActive(true);
+            UIUtils.SetAlpha(textPanel, 1f);
 
             Canvas.ForceUpdateCanvases();
 
             var typewriter = textPanel.GetComponent<SpeechTypeWriterShekofteh>();
-            if (typewriter != null) typewriter.StartTyping();
+            if (typewriter != null)
+            {
+                typewriter.StartTyping();
+            }
         }
         
         if (SkipButton != null)
         {
+            SkipButton.gameObject.SetActive(true);
             SkipButton.StartTeleportMovement();
         }
     }
@@ -253,8 +292,13 @@ public class Shekofteh : BaseProfessors
                 SkipButton.NextLevel();
                 if (!SkipButton.isCompleted)
                 {
+                    SkipButton.gameObject.SetActive(true);
                     UIUtils.SetAlpha(SkipButton.gameObject, 1f);
-                    if (buttonBackground != null) UIUtils.SetAlpha(buttonBackground.gameObject, 1f);
+                    if (buttonBackground != null)
+                    {
+                        buttonBackground.gameObject.SetActive(true);
+                        UIUtils.SetAlpha(buttonBackground.gameObject, 1f);
+                    }
                     SkipButton.StartTeleportMovement();
                 }
             }

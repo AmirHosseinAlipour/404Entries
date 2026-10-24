@@ -68,6 +68,8 @@ public class SwitchWindow : MonoBehaviour
             }
         }
         
+        BaseProfessors.IsAnyMinigameActive = false;
+        BaseProfessors.ActiveProfessor = null;
         FindReferences();
         PlayerUIModeHelper.PlayerExitUIMode(_player);
         PlayerUIModeHelper.EnableTasksButton(_allTasksBackButton, _currentTaskButton);
