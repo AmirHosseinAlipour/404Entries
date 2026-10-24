@@ -59,11 +59,14 @@ public class PongManager : MonoBehaviour
                 UIUtils.SetAlpha(_currentTaskButton.gameObject, 1f);
                 cam.Priority = 0;
                 blackBackground.sortingOrder = -10;
-                TaskManager.Instance.CompleteTask(prof.TaskOrderNumber);
-                UIAnimationManager.Instance.ShowDialogueWindow(prof.firstWinDialogue, 0.5f, prof.firstWinDialogueFtw);
-                musicChange.ToggleMusic();
-                musicChange.PlayMainMusic();
-                
+                if (prof != null)
+                {
+                    prof.CompleteMission();
+                }
+                else if (TaskManager.Instance != null)
+                {
+                    TaskManager.Instance.CompleteCurrentTask();
+                }
             }
         }
     }

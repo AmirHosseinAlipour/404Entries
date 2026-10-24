@@ -155,12 +155,15 @@ public class SleepManager : MonoBehaviour
     void OnWin()
     {
         gameObject.SetActive(false);
-        UIAnimationManager.Instance.HideWindow(mainPanel , 0.5f);
-        TaskManager.Instance.CompleteTask(prof.TaskOrderNumber);
-        UIAnimationManager.Instance.ShowDialogueWindow(prof.firstWinDialogue, 0.5f, prof.firstWinDialogueFtw);
-        _musicChange.ToggleMusic();
-        _musicChange.PlayMainMusic();
-        
+        if (mainPanel != null) UIAnimationManager.Instance.HideWindow(mainPanel, 0.5f);
+        if (prof != null)
+        {
+            prof.CompleteMission();
+        }
+        else if (TaskManager.Instance != null)
+        {
+            TaskManager.Instance.CompleteCurrentTask();
+        }
     }
     public void StartGame()
     {
@@ -200,11 +203,11 @@ public class SleepManager : MonoBehaviour
     
     private void HandleLoose()
     {
-       // UIAnimationManager.Instance.HideWindow(mainPanel , 0.5f);
-        UIAnimationManager.Instance.ShowWindow(prof.acceptRect, 0.01f);
-        UIAnimationManager.Instance.ShowDialogueWindow(prof.firstFailDialogue, 0.5f, prof.firstFailDialogueFtw);
-        _musicChange.ToggleMusic();
-        _musicChange.PlayMainMusic();
+        if (prof != null)
+        {
+            if (prof.acceptRect != null) UIAnimationManager.Instance.ShowWindow(prof.acceptRect, 0.01f);
+            prof.FailMission();
+        }
     }
 
     private void SetInitialPos()

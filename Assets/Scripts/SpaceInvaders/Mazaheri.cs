@@ -1,13 +1,12 @@
 using UnityEngine;
 using System.Collections;
-using Unity.VisualScripting; // حتماً برای Coroutine اضافه شود
 
 public class Mazaheri : BaseProfessors
 {
     [Header("Mini Game")]
     public SpaceInvadersManager game;
     public RectTransform bootPanel; 
-    public  MusicChange musicChange;
+    public MusicChange musicChange;
     public GameObject MiniMap; 
     
     public void StartGame()
@@ -19,7 +18,7 @@ public class Mazaheri : BaseProfessors
 
     public void HandleEnding()
     {
-        if (musicChange != null) musicChange.PlayMainMusic();
+        CompleteMission();
         if (StartPanel != null && StartPanel.transform.parent != null)
         {
             RectTransform parent = StartPanel.transform.parent.GetComponent<RectTransform>();
@@ -28,10 +27,6 @@ public class Mazaheri : BaseProfessors
                 parent.gameObject.SetActive(false);
                 UIAnimationManager.Instance.HideWindow(parent, 0.5f);
             }
-        }
-        if (firstWinDialogue != null)
-        {
-            UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.5f, firstWinDialogueFtw);
         }
     }
 }

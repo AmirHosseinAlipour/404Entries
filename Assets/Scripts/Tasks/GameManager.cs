@@ -5,17 +5,16 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance;
+    
     [Header("Task Triggers")]
     public List<GameObject> taskTriggers;
 
     private int currentTaskIndex;
 
     [Header("Testing & Controls")]
-    [Tooltip("Tick this box to force the mobile virtual joystick to appear on PC so you can test it with the mouse.")]
     public bool forceShowJoystick = false;
 
-    [Header("Language / دو زبانه")]
-    [Tooltip("Choose game dialogue language (Persian / English). You can also press F3 at runtime!")]
+    [Header("Language")]
     public GameLanguage gameLanguage = GameLanguage.Persian;
 
     private void Awake()
@@ -45,14 +44,20 @@ public class GameManager : MonoBehaviour
         ChangeCurrentIndex();
     }
 
+    private void OnDestroy()
+    {
+        if (TaskManager.Instance != null)
+        {
+            TaskManager.Instance.OnCurrentIndexChange -= ChangeCurrentIndex;
+        }
+    }
+
     private void Update()
     {
-        // Shortcut: Press F2 key during play mode to toggle the mobile joystick on/off instantly!
         if (UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.f2Key.wasPressedThisFrame)
         {
             forceShowJoystick = !forceShowJoystick;
             PlatformHelper.SetForceShowJoystick(forceShowJoystick);
-            Debug.Log($"[GameManager] Mobile Joystick forced visibility: {forceShowJoystick}");
         }
 
         if (LocalizationManager.CurrentLanguage != gameLanguage)
@@ -124,6 +129,6 @@ public class GameManager : MonoBehaviour
 
     public int getCurrentTaskIndex()
     {
-        return currentTaskIndex/2;
+        return currentTaskIndex / 2;
     }
 }

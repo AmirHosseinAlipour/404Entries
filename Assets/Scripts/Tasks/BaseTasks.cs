@@ -5,7 +5,6 @@ using UnityEngine.UI;
 public class BaseTasks : MonoBehaviour
 {
     [Header("Base Fields")]
-    // Accept challenge message
     public RectTransform StartPanel;
     public Text[] listOfTexts;
     
@@ -13,47 +12,77 @@ public class BaseTasks : MonoBehaviour
 
     protected PlayerController _player;
     
-    // Task UI
     private Button _allTasksBackButton;
     private Button _currentTaskButton;
     
     private void Awake()
     {
-        _player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
-        
-        _allTasksBackButton = GameObject.FindWithTag("AllTasksBackButton").GetComponent<Button>();
-        _currentTaskButton = GameObject.FindWithTag("CurrentTaskButton").GetComponent<Button>();
+        FindReferences();
+    }
+
+    private void FindReferences()
+    {
+        if (_player == null)
+        {
+            var pObj = GameObject.FindWithTag("Player");
+            if (pObj != null) _player = pObj.GetComponent<PlayerController>();
+        }
+
+        if (_allTasksBackButton == null)
+        {
+            var backObj = GameObject.FindWithTag("AllTasksBackButton");
+            if (backObj != null) _allTasksBackButton = backObj.GetComponent<Button>();
+        }
+
+        if (_currentTaskButton == null)
+        {
+            var curObj = GameObject.FindWithTag("CurrentTaskButton");
+            if (curObj != null) _currentTaskButton = curObj.GetComponent<Button>();
+        }
     }
     
     protected virtual void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
+            FindReferences();
             PlayerUIModeHelper.PlayerEnterUIMode(_player);
             PlayerUIModeHelper.DisableTasksButton(_allTasksBackButton, _currentTaskButton);
                 
-            UIAnimationManager.Instance.ShowWindow(StartPanel, 0.5f);
-                
-            for (int i = 0; i < 3; i++)
+            if (StartPanel != null)
             {
-                // Reset the text so each time the text would be written in type writer effect!
-                listOfTexts[i].text = "";
+                UIAnimationManager.Instance.ShowWindow(StartPanel, 0.5f);
+            }
+                
+            if (listOfTexts != null)
+            {
+                for (int i = 0; i < Mathf.Min(3, listOfTexts.Length); i++)
+                {
+                    if (listOfTexts[i] != null)
+                    {
+                        listOfTexts[i].text = "";
+                    }
+                }
             }
             
             StartCoroutine(TextSequence());
         }
     }
     
-    // To show the accept challenge message in a proper type writer order!
     private IEnumerator TextSequence()
     {
-        // First of all we write the first 3 text which is the accept message + yes/no option
         for (int i = 0; i < InitialDialogueCount; i++)
         {
-            FarsiTypewriter text = listOfTexts[i].gameObject.GetComponent<FarsiTypewriter>();
-            int len = text.len;
-            text.StartTyping();
-            yield return new WaitForSeconds(text.typeCharTime * len);
+            if (listOfTexts != null && i < listOfTexts.Length && listOfTexts[i] != null)
+            {
+                FarsiTypewriter text = listOfTexts[i].gameObject.GetComponent<FarsiTypewriter>();
+                if (text != null)
+                {
+                    int len = text.len;
+                    text.StartTyping();
+                    yield return new WaitForSeconds(text.typeCharTime * len);
+                }
+            }
         }
     }
 }

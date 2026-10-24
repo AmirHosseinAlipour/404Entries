@@ -61,12 +61,16 @@ public class SpaceInvadersManager : MonoBehaviour
             if (done)
             {
                 isFadingOut = false;
-                if (TaskManager.Instance != null && m != null)
-                {
-                    TaskManager.Instance.CompleteTask(m.TaskOrderNumber);
-                }
                 if (MiniMap != null) MiniMap.SetActive(true);
-                if (m != null) m.HandleEnding();
+                PlayerUIModeHelper.PlayerExitUIMode();
+                if (m != null)
+                {
+                    m.HandleEnding();
+                }
+                else if (TaskManager.Instance != null)
+                {
+                    TaskManager.Instance.CompleteCurrentTask();
+                }
             }
         }
     }
@@ -78,7 +82,8 @@ public class SpaceInvadersManager : MonoBehaviour
         {
             gameObjectsToShow.SetActive(true); 
             SetAlpha(0f);                      
-            isFadingIn = true;   
+            isFadingIn = true;
+            PlayerUIModeHelper.PlayerEnterUIMode();   
             if (oneShotAudioPrefab != null)
             {
                 GameObject XP = Instantiate(oneShotAudioPrefab, transform.position, Quaternion.identity);

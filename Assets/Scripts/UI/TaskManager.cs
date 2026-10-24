@@ -1,19 +1,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class TaskManager : MonoBehaviour
 {
-    [Header("Ending")] 
+    [Header("Ending")]
     public ScreenFaderEnd screenFaderEnd;
     
     [Header("Task Data")]
     public string[] taskNames;
     public bool[] taskCompleted;
+    public List<TaskData> taskDataList;
 
     public static TaskManager Instance;
     public Sprite Boy_image;
@@ -21,17 +21,55 @@ public class TaskManager : MonoBehaviour
     public Image Main_image;
     
     public Action OnCurrentIndexChange;
+    public static event Action<int, bool> OnTaskStateChanged;
+    public static event Action OnTasksUpdated;
     
     [Header("Task Triggers")]
     public List<GameObject> taskTriggers;
 
     [Header("Testing & Mobile Controls")]
-    [Tooltip("Tick this box to force the mobile virtual joystick to appear on PC so you can test it with the mouse.")]
     public bool forceShowJoystick = false;
 
-    [Header("Language / دو زبانه")]
-    [Tooltip("Choose game dialogue language (Persian / English). You can also press F3 at runtime!")]
+    [Header("Language")]
     public GameLanguage gameLanguage = GameLanguage.Persian;
+
+    public int TotalTasks => taskNames != null ? taskNames.Length : (taskDataList != null ? taskDataList.Count : 0);
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        SyncTaskData();
+        UpdateActiveTarget();
+    }
+
+    private void SyncTaskData()
+    {
+        if (taskDataList != null && taskDataList.Count > 0)
+        {
+            if (taskNames == null || taskNames.Length == 0)
+            {
+                taskNames = new string[taskDataList.Count];
+                taskCompleted = new bool[taskDataList.Count];
+                for (int i = 0; i < taskDataList.Count; i++)
+                {
+                    if (taskDataList[i] != null)
+                    {
+                        taskNames[i] = taskDataList[i].taskName;
+                        taskCompleted[i] = taskDataList[i].isCompleted;
+                    }
+                }
+            }
+        }
+    }
 
     private void Start()
     {
@@ -41,6 +79,7 @@ public class TaskManager : MonoBehaviour
         }
         LocalizationManager.SetLanguage(gameLanguage);
         SetImage();
+        OnTasksUpdated?.Invoke();
     }
 
     private void Update()
@@ -51,63 +90,130 @@ public class TaskManager : MonoBehaviour
         }
     }
 
-    private void Awake()
-    {
-        if (Instance == null)
-            Instance = this;
-        else
-            Destroy(gameObject);
-        
-        if (taskTriggers != null && taskTriggers.Count > 0 && taskTriggers[0] != null)
-        {
-            Target target = taskTriggers[0].GetComponent<Target>();
-            if (target != null) target.EnableTarget();
-        }
-    }
-    
-    // For debugging
     private void OnValidate()
     {
-        // Only invoke if we're in play mode
         if (Application.isPlaying)
         {
             PlatformHelper.SetForceShowJoystick(forceShowJoystick);
             LocalizationManager.SetLanguage(gameLanguage);
             OnCurrentIndexChange?.Invoke();
+            OnTasksUpdated?.Invoke();
         }
     }
+
     public void CompleteTask(int index)
     {
-        if (index >= 0 && index < taskCompleted.Length)
+        if (taskCompleted != null && index >= 0 && index < taskCompleted.Length)
         {
             taskCompleted[index] = true;
-            OnCurrentIndexChange?.Invoke();
-            
-            if (taskTriggers != null)
+            if (taskDataList != null && index < taskDataList.Count && taskDataList[index] != null)
             {
-                if (index < taskTriggers.Count && taskTriggers[index] != null)
-                {
-                    Target currentTarget = taskTriggers[index].GetComponent<Target>();
-                    if (currentTarget != null) currentTarget.DisableTarget();
-                }
+                taskDataList[index].isCompleted = true;
+            }
+            OnCurrentIndexChange?.Invoke();
+            OnTaskStateChanged?.Invoke(index, true);
+            OnTasksUpdated?.Invoke();
+            UpdateActiveTarget();
+        }
+    }
 
-                int nextIndex = GetCurrentTaskIndex();
-                if (nextIndex >= 0 && nextIndex < taskTriggers.Count && taskTriggers[nextIndex] != null)
-                {
-                    Target nextTarget = taskTriggers[nextIndex].GetComponent<Target>();
-                    if (nextTarget != null) nextTarget.EnableTarget();
-                }
+    public void CompleteTask(TaskData task)
+    {
+        if (task == null) return;
+        if (taskDataList != null && taskDataList.Contains(task))
+        {
+            int index = taskDataList.IndexOf(task);
+            CompleteTask(index);
+            return;
+        }
+        CompleteTaskByName(task.taskName);
+    }
+
+    public void CompleteCurrentTask()
+    {
+        int currentIndex = GetCurrentTaskIndex();
+        if (currentIndex != -1)
+        {
+            CompleteTask(currentIndex);
+        }
+    }
+
+    public void CompleteTaskByName(string name)
+    {
+        if (taskNames == null || string.IsNullOrEmpty(name)) return;
+        for (int i = 0; i < taskNames.Length; i++)
+        {
+            if (string.Equals(taskNames[i], name, StringComparison.OrdinalIgnoreCase))
+            {
+                CompleteTask(i);
+                return;
             }
         }
     }
+
+    public bool IsTaskCompleted(int index)
+    {
+        if (taskCompleted == null || index < 0 || index >= taskCompleted.Length) return false;
+        return taskCompleted[index];
+    }
+
+    public bool IsTaskCompleted(TaskData task)
+    {
+        if (task == null) return false;
+        if (taskDataList != null && taskDataList.Contains(task))
+        {
+            return task.isCompleted;
+        }
+        return false;
+    }
+
+    public TaskData GetCurrentTaskData()
+    {
+        int index = GetCurrentTaskIndex();
+        if (taskDataList != null && index >= 0 && index < taskDataList.Count)
+        {
+            return taskDataList[index];
+        }
+        return null;
+    }
+
+    public bool AreAllTasksCompleted()
+    {
+        return GetCurrentTaskIndex() == -1;
+    }
+
     public int GetCurrentTaskIndex()
     {
+        if (taskCompleted == null) return -1;
         for (int i = 0; i < taskCompleted.Length; i++)
         {
             if (!taskCompleted[i])
                 return i;
         }
         return -1; 
+    }
+
+    public void UpdateActiveTarget()
+    {
+        if (taskTriggers == null || taskTriggers.Count == 0) return;
+
+        int activeIndex = GetCurrentTaskIndex();
+        for (int i = 0; i < taskTriggers.Count; i++)
+        {
+            if (taskTriggers[i] == null) continue;
+            Target target = taskTriggers[i].GetComponent<Target>();
+            if (target != null)
+            {
+                if (i == activeIndex)
+                {
+                    target.EnableTarget();
+                }
+                else
+                {
+                    target.DisableTarget();
+                }
+            }
+        }
     }
 
     public void SetImage()

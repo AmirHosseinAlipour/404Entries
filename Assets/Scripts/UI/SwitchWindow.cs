@@ -15,36 +15,49 @@ public class SwitchWindow : MonoBehaviour
     public RectTransform dialogueWindowToShow;
     public FarsiTypewriter dialogueTypeWriter;
     
-    // Task UI 
     private Button _allTasksBackButton;
     private Button _currentTaskButton;
     private TaskUI _taskUI;
-
     private PlayerController _player;
     
     [HideInInspector] public static event Action<bool> OnPanelStateChanged;
     
     private void Awake()
     {
-        var playerObj = GameObject.FindWithTag("Player");
-        if (playerObj != null) _player = playerObj.GetComponent<PlayerController>();
-
-        var backBtnObj = GameObject.FindWithTag("AllTasksBackButton");
-        if (backBtnObj != null) _allTasksBackButton = backBtnObj.GetComponent<Button>();
-
-        var currBtnObj = GameObject.FindWithTag("CurrentTaskButton");
-        if (currBtnObj != null) _currentTaskButton = currBtnObj.GetComponent<Button>();
-        
-        var taskUiObj = GameObject.FindWithTag("TaskUI");
-        if (taskUiObj != null) _taskUI = taskUiObj.GetComponent<TaskUI>();
+        FindReferences();
     }
 
-    // This method is only for closing the mini game UI!
+    private void FindReferences()
+    {
+        if (_player == null)
+        {
+            var playerObj = GameObject.FindWithTag("Player");
+            if (playerObj != null) _player = playerObj.GetComponent<PlayerController>();
+        }
+
+        if (_allTasksBackButton == null)
+        {
+            var backBtnObj = GameObject.FindWithTag("AllTasksBackButton");
+            if (backBtnObj != null) _allTasksBackButton = backBtnObj.GetComponent<Button>();
+        }
+
+        if (_currentTaskButton == null)
+        {
+            var currBtnObj = GameObject.FindWithTag("CurrentTaskButton");
+            if (currBtnObj != null) _currentTaskButton = currBtnObj.GetComponent<Button>();
+        }
+        
+        if (_taskUI == null)
+        {
+            var taskUiObj = GameObject.FindWithTag("TaskUI");
+            if (taskUiObj != null) _taskUI = taskUiObj.GetComponent<TaskUI>();
+        }
+    }
+
     public void ExitMission()
     {
-        if (windowToHide) // Null check
+        if (windowToHide != null)
         {
-            // Hide the window
             if (windowToHideAnimation)
             {
                 UIAnimationManager.Instance.HideWindow(windowToHide, 0.5f);
@@ -55,6 +68,7 @@ public class SwitchWindow : MonoBehaviour
             }
         }
         
+        FindReferences();
         PlayerUIModeHelper.PlayerExitUIMode(_player);
         PlayerUIModeHelper.EnableTasksButton(_allTasksBackButton, _currentTaskButton);
     }
@@ -63,9 +77,8 @@ public class SwitchWindow : MonoBehaviour
     {
         HideWindow();
         
-        if (windowToShow) // Null check
+        if (windowToShow != null)
         {
-            // Show the window
             if (windowToShowAnimation)
             {
                 UIAnimationManager.Instance.ShowWindow(windowToShow, 0.5f);
@@ -81,7 +94,7 @@ public class SwitchWindow : MonoBehaviour
     {
         HideWindow();
         
-        if (dialogueWindowToShow && dialogueTypeWriter) // Null check
+        if (dialogueWindowToShow != null && dialogueTypeWriter != null)
         {
             UIAnimationManager.Instance.ShowDialogueWindow(dialogueWindowToShow, 0.5f, dialogueTypeWriter);
         }
@@ -89,9 +102,8 @@ public class SwitchWindow : MonoBehaviour
 
     private void HideWindow()
     {
-        if (windowToHide) // Null check
+        if (windowToHide != null)
         {
-            // Hide the window
             if (windowToHideAnimation)
             {
                 UIAnimationManager.Instance.HideWindow(windowToHide, 0.3f);
@@ -115,7 +127,6 @@ public class SwitchWindow : MonoBehaviour
     {
         if (amozesh == null)
         {
-            Debug.LogError("Amozesh reference is missing!");
             return;
         }
         

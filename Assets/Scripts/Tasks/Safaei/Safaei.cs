@@ -9,6 +9,7 @@ public class PhaseOptions
     [TextArea(3, 10)]
     public string[] options = new string[3];
 }
+
 public class Safaei : BaseProfessors
 {
     public Text dialogueText;
@@ -27,7 +28,7 @@ public class Safaei : BaseProfessors
     private float currentSpeed;
     private MusicChange musicChange;
 
-    void Start()
+    protected override void Start()
     {
         base.Start();
         currentSpeed = baseSpeed;
@@ -51,9 +52,7 @@ public class Safaei : BaseProfessors
     {
         if (phaseTexts == null || currentPhase >= phaseTexts.Length)
         {
-            if (TaskManager.Instance != null)
-                TaskManager.Instance.CompleteTask(TaskOrderNumber);
-    
+            CompleteMission();
             HideAllOptions();
             if (StartPanel != null && StartPanel.transform.parent != null)
             {
@@ -64,14 +63,6 @@ public class Safaei : BaseProfessors
                     UIAnimationManager.Instance.HideWindow(parent, 0.5f);
                 }
             }
-            if (musicChange != null)
-            {
-                musicChange.ToggleMusic();
-                musicChange.PlayMainMusic();
-            }
-            if (firstWinDialogue != null)
-                UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.5f, firstWinDialogueFtw);
-            
             yield break;
         }
 
@@ -118,7 +109,7 @@ public class Safaei : BaseProfessors
     void OnOptionSelected(int index)
     {
         HideAllOptions();
-        bool isCorrect = (index == correctOptionIndex[currentPhase]);
+        bool isCorrect = (correctOptionIndex != null && currentPhase >= 0 && currentPhase < correctOptionIndex.Length && index == correctOptionIndex[currentPhase]);
         if (!isCorrect)
         {
             currentPhase = -1;
@@ -135,11 +126,6 @@ public class Safaei : BaseProfessors
         if (StartPanel != null) UIAnimationManager.Instance.HideWindow(StartPanel, 0.5f);
         if (acceptRect != null) UIAnimationManager.Instance.ShowWindow(acceptRect, 0.01f);
         if (textPanel != null) UIAnimationManager.Instance.HideWindow(textPanel, 0.01f);
-        if (firstFailDialogue != null) UIAnimationManager.Instance.ShowDialogueWindow(firstFailDialogue, 0.5f, firstFailDialogueFtw);
-        if (musicChange != null)
-        {
-            musicChange.ToggleMusic();
-            musicChange.PlayMainMusic();
-        }
+        FailMission();
     }
 }

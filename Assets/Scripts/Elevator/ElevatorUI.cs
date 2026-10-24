@@ -23,7 +23,6 @@ public class ElevatorUI : MonoBehaviour
         }
         GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
         if (playerObj != null) player = playerObj.transform;
-        //gameObject.SetActive(false);
         if (messageText != null) messageText.gameObject.SetActive(false);
         musicChange = GetComponent<MusicChange>();
     }
@@ -57,13 +56,11 @@ public class ElevatorUI : MonoBehaviour
             p.SetIdleDirection(new Vector2(0, -1));
         }
 
-        // Close doors first
         if (doorAnimation != null)
             doorAnimation.CloseDoors();
 
         yield return new WaitForSeconds(1f);
 
-        // Hide UI panels
         if (buttonsPanel != null)
             buttonsPanel.gameObject.SetActive(false);
         
@@ -74,7 +71,6 @@ public class ElevatorUI : MonoBehaviour
         if (musicChange != null)
             musicChange.ToggleMusic();
 
-        // Teleport player
         if (player != null && floorPositions[floorIndex] != null)
         {
             player.position = floorPositions[floorIndex].transform.position;
@@ -93,6 +89,8 @@ public class ElevatorUI : MonoBehaviour
 
         if (musicChange != null)
             musicChange.PlayMainMusic();
+
+        PlayerUIModeHelper.PlayerExitUIMode();
     }
 
     private IEnumerator ShowMessageRoutine(string message)

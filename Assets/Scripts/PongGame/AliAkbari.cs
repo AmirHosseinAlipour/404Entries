@@ -14,6 +14,7 @@ public class AliAkbari : BaseProfessors
     }
     public void StartGame()
     {
+        PlayerUIModeHelper.PlayerEnterUIMode();
         UIUtils.SetAlpha(_currentTaskButton.gameObject, 0f);
         fadeActivator.InitialSettings();
         pongGame.SetActive(true);

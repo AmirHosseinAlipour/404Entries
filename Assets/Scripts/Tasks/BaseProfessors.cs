@@ -6,7 +6,6 @@ using UnityEngine.UI;
 public class BaseProfessors : MonoBehaviour
 {
     [Header("Base Fields")]
-    // Accept challenge message
     public RectTransform StartPanel;
     public RectTransform acceptRect;
     public Text[] listOfTexts;
@@ -14,8 +13,8 @@ public class BaseProfessors : MonoBehaviour
 
     private const int InitialDialogueCount = 3;
     
-    // To check the correct index of completedTasks
     public int TaskOrderNumber;
+    public TaskData assignedTask;
     
     [Header("After mission")]
     public RectTransform afterWinDialogue;
@@ -27,26 +26,14 @@ public class BaseProfessors : MonoBehaviour
     public RectTransform firstFailDialogue;
     public FarsiTypewriter firstFailDialogueFtw;
     
-    // Task UI
     protected Button _allTasksBackButton;
     protected Button _currentTaskButton;
     protected GameObject _joyStick;
-    
     protected PlayerController _player;
 
     protected virtual void Awake()
     {
-        var playerObj = GameObject.FindWithTag("Player");
-        if (playerObj != null) _player = playerObj.GetComponent<PlayerController>();
-        
-        var backBtnObj = GameObject.FindWithTag("AllTasksBackButton");
-        if (backBtnObj != null) _allTasksBackButton = backBtnObj.GetComponent<Button>();
-
-        var currBtnObj = GameObject.FindWithTag("CurrentTaskButton");
-        if (currBtnObj != null) _currentTaskButton = currBtnObj.GetComponent<Button>();
-
-        _joyStick = GameObject.FindWithTag("JoyStick");
-
+        FindReferences();
         target = gameObject.GetComponent<Target>();
     }
 
@@ -54,30 +41,72 @@ public class BaseProfessors : MonoBehaviour
     {
         if (_player == null)
         {
+            FindReferences();
+        }
+    }
+
+    protected void FindReferences()
+    {
+        if (_player == null)
+        {
             var playerObj = GameObject.FindWithTag("Player");
             if (playerObj != null) _player = playerObj.GetComponent<PlayerController>();
         }
+        
+        if (_allTasksBackButton == null)
+        {
+            var backBtnObj = GameObject.FindWithTag("AllTasksBackButton");
+            if (backBtnObj != null) _allTasksBackButton = backBtnObj.GetComponent<Button>();
+        }
+
+        if (_currentTaskButton == null)
+        {
+            var currBtnObj = GameObject.FindWithTag("CurrentTaskButton");
+            if (currBtnObj != null) _currentTaskButton = currBtnObj.GetComponent<Button>();
+        }
+
+        if (_joyStick == null)
+        {
+            _joyStick = GameObject.FindWithTag("JoyStick");
+        }
     }
-    
-    // If player enters the trigger zone it's input get skipped and the UI panel would show up!
+
     protected virtual void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player"))
         {
             if (_player == null) _player = other.gameObject.GetComponent<PlayerController>();
 
-            if (TaskManager.Instance != null && TaskManager.Instance.taskCompleted != null && TaskOrderNumber < TaskManager.Instance.taskCompleted.Length && TaskManager.Instance.taskCompleted[TaskOrderNumber])
+            bool isTaskDone = false;
+            if (assignedTask != null && TaskManager.Instance != null)
             {
-                if (afterWinDialogue != null) UIAnimationManager.Instance.ShowWindow(afterWinDialogue, 0.5f);
+                isTaskDone = TaskManager.Instance.IsTaskCompleted(assignedTask);
+            }
+            else if (TaskManager.Instance != null && TaskManager.Instance.taskCompleted != null && 
+                     TaskOrderNumber >= 0 && TaskOrderNumber < TaskManager.Instance.taskCompleted.Length)
+            {
+                isTaskDone = TaskManager.Instance.taskCompleted[TaskOrderNumber];
+            }
+
+            if (isTaskDone)
+            {
+                if (afterWinDialogue != null)
+                {
+                    UIAnimationManager.Instance.ShowWindow(afterWinDialogue, 0.25f);
+                }
             }
             else
             {
+                FindReferences();
                 PlayerUIModeHelper.PlayerEnterUIMode(_player);
                 PlayerUIModeHelper.DisableTasksButton(_allTasksBackButton, _currentTaskButton);
                 UIUtils.SetAlpha(_currentTaskButton != null ? _currentTaskButton.gameObject : null, 0f);
                 UIUtils.SetAlpha(_joyStick, 0f);
                 
-                if (StartPanel != null) UIAnimationManager.Instance.ShowWindow(StartPanel, 0.5f);
+                if (StartPanel != null)
+                {
+                    UIAnimationManager.Instance.ShowWindow(StartPanel, 0.5f);
+                }
                 
                 if (listOfTexts != null)
                 {
@@ -94,11 +123,9 @@ public class BaseProfessors : MonoBehaviour
             }
         }
     }
-    
-    // To show the accept challenge message in a proper type writer order!
+
     private IEnumerator TextSequence()
     {
-        // First of all we write the first 3 text which is the accept message + yes/no option
         for (int i = 0; i < InitialDialogueCount; i++)
         {
             if (listOfTexts != null && i < listOfTexts.Length && listOfTexts[i] != null)
@@ -113,35 +140,76 @@ public class BaseProfessors : MonoBehaviour
             }
         }
     }
-    
-    void OnEnable()
+
+    protected virtual void OnEnable()
     {
-        // Subscribe to the event when this script is enabled
         SwitchWindow.OnPanelStateChanged += HandlePanelStateChange;
     }
 
-    void OnDisable()
+    protected virtual void OnDisable()
     {
-        // Unsubscribe when this script is disabled to prevent memory leaks!
         SwitchWindow.OnPanelStateChanged -= HandlePanelStateChange;
     }
-    
+
     private void HandlePanelStateChange(bool isActive)
     {
         if (!isActive)
         {
-            PlayerUIModeHelper.PlayerExitUIMode(_player);
-            PlayerUIModeHelper.EnableTasksButton(_allTasksBackButton, _currentTaskButton);
-            UIUtils.SetAlpha(_currentTaskButton != null ? _currentTaskButton.gameObject : null, 1f);
-            if (PlatformHelper.IsMobile())
-            {
-                UIUtils.SetAlpha(_joyStick, 1f);
-            }
+            GetBackToNormal();
+        }
+    }
+
+    public virtual void CompleteMission()
+    {
+        if (assignedTask != null && TaskManager.Instance != null)
+        {
+            TaskManager.Instance.CompleteTask(assignedTask);
+        }
+        else if (TaskManager.Instance != null)
+        {
+            TaskManager.Instance.CompleteTask(TaskOrderNumber);
+        }
+
+        GetBackToNormal();
+
+        if (firstWinDialogue != null && UIAnimationManager.Instance != null)
+        {
+            UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.5f, firstWinDialogueFtw);
+        }
+
+        var music = GetComponent<MusicChange>();
+        if (music != null)
+        {
+            music.ToggleMusic();
+            music.PlayMainMusic();
+        }
+
+        if (target != null)
+        {
+            target.DisableTarget();
+        }
+    }
+
+    public virtual void FailMission()
+    {
+        GetBackToNormal();
+
+        if (firstFailDialogue != null && UIAnimationManager.Instance != null)
+        {
+            UIAnimationManager.Instance.ShowDialogueWindow(firstFailDialogue, 0.5f, firstFailDialogueFtw);
+        }
+
+        var music = GetComponent<MusicChange>();
+        if (music != null)
+        {
+            music.ToggleMusic();
+            music.PlayMainMusic();
         }
     }
 
     public void GetBackToNormal()
     {
+        FindReferences();
         PlayerUIModeHelper.PlayerExitUIMode(_player);
         PlayerUIModeHelper.EnableTasksButton(_allTasksBackButton, _currentTaskButton);
         UIUtils.SetAlpha(_currentTaskButton != null ? _currentTaskButton.gameObject : null, 1f);

@@ -39,27 +39,29 @@ public class Masoumi : BaseProfessors
     protected override void Awake()
     {
         base.Awake();
-
         _musicChange = GetComponent<MusicChange>();
     }
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
+        base.OnEnable();
         BaseDraggableItem.OnItemDropCompleted += CheckComplete;
     }
 
-    private void OnDisable()
+    protected override void OnDisable()
     {
+        base.OnDisable();
         BaseDraggableItem.OnItemDropCompleted -= CheckComplete;
     }
 
     private void CheckComplete()
     {
-        if (_currentLevel >= levelKeys.Count) return;
+        if (levelKeys == null || _currentLevel >= levelKeys.Count) return;
         
         Level currentLevelData = levelKeys[_currentLevel];
+        if (currentLevelData == null || currentLevelData.keys == null) return;
         
-        if (items.Length != currentLevelData.keys.Length)
+        if (items == null || zonesToDrop == null || items.Length != currentLevelData.keys.Length)
         {
             return;
         }
@@ -67,24 +69,24 @@ public class Masoumi : BaseProfessors
         for (int i = 0; i < items.Length; i++)
         {
             BaseDraggableItem item = items[i];
+            if (item == null) return;
 
             int correctZoneIndex = currentLevelData.keys[i];
-            BaseDropZone correctZone = zonesToDrop[correctZoneIndex];
+            if (correctZoneIndex < 0 || correctZoneIndex >= zonesToDrop.Length) return;
 
+            BaseDropZone correctZone = zonesToDrop[correctZoneIndex];
             if (item.currentDropZone != correctZone)
             {
                 return;
             }
         }
         
-        Debug.Log("before");
         StartCoroutine(LoadNextLevelAfterDelay(0.5f));
-        Debug.Log("after");
     }
 
     private IEnumerator LoadNextLevelAfterDelay(float delay)
     {
-        UIAnimationManager.Instance.HideWindow(speechPanel, 0.5f);
+        if (speechPanel != null) UIAnimationManager.Instance.HideWindow(speechPanel, 0.5f);
         yield return new WaitForSeconds(delay);
         NextLevel();
     }
@@ -93,7 +95,7 @@ public class Masoumi : BaseProfessors
     {
         _currentLevel++;
 
-        if (_currentLevel >= levelKeys.Count)
+        if (levelKeys == null || _currentLevel >= levelKeys.Count)
         {
             HandleEnding();
             return;
@@ -143,12 +145,6 @@ public class Masoumi : BaseProfessors
     private void HandleEnding()
     {
         if (missionPanel != null) UIAnimationManager.Instance.HideWindow(missionPanel, 0.5f);
-        if (TaskManager.Instance != null) TaskManager.Instance.CompleteTask(TaskOrderNumber);
-        if (firstWinDialogue != null) UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.3f, firstWinDialogueFtw);
-        if (_musicChange != null)
-        {
-            _musicChange.ToggleMusic();
-            _musicChange.PlayMainMusic();
-        }
+        CompleteMission();
     }
 }

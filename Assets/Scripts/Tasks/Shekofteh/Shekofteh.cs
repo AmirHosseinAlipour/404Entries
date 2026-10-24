@@ -20,14 +20,13 @@ public class Shekofteh : BaseProfessors
     public SkipButton SkipButton;
     public CircleTimerAnimation buttonBackground;
     public SpeechTypeWriterShekofteh mission;
-    public float nextLevelWaitDuration;
+    public float nextLevelWaitDuration = 1.2f;
     
     private bool _isNextLevelRunning = false;
+    private bool _isMissionCompleted = false;
 
     [Header("Others")]
-    // To make it visible after movement
     public GameObject counter;
-
     public VideoPlayer videoPlayer;
     public GameObject videoRnderer;
     
@@ -36,6 +35,7 @@ public class Shekofteh : BaseProfessors
     
     private SoundPlayer _soundPlayer;
     private MusicChange _musicChange;
+
     protected override void Awake()
     {
         base.Awake();
@@ -47,6 +47,18 @@ public class Shekofteh : BaseProfessors
         if (mission != null)
             mission.OnTypingFinished += MissionFailed;
         _musicChange = GetComponent<MusicChange>();
+
+        if (videoRnderer != null)
+        {
+            RawImage r = videoRnderer.GetComponent<RawImage>();
+            if (r != null)
+            {
+                r.raycastTarget = false;
+                Color c = r.color;
+                c.a = 0f;
+                r.color = c;
+            }
+        }
     }
     
     protected override void Start()
@@ -77,7 +89,7 @@ public class Shekofteh : BaseProfessors
 
     private void HandleLevelGoalReached()
     {
-        if (!_isNextLevelRunning)
+        if (!_isNextLevelRunning && !_isMissionCompleted)
         {
             StartCoroutine(NextLevel());
         }
@@ -85,107 +97,204 @@ public class Shekofteh : BaseProfessors
 
     private void HandleEnding()
     {
-        if (TaskManager.Instance != null) TaskManager.Instance.CompleteTask(TaskOrderNumber);
-        
-        if (StartPanel != null && StartPanel.transform.parent != null)
+        _isMissionCompleted = true;
+        _isNextLevelRunning = false;
+        StopAllCoroutines();
+
+        if (SkipButton != null)
         {
-            RectTransform parent = StartPanel.transform.parent.GetComponent<RectTransform>();
-            if (parent != null)
-            {
-                parent.gameObject.SetActive(false);
-                UIAnimationManager.Instance.HideWindow(parent, 0.5f);
-            }
+            SkipButton.StopTeleportMovement();
+            SkipButton.gameObject.SetActive(false);
+        }
+
+        if (buttonBackground != null)
+        {
+            buttonBackground.StopCountdown();
+            buttonBackground.gameObject.SetActive(false);
         }
 
         if (textPanel != null)
         {
             var st = textPanel.GetComponent<SpeechTypeWriterShekofteh>();
             if (st != null) st.StopTyping();
+            if (textPanel.transform.parent != null) textPanel.transform.parent.gameObject.SetActive(false);
         }
 
-        if (SkipButton != null) SkipButton.gameObject.SetActive(false);
-        if (firstWinDialogue != null) UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.5f, firstWinDialogueFtw);
-        if (_musicChange != null)
+        if (counter != null) counter.SetActive(false);
+        if (videoPlayer != null) videoPlayer.Stop();
+
+        if (videoRnderer != null)
         {
-            _musicChange.ToggleMusic();
-            _musicChange.PlayMainMusic();
+            RawImage r = videoRnderer.GetComponent<RawImage>();
+            if (r != null)
+            {
+                r.raycastTarget = false;
+                Color c = r.color;
+                c.a = 0f;
+                r.color = c;
+            }
         }
+
+        if (StartPanel != null)
+        {
+            UIAnimationManager.Instance.HideWindow(StartPanel, 0.5f);
+        }
+
+        CompleteMission();
     }
 
     public void StartMission()
     {
+        _isMissionCompleted = false;
+        _isNextLevelRunning = false;
         StartCoroutine(ExecuteSequence());
     }
     
     private IEnumerator ExecuteSequence()
     {
-        counter.SetActive(true);
+        if (counter != null) counter.SetActive(true);
 
-        yield return new WaitForSeconds(1f);
-        _musicChange.ToggleMusic();
-        _musicChange.PlayThemeMusic();
-        textPanel.transform.parent.gameObject.SetActive(true);
-        textPanel.GetComponent<SpeechTypeWriterShekofteh>().StartTyping();
+        if (buttonBackground != null)
+        {
+            buttonBackground.gameObject.SetActive(true);
+            UIUtils.SetAlpha(buttonBackground.gameObject, 1f);
+        }
+
+        if (SkipButton != null)
+        {
+            SkipButton.gameObject.SetActive(true);
+            UIUtils.SetAlpha(SkipButton.gameObject, 1f);
+            SkipButton.ResetState();
+        }
+
+        yield return new WaitForSeconds(0.6f);
+
+        if (_musicChange != null)
+        {
+            _musicChange.ToggleMusic();
+            _musicChange.PlayThemeMusic();
+        }
+
+        if (textPanel != null)
+        {
+            if (textPanel.transform.parent != null)
+                textPanel.transform.parent.gameObject.SetActive(true);
+
+            Canvas.ForceUpdateCanvases();
+
+            var typewriter = textPanel.GetComponent<SpeechTypeWriterShekofteh>();
+            if (typewriter != null) typewriter.StartTyping();
+        }
         
-        SkipButton.gameObject.SetActive(true);
-        buttonBackground.gameObject.SetActive(true);
-        
-        UIUtils.SetAlpha(SkipButton.buttonImage.gameObject, 0);
-        UIUtils.SetAlpha(buttonBackground.gameObject, 0);
-        
-        SkipButton.StartTeleportMovement();
+        if (SkipButton != null)
+        {
+            SkipButton.StartTeleportMovement();
+        }
     }
 
     private IEnumerator NextLevel()
     {
         _isNextLevelRunning = true;
 
-        float originalSpeed = mission.typeCharTime;
-        mission.typeCharTime /= 10;
+        if (SkipButton != null)
+        {
+            SkipButton.StopTeleportMovement();
+            UIUtils.SetAlpha(SkipButton.gameObject, 0f);
+        }
+        if (buttonBackground != null)
+        {
+            buttonBackground.StopCountdown();
+            UIUtils.SetAlpha(buttonBackground.gameObject, 0f);
+        }
 
-        UIUtils.SetAlpha(SkipButton.gameObject, 0f);
-        UIUtils.SetAlpha(buttonBackground.gameObject, 0f);
-        
-        _soundPlayer.Play("Skip");
+        float originalSpeed = (mission != null) ? mission.typeCharTime : 0.05f;
+        if (mission != null)
+        {
+            mission.typeCharTime = Mathf.Max(0.015f, originalSpeed / 3f);
+        }
 
-        RawImage r = videoRnderer.GetComponent<RawImage>();
-        Color c = r.color;
-        c.a = 0.5f;
-        r.color = c;
-        videoPlayer.Play();
-        yield return new WaitForSecondsRealtime(nextLevelWaitDuration);
-        c.a = 0;
-        r.color = c;
-        mission.typeCharTime = originalSpeed;
-        UIUtils.SetAlpha(SkipButton.gameObject, 1f);
-        UIUtils.SetAlpha(buttonBackground.gameObject, 1f);
+        if (_soundPlayer != null) _soundPlayer.Play("Skip");
 
-        SkipButton.NextLevel();
+        float waitDuration = (nextLevelWaitDuration > 0.1f) ? Mathf.Min(nextLevelWaitDuration, 1.2f) : 1.2f;
+
+        if (videoRnderer != null && videoPlayer != null)
+        {
+            RawImage r = videoRnderer.GetComponent<RawImage>();
+            if (r != null)
+            {
+                r.raycastTarget = false;
+                Color c = r.color;
+                c.a = 0.5f;
+                r.color = c;
+                videoPlayer.Play();
+                yield return new WaitForSecondsRealtime(waitDuration);
+                c.a = 0f;
+                r.color = c;
+            }
+            else
+            {
+                yield return new WaitForSecondsRealtime(waitDuration);
+            }
+        }
+        else
+        {
+            yield return new WaitForSecondsRealtime(waitDuration);
+        }
+
+        if (mission != null)
+        {
+            mission.typeCharTime = originalSpeed;
+        }
+
+        if (!_isMissionCompleted)
+        {
+            if (SkipButton != null)
+            {
+                SkipButton.NextLevel();
+                if (!SkipButton.isCompleted)
+                {
+                    UIUtils.SetAlpha(SkipButton.gameObject, 1f);
+                    if (buttonBackground != null) UIUtils.SetAlpha(buttonBackground.gameObject, 1f);
+                    SkipButton.StartTeleportMovement();
+                }
+            }
+        }
+
         _isNextLevelRunning = false;
     }
 
     private void MissionFailed()
     {
+        if (_isMissionCompleted || _isNextLevelRunning) return;
+
         StopAllCoroutines();
     
-        // Also stop the typewriter, just in case (though it just finished)
         if (mission != null) mission.StopTyping();
-
-        // Stop the video player if it's running
         if (videoPlayer != null) videoPlayer.Stop();
         
         if (textPanel != null && textPanel.transform.parent != null)
             textPanel.transform.parent.gameObject.SetActive(false);
-        if (SkipButton != null) SkipButton.gameObject.SetActive(false);
-        if (buttonBackground != null) buttonBackground.gameObject.SetActive(false);
+
+        if (SkipButton != null)
+        {
+            SkipButton.StopTeleportMovement();
+            SkipButton.gameObject.SetActive(false);
+        }
+
+        if (buttonBackground != null)
+        {
+            buttonBackground.StopCountdown();
+            buttonBackground.gameObject.SetActive(false);
+        }
+
         if (counter != null) counter.SetActive(false);
 
-        // Hide the video renderer (e.g., by setting alpha to 0)
         if (videoRnderer != null)
         {
             RawImage r = videoRnderer.GetComponent<RawImage>();
             if (r != null)
             {
+                r.raycastTarget = false;
                 Color c = r.color;
                 c.a = 0f;
                 r.color = c;
@@ -194,6 +303,7 @@ public class Shekofteh : BaseProfessors
         
         if (UICharacterRectTransform != null)
             UICharacterRectTransform.position = _characterStartPosition;
+
         _isNextLevelRunning = false;
 
         HandleLoose();
@@ -201,13 +311,8 @@ public class Shekofteh : BaseProfessors
     
     private void HandleLoose()
     {
-        if (StartPanel != null) UIAnimationManager.Instance.HideWindow(StartPanel , 0.5f);
+        if (StartPanel != null) UIAnimationManager.Instance.HideWindow(StartPanel, 0.5f);
         if (acceptRect != null) UIAnimationManager.Instance.ShowWindow(acceptRect, 0.01f);
-        if (firstFailDialogue != null) UIAnimationManager.Instance.ShowDialogueWindow(firstFailDialogue, 0.5f, firstFailDialogueFtw);
-        if (_musicChange != null)
-        {
-            _musicChange.ToggleMusic();
-            _musicChange.PlayMainMusic();
-        }
+        FailMission();
     }
 }

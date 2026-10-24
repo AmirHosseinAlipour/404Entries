@@ -22,15 +22,9 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
     public bool middleAlign;
     
     public event Action OnTypingFinished;
-    /// <summary>
-    /// Fires when user clicks AFTER typing has already finished (use to advance dialogue).
-    /// </summary>
     public event Action OnClickWhenComplete;
     
     public bool isTyping { get; private set; }
-    /// <summary>
-    /// True after typing finishes, reset when new text starts.
-    /// </summary>
     public bool isComplete { get; private set; }
     
     private int _startFrame = -1;
@@ -39,6 +33,11 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
     private string _rawOriginalText = "";
     private string _fixedText = "";
     public int len;
+
+    public string GetFixedText()
+    {
+        return _fixedText;
+    }
     
     private StringBuilder _builder = new StringBuilder();
     private TextGenerationSettings _cachedSettings;
@@ -126,7 +125,6 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
 
         if (LocalizationManager.IsRTL)
         {
-            // Persian / RTL: Fix Arabic letters and order
             string[] lines = targetText.Split('\n');
             for (int i = 0; i < lines.Length; i++)
             {
@@ -136,8 +134,41 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
         }
         else
         {
-            // English / LTR: Direct string without ArabicFixer
-            _fixedText = targetText;
+            int originalLineCount = rawText.Split('\n').Length;
+            if (originalLineCount > 1 && !targetText.Contains("\n"))
+            {
+                _fixedText = BalanceTextLines(targetText, originalLineCount);
+            }
+            else
+            {
+                _fixedText = targetText;
+            }
+        }
+
+        if (_textUI != null)
+        {
+            var dfr = GetComponent<DynamicFontResizer>();
+            if (dfr != null)
+            {
+                _textUI.horizontalOverflow = HorizontalWrapMode.Overflow;
+                _textUI.resizeTextForBestFit = false;
+                dfr.SetTextAndResize(_fixedText);
+            }
+            else
+            {
+                _textUI.horizontalOverflow = HorizontalWrapMode.Wrap;
+                if (!LocalizationManager.IsRTL)
+                {
+                    _textUI.resizeTextForBestFit = true;
+                    _textUI.resizeTextMinSize = Mathf.Max(14, (int)(_textUI.fontSize * 0.45f));
+                    _textUI.resizeTextMaxSize = _textUI.fontSize;
+                }
+            }
+
+            if (_textUI.lineSpacing <= 0.05f)
+            {
+                _textUI.lineSpacing = 1f;
+            }
         }
 
         ApplyAlignment();
@@ -147,6 +178,41 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
         _builder.Clear();
         _counter = 0;
         isComplete = false;
+    }
+
+    private string BalanceTextLines(string text, int targetLineCount)
+    {
+        if (string.IsNullOrEmpty(text) || targetLineCount <= 1) return text;
+        string[] words = text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        if (words.Length <= targetLineCount) return text;
+
+        int totalChars = text.Length;
+        int targetCharsPerLine = Mathf.Max(1, totalChars / targetLineCount);
+
+        List<string> resultLines = new List<string>();
+        StringBuilder currentLine = new StringBuilder();
+
+        for (int i = 0; i < words.Length; i++)
+        {
+            if (currentLine.Length > 0 && resultLines.Count < targetLineCount - 1)
+            {
+                if (currentLine.Length + 1 + words[i].Length > targetCharsPerLine)
+                {
+                    resultLines.Add(currentLine.ToString());
+                    currentLine.Clear();
+                }
+            }
+
+            if (currentLine.Length > 0) currentLine.Append(" ");
+            currentLine.Append(words[i]);
+        }
+
+        if (currentLine.Length > 0)
+        {
+            resultLines.Add(currentLine.ToString());
+        }
+
+        return string.Join("\n", resultLines);
     }
 
     private void ApplyAlignment()
@@ -181,10 +247,10 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
     private void Update()
     {
         if (!allowClickToSkip) return;
+        if (CompareTag("CurrentTaskButton") || gameObject.name == "CurrentTaskText") return;
         if (Time.frameCount <= _startFrame) return;
         
         bool clicked = false;
-        // New Input System
         if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
             clicked = true;
         else if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.wasPressedThisFrame)
@@ -192,32 +258,31 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
         else if (Keyboard.current != null && (Keyboard.current.spaceKey.wasPressedThisFrame || Keyboard.current.enterKey.wasPressedThisFrame))
             clicked = true;
         
-        // Fallback: Old Input Manager (project uses Both input handlers)
         if (!clicked && Input.GetMouseButtonDown(0))
             clicked = true;
 
         if (!clicked) return;
 
-        Debug.Log($"[FarsiTypewriter] Click detected on '{gameObject.name}' | isTyping={isTyping} | isComplete={isComplete} | _startFrame={_startFrame} | frame={Time.frameCount}");
-
         if (isTyping)
         {
-            // Click while typing → skip to complete text
             SkipTyping();
         }
         else if (isComplete)
         {
-            // Click after text is fully shown → advance to next dialogue
             if (OnClickWhenComplete != null)
             {
                 OnClickWhenComplete.Invoke();
             }
             else
             {
-                // Auto-find a Button in parent hierarchy and click it
                 var btn = GetComponentInParent<Button>();
                 if (btn != null && btn.interactable)
                 {
+                    if (btn.CompareTag("CurrentTaskButton") || btn.CompareTag("AllTasksBackButton") ||
+                        btn.GetComponent<TaskUI>() != null || btn.GetComponentInParent<TaskUI>() != null)
+                    {
+                        return;
+                    }
                     btn.onClick.Invoke();
                 }
             }
@@ -226,7 +291,6 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        // Handled in Update() for consistency
     }
 
     public void StartTyping()
@@ -283,7 +347,6 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
 
         if (LocalizationManager.IsRTL)
         {
-            // RTL Typewriter effect (Persian)
             for (int lineIndex = 0; lineIndex < lines.Length; lineIndex++)
             {
                 string currentLine = lines[lineIndex];
@@ -308,7 +371,6 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
         }
         else
         {
-            // LTR Typewriter effect (English)
             for (int lineIndex = 0; lineIndex < lines.Length; lineIndex++)
             {
                 string currentLine = lines[lineIndex];

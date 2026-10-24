@@ -1,12 +1,8 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-/// <summary>
-/// A smooth, floating/dynamic on-screen joystick.
-/// Spawns right where the player clicks or touches within the touch zone,
-/// follows finger/mouse smoothly, and sends normalized input to PlayerController.
-/// </summary>
 public class DynamicFloatingJoystick : MonoBehaviour
 {
     [Header("Visual Components")]
@@ -14,30 +10,52 @@ public class DynamicFloatingJoystick : MonoBehaviour
     public RectTransform handleRect;
     public CanvasGroup canvasGroup;
 
-    [Header("Joystick Settings")]
-    [Tooltip("Maximum distance handle can move from background center (in pixels).")]
-    public float movementRange = 75f;
+    [Header("Size & Scaling")]
+    [Range(0.2f, 2f)]
+    public float joystickScale = 0.8f;
 
-    [Tooltip("Smoothing speed for handle movement.")]
+    [Range(0.15f, 0.8f)]
+    public float handleScaleRatio = 0.38f;
+
+    public float baseBackgroundDiameter = 180f;
+
+    public float movementRange = 65f;
     public float handleSmoothness = 30f;
 
-    [Tooltip("If true, the joystick background will slide to follow the finger when dragged beyond movement range.")]
+    [Header("Elasticity & Resistance (Famous Games Feel)")]
+    public bool enableElasticResistance = true;
+
+    [Range(0.05f, 0.5f)]
+    public float elasticTension = 0.22f;
+
     public bool dynamicFollow = true;
 
-    [Tooltip("When resting/untouched, this is the resting alpha.")]
-    public float restingAlpha = 0.6f;
+    public bool anchorOnTouch = false;
 
-    [Tooltip("When touched/dragging, this is the active alpha.")]
+    [Range(0.05f, 0.5f)]
+    public float followResistance = 0.18f;
+
+    [Range(1.1f, 2.5f)]
+    public float followDeadzoneMultiplier = 1.35f;
+
+    public float maxFollowDistanceFromOrigin = 300f;
+
+    [Header("Sprint Settings")]
+    [Range(0.5f, 1f)]
+    public float sprintThreshold = 0.75f;
+
+    [Header("Visual Feedback")]
+    public float restingAlpha = 0.5f;
     public float activeAlpha = 1.0f;
 
     [Header("Touch Zone Area")]
-    [Tooltip("Fraction of screen width for the touch zone (0 to 1). 0.65 covers the left 65% of the screen.")]
     [Range(0.2f, 1f)]
     public float touchZoneWidthFraction = 0.65f;
 
-    // Runtime state
     private RectTransform _canvasRect;
-    private Vector2 _defaultBackgroundPosition;
+    private Canvas _canvas;
+    private Vector3 _defaultLocalPosition;
+    private Vector3 _touchStartLocalPos;
     private Vector2 _targetHandlePosition;
     private Vector2 _currentInput;
     private bool _isDragging = false;
@@ -60,55 +78,87 @@ public class DynamicFloatingJoystick : MonoBehaviour
 
     private void Awake()
     {
-        _canvasRect = GetComponent<RectTransform>();
-        if (canvasGroup == null)
-        {
-            canvasGroup = GetComponent<CanvasGroup>();
-            if (canvasGroup == null) canvasGroup = gameObject.AddComponent<CanvasGroup>();
-        }
-
-        FindReferences();
+        FindCanvasAndReferences();
         CreateTouchZone();
+        ApplyVisualSizes();
     }
-
-    private Vector3 _defaultWorldPosition;
 
     private void Start()
     {
         _player = Object.FindFirstObjectByType<PlayerController>();
 
-        if (backgroundRect != null)
-        {
-            _defaultBackgroundPosition = backgroundRect.anchoredPosition;
-            _defaultWorldPosition = backgroundRect.position;
-        }
-
-        // Disable legacy OnScreenStick if present so it doesn't conflict with dynamic positioning
         if (handleRect != null)
         {
             var legacyStick = handleRect.GetComponent<UnityEngine.InputSystem.OnScreen.OnScreenStick>();
             if (legacyStick != null)
             {
-                legacyStick.enabled = false;
+                Destroy(legacyStick);
             }
         }
 
+        if (backgroundRect != null)
+        {
+            var percentageSetter = backgroundRect.GetComponent<SetTransformByPercentage>();
+            if (percentageSetter != null)
+            {
+                percentageSetter.UpdateTransform();
+            }
+
+            _defaultLocalPosition = backgroundRect.localPosition;
+            _touchStartLocalPos = _defaultLocalPosition;
+        }
+
+        ApplyVisualSizes();
         SetRestingVisuals();
     }
 
-    private void FindReferences()
+    private void OnValidate()
     {
+        FindCanvasAndReferences();
+        ApplyVisualSizes();
+    }
+
+    private void FindCanvasAndReferences()
+    {
+        _canvas = GetComponentInParent<Canvas>();
+        if (_canvas == null) _canvas = GetComponent<Canvas>();
+        if (_canvas != null)
+        {
+            _canvasRect = _canvas.GetComponent<RectTransform>();
+            if (_canvas.sortingOrder < 5)
+            {
+                _canvas.sortingOrder = 5;
+            }
+        }
+
+        if (canvasGroup == null)
+        {
+            canvasGroup = GetComponent<CanvasGroup>();
+            if (canvasGroup == null && _canvas != null)
+            {
+                canvasGroup = _canvas.gameObject.GetComponent<CanvasGroup>();
+                if (canvasGroup == null) canvasGroup = _canvas.gameObject.AddComponent<CanvasGroup>();
+            }
+        }
+
         if (backgroundRect == null)
         {
-            var bgObj = GameObject.FindWithTag("JoyStick");
-            if (bgObj != null)
+            if (CompareTag("JoyStick"))
             {
-                backgroundRect = bgObj.GetComponent<RectTransform>();
+                backgroundRect = GetComponent<RectTransform>();
             }
             else
             {
-                Transform bg = transform.Find("Background");
-                if (bg != null) backgroundRect = bg.GetComponent<RectTransform>();
+                var bgObj = GameObject.FindWithTag("JoyStick");
+                if (bgObj != null)
+                {
+                    backgroundRect = bgObj.GetComponent<RectTransform>();
+                }
+                else
+                {
+                    Transform bg = transform.Find("Background");
+                    if (bg != null) backgroundRect = bg.GetComponent<RectTransform>();
+                }
             }
         }
 
@@ -126,11 +176,42 @@ public class DynamicFloatingJoystick : MonoBehaviour
         }
     }
 
+    public void ApplyVisualSizes()
+    {
+        if (backgroundRect != null)
+        {
+            backgroundRect.pivot = new Vector2(0.5f, 0.5f);
+            backgroundRect.sizeDelta = new Vector2(baseBackgroundDiameter, baseBackgroundDiameter);
+
+            if (joystickScale > 0.05f)
+            {
+                backgroundRect.localScale = new Vector3(joystickScale, joystickScale, 1f);
+            }
+
+            if (handleRect != null)
+            {
+                handleRect.pivot = new Vector2(0.5f, 0.5f);
+                handleRect.anchorMin = new Vector2(0.5f, 0.5f);
+                handleRect.anchorMax = new Vector2(0.5f, 0.5f);
+
+                float handleDiameter = baseBackgroundDiameter * handleScaleRatio;
+                handleRect.sizeDelta = new Vector2(handleDiameter, handleDiameter);
+                handleRect.localScale = Vector3.one;
+            }
+
+            if (movementRange <= 0.01f || Mathf.Approximately(movementRange, 75f))
+            {
+                movementRange = (baseBackgroundDiameter * 0.5f) * (1f - handleScaleRatio * 0.5f);
+            }
+        }
+    }
+
     private void CreateTouchZone()
     {
         if (_touchZoneObj != null) return;
+        Transform parentTransform = _canvasRect != null ? _canvasRect : transform;
 
-        Transform existing = transform.Find("DynamicJoystickTouchZone");
+        Transform existing = parentTransform.Find("DynamicJoystickTouchZone");
         if (existing != null)
         {
             _touchZoneObj = existing.gameObject;
@@ -140,10 +221,9 @@ public class DynamicFloatingJoystick : MonoBehaviour
             return;
         }
 
-        // Create invisible touch zone panel covering the left section of the screen
         _touchZoneObj = new GameObject("DynamicJoystickTouchZone", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
-        _touchZoneObj.transform.SetParent(transform, false);
-        _touchZoneObj.transform.SetAsFirstSibling(); // Behind Background
+        _touchZoneObj.transform.SetParent(parentTransform, false);
+        _touchZoneObj.transform.SetAsFirstSibling();
 
         RectTransform tzRect = _touchZoneObj.GetComponent<RectTransform>();
         tzRect.anchorMin = new Vector2(0f, 0f);
@@ -152,10 +232,9 @@ public class DynamicFloatingJoystick : MonoBehaviour
         tzRect.offsetMax = Vector2.zero;
 
         Image img = _touchZoneObj.GetComponent<Image>();
-        img.color = new Color(0, 0, 0, 0); // transparent
+        img.color = new Color(0, 0, 0, 0);
         img.raycastTarget = true;
 
-        // Attach event receivers
         AttachReceiver(_touchZoneObj);
         if (backgroundRect != null) AttachReceiver(backgroundRect.gameObject);
         if (handleRect != null) AttachReceiver(handleRect.gameObject);
@@ -174,33 +253,82 @@ public class DynamicFloatingJoystick : MonoBehaviour
 
     private void Update()
     {
+        bool f2Pressed = false;
+        if (Keyboard.current != null && Keyboard.current.f2Key.wasPressedThisFrame) f2Pressed = true;
+        if (Input.GetKeyDown(KeyCode.F2)) f2Pressed = true;
+        if (f2Pressed)
+        {
+            PlatformHelper.SetForceShowJoystick(!PlatformHelper.forceShowMobileControls);
+        }
+
         if (_player == null)
         {
             _player = Object.FindFirstObjectByType<PlayerController>();
         }
 
-        if (_player != null && _player.isUIActive && _isDragging)
+        bool isUiBlocked = (_player != null && _player.isUIActive);
+        if (isUiBlocked)
         {
-            ResetJoystick();
+            if (_isDragging)
+            {
+                ResetJoystick();
+            }
+
+            if (canvasGroup != null)
+            {
+                canvasGroup.alpha = 0f;
+                canvasGroup.blocksRaycasts = false;
+                canvasGroup.interactable = false;
+            }
+
+            if (_touchZoneObj != null && _touchZoneObj.activeSelf)
+            {
+                _touchZoneObj.SetActive(false);
+            }
+
             return;
         }
+        else
+        {
+            if (_touchZoneObj != null && !_touchZoneObj.activeSelf)
+            {
+                _touchZoneObj.SetActive(true);
+            }
 
-        // Smooth handle movement
+            if (canvasGroup != null && !canvasGroup.blocksRaycasts)
+            {
+                canvasGroup.blocksRaycasts = true;
+                canvasGroup.interactable = true;
+                if (!_isDragging)
+                {
+                    canvasGroup.alpha = restingAlpha;
+                }
+            }
+        }
+
+        if (_isDragging)
+        {
+            if (Mouse.current != null && !Mouse.current.leftButton.isPressed && UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count == 0)
+            {
+                ResetJoystick();
+                return;
+            }
+        }
+
         if (handleRect != null)
         {
             handleRect.anchoredPosition = Vector2.Lerp(
-                handleRect.anchoredPosition, 
-                _targetHandlePosition, 
+                handleRect.anchoredPosition,
+                _targetHandlePosition,
                 handleSmoothness * Time.unscaledDeltaTime
             );
         }
 
-        // Return background towards default position smoothly when not dragging
         if (!_isDragging && backgroundRect != null)
         {
-            backgroundRect.position = Vector3.Lerp(
-                backgroundRect.position, 
-                _defaultWorldPosition, 
+            backgroundRect.localPosition = Vector3.Lerp(
+                backgroundRect.localPosition,
+                _defaultLocalPosition,
                 8f * Time.unscaledDeltaTime
             );
         }
@@ -211,32 +339,58 @@ public class DynamicFloatingJoystick : MonoBehaviour
         if (_isDragging) return;
         if (_player != null && _player.isUIActive) return;
 
+        if (eventData.pointerCurrentRaycast.gameObject != null)
+        {
+            GameObject hit = eventData.pointerCurrentRaycast.gameObject;
+            if (hit != _touchZoneObj && hit != gameObject &&
+                (backgroundRect == null || hit != backgroundRect.gameObject) &&
+                (handleRect == null || hit != handleRect.gameObject))
+            {
+                if (hit.GetComponentInParent<Button>() != null ||
+                    hit.GetComponentInParent<InputField>() != null ||
+                    hit.GetComponentInParent<ScrollRect>() != null ||
+                    hit.GetComponentInParent<Slider>() != null ||
+                    hit.GetComponentInParent<Toggle>() != null)
+                {
+                    return;
+                }
+            }
+        }
+
         _activePointerId = eventData.pointerId;
         _isDragging = true;
 
-        // Position background at the exact pointer / touch position in world/screen space
         if (backgroundRect != null)
         {
-            if (RectTransformUtility.ScreenPointToWorldPointInRectangle(
-                backgroundRect, 
-                eventData.position, 
-                eventData.pressEventCamera, 
-                out Vector3 worldPos))
+            RectTransform parentRect = backgroundRect.parent as RectTransform;
+            if (parentRect != null && RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                parentRect,
+                eventData.position,
+                eventData.pressEventCamera,
+                out Vector2 localPointInParent))
             {
-                backgroundRect.position = worldPos;
+                backgroundRect.localPosition = new Vector3(localPointInParent.x, localPointInParent.y, backgroundRect.localPosition.z);
+                _touchStartLocalPos = backgroundRect.localPosition;
             }
         }
 
         _targetHandlePosition = Vector2.zero;
-        if (handleRect != null) handleRect.anchoredPosition = Vector2.zero;
+        if (handleRect != null)
+        {
+            handleRect.anchoredPosition = Vector2.zero;
+        }
 
-        // Fade in to full active alpha
         if (canvasGroup != null)
         {
             canvasGroup.alpha = activeAlpha;
         }
 
-        ProcessPointerPosition(eventData);
+        _currentInput = Vector2.zero;
+        if (_player != null)
+        {
+            _player.SetJoystickInput(Vector2.zero);
+            _player.isSprinting = false;
+        }
     }
 
     public void OnDrag(PointerEventData eventData)
@@ -256,30 +410,56 @@ public class DynamicFloatingJoystick : MonoBehaviour
             out Vector2 localPoint))
         {
             float distance = localPoint.magnitude;
-            Vector2 direction = (distance > 0.001f) ? localPoint.normalized : Vector2.zero;
+            Vector2 direction = (distance > 0.001f) ? (localPoint / distance) : Vector2.zero;
+            float currentRange = movementRange > 0.01f ? movementRange : 65f;
 
-            if (distance > movementRange)
-            {
-                _targetHandlePosition = direction * movementRange;
-
-                // Dynamic follow: gently slide the background so finger doesn't slide off
-                if (dynamicFollow)
-                {
-                    Vector2 overshoot = localPoint - _targetHandlePosition;
-                    backgroundRect.anchoredPosition += overshoot;
-                }
-            }
-            else
+            if (distance <= currentRange)
             {
                 _targetHandlePosition = localPoint;
             }
+            else
+            {
+                float extra = distance - currentRange;
+                if (enableElasticResistance)
+                {
+                    float elasticOffset = Mathf.Log(1f + extra / currentRange) * (currentRange * elasticTension);
+                    _targetHandlePosition = direction * (currentRange + elasticOffset);
+                }
+                else
+                {
+                    _targetHandlePosition = direction * currentRange;
+                }
 
-            // Calculate normalized input vector
-            _currentInput = _targetHandlePosition / movementRange;
+                if (dynamicFollow && !anchorOnTouch)
+                {
+                    float followThreshold = currentRange * followDeadzoneMultiplier;
+                    if (distance > followThreshold)
+                    {
+                        float excess = distance - followThreshold;
+                        Vector2 followStep = direction * (excess * followResistance);
+                        Vector3 candidatePos = backgroundRect.localPosition + (Vector3)(followStep * backgroundRect.localScale.x);
+
+                        if (maxFollowDistanceFromOrigin > 0.01f)
+                        {
+                            Vector3 fromOrigin = candidatePos - _touchStartLocalPos;
+                            if (fromOrigin.magnitude > maxFollowDistanceFromOrigin)
+                            {
+                                candidatePos = _touchStartLocalPos + fromOrigin.normalized * maxFollowDistanceFromOrigin;
+                            }
+                        }
+
+                        backgroundRect.localPosition = candidatePos;
+                    }
+                }
+            }
+
+            float normalizedMag = Mathf.Clamp01(distance / currentRange);
+            _currentInput = direction * normalizedMag;
 
             if (_player != null)
             {
                 _player.SetJoystickInput(_currentInput);
+                _player.isSprinting = (normalizedMag >= sprintThreshold);
             }
         }
     }
@@ -300,6 +480,7 @@ public class DynamicFloatingJoystick : MonoBehaviour
         if (_player != null)
         {
             _player.SetJoystickInput(Vector2.zero);
+            _player.isSprinting = false;
         }
 
         SetRestingVisuals();
@@ -319,10 +500,6 @@ public class DynamicFloatingJoystick : MonoBehaviour
     }
 }
 
-/// <summary>
-/// Helper forwarder that passes UI pointer events from the touch zone, background, or handle
-/// up to the DynamicFloatingJoystick.
-/// </summary>
 public class JoystickEventForwarder : MonoBehaviour, IPointerDownHandler, IDragHandler, IPointerUpHandler
 {
     [HideInInspector] public DynamicFloatingJoystick joystick;

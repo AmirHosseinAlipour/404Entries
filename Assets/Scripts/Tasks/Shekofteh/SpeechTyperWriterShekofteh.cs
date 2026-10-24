@@ -16,7 +16,6 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
     public bool newPageOnBottom = true;
 
     [Header("Paging Tuning")]
-    [Tooltip("چند پیکسل از پایین خالی بماند، قبل از اینکه صفحه جدید شود. مقدار بیشتر = زودتر صفحه پاک می‌شود.")]
     public float pageClearPaddingPx = 150;
 
     public event Action OnTypingFinished;
@@ -29,7 +28,6 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
     private float _maxWidthPx;
     private float _boxHeightPx;
 
-    // Build RAW text (before ArabicFixer)
     private readonly List<string> _lines = new List<string>();
     private string _currentLine = "";
     private string _currentWord = "";
@@ -38,13 +36,17 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
     private void Awake()
     {
         _textUI = GetComponent<Text>();
+        if (_textUI != null)
+        {
+            _textUI.horizontalOverflow = HorizontalWrapMode.Overflow;
+            _textUI.verticalOverflow = VerticalWrapMode.Overflow;
 
-        // IMPORTANT: disable Unity internal wrapping to avoid reflow
-        _textUI.horizontalOverflow = HorizontalWrapMode.Overflow;
-        _textUI.verticalOverflow = VerticalWrapMode.Overflow;
-
-        _originalText = _textUI.text ?? "";
-        _textUI.text = "";
+            if (string.IsNullOrEmpty(_originalText) && !string.IsNullOrEmpty(_textUI.text))
+            {
+                _originalText = _textUI.text;
+            }
+            _textUI.text = "";
+        }
     }
 
     private void OnEnable()
@@ -79,24 +81,13 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
 
     private void Start()
     {
-        _settings = _textUI.GetGenerationSettings(_textUI.rectTransform.rect.size);
-
-        float scale = 1f;
-        if (_textUI.canvas != null) scale = _textUI.canvas.scaleFactor;
-
-        _maxWidthPx = _textUI.rectTransform.rect.width * scale;
-        _boxHeightPx = _textUI.rectTransform.rect.height * scale;
-
+        UpdateSettings();
         ApplyAlignment();
 
         if (!typeWriterEffect)
         {
             string rawWrapped = ManualWrapWholeText(LocalizationManager.Translate(_originalText));
             _textUI.text = FixLineByLine(rawWrapped);
-        }
-        else
-        {
-            StartTyping();
         }
     }
 
@@ -109,8 +100,14 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
     public void StartTyping()
     {
         StopTyping();
-
+        UpdateSettings();
         ApplyAlignment();
+
+        if (string.IsNullOrEmpty(_originalText))
+        {
+            _originalText = "بسم الله الرحمن الرحیم،\nضمن تبریک برای قبولی داخل دانشگاه بهشتی، این دانشگاه یکی از بهترین دانشگاه های سراسر کشور است که به تازگی از رتبه 500 به رتبه 447 صعود کرده، نکته ای که باید بهتون بگم: اینه که شما باید به چارت توجه کنید، خروج از چارت، خط قرمز ماست، شما باید هر طور شده در ۸ ترم دانشگاه رو تموم کنین شاید بپرسین چطوری؟ باید بگم ممنونم شما چطورین. اگر ۷ ترمه تموم کنین که چه بهتر. البته بعضی از دانشجویان هم هستن که میرن کار های متفرقه انجام می دن یا سر کار میرن ما این افراد رو کارشون رو تایید نمی کنیم و بعضا این افراد اصلا میرن سر کار و ۹ ترمه دانشگاه رو تموم میکنن باز هم میگم این افراد مورد تایید ما نیستند و ما تاییدشون نمی کنیم\n موضوع دیگه که باید بهش بپردازیم نمره هست. ببینید دانشگاه روی نمره خیلی حساسه و نمره براش اهمیت داره، سعی کنین نمرتون رو بالا نگه دارید این بعدا در دانشگاه و حتی کار کردن خیلی قراره تاثیر بذاره حالا درسته که هیچ جا به معدل دانشگاه نگاه دیگه نمی کنن و حتی برای اپلای هم مقاله داشتن مهم تر از نمره هست ولی خب تمام اینها دلیل نمیشه که شما نمرتون رو پایین نگه دارید.\nنکته دیگه که باید بهش بپردازیم در مورد زوج و فرد بودن هست ببینید دانشگاه برای آسانی مدیریت ورودی، شما رو به ۲ دسته تقسیم کردند: یک دسته گروه زوج و یک دسته گروه فرد. شما باید بدونید که توی کدوم دسته هستید و طبق اون عمل کنید. حالا اینکه چطور بفهمید کدوم هستید، به شماره دانشجوییتون بستگی داره. اگر رقم آخر شماره دانشجوییتون زوج باشه، شما در گروه زوج قرار میگیرید و اگر فرد باشه در گروه فرد. این موضوع در انتخاب واحد و زمان بندی کلاس ها خیلی مهمه و باید حتما بهش دقت داشته باشید.\nموضوع بعدی در مورد خوابگاه هست. دانشجویانی که از شهرستان میان باید حتما در مهلت مقرر برای خوابگاه ثبت نام کنند. خوابگاه های دانشگاه امکانات مناسبی دارند ولی ظرفیت محدوده، پس اولویت با کسانی هست که زودتر اقدام کنند و مدارکشون کامل باشه.\nدر نهایت امیدوارم دوران تحصیلی موفقی داشته باشید و بتونید از امکانات دانشگاه به بهترین نحو استفاده کنید.";
+        }
+
         _textUI.text = "";
         _lines.Clear();
         _currentLine = "";
@@ -129,9 +126,49 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
         }
     }
 
+    private void UpdateSettings()
+    {
+        if (_textUI == null) _textUI = GetComponent<Text>();
+        if (_textUI == null) return;
+
+        _textUI.horizontalOverflow = HorizontalWrapMode.Overflow;
+        _textUI.verticalOverflow = VerticalWrapMode.Overflow;
+
+        Vector2 size = _textUI.rectTransform.rect.size;
+        if (size.x < 50f || size.y < 50f)
+        {
+            RectTransform parentRect = _textUI.rectTransform.parent as RectTransform;
+            if (parentRect != null && parentRect.rect.width > 50f)
+            {
+                size = parentRect.rect.size;
+            }
+            else
+            {
+                size = new Vector2(1000f, 600f);
+            }
+        }
+
+        _settings = _textUI.GetGenerationSettings(size);
+        _maxWidthPx = size.x;
+        _boxHeightPx = size.y;
+
+        if (_textUI.lineSpacing <= 0.05f)
+        {
+            _textUI.lineSpacing = 1f;
+        }
+    }
+
     private IEnumerator TypeTextCoroutine()
     {
         string textToType = LocalizationManager.Translate(_originalText);
+        if (!LocalizationManager.IsRTL)
+        {
+            int origLines = _originalText.Split('\n').Length;
+            if (origLines > 1 && !textToType.Contains("\n"))
+            {
+                textToType = BalanceTextLines(textToType, origLines);
+            }
+        }
         if (string.IsNullOrEmpty(textToType))
             yield break;
 
@@ -154,7 +191,6 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
             {
                 _currentWord += c;
 
-                // If word is too long to fit even on an empty line, break it safely
                 if (WordAloneExceedsWidth(_currentWord) && _currentLine.Length == 0)
                 {
                     BreakVeryLongWordCharByCharWithPaging();
@@ -165,17 +201,12 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
             yield return new WaitForSeconds(typeCharTime);
         }
 
-        // finish remaining word
         FlushWordIntoLine();
         RenderNow();
 
         _typingCo = null;
         OnTypingFinished?.Invoke();
     }
-
-    // -----------------------------
-    // Word-wrap + Paging logic
-    // -----------------------------
 
     private void FlushWordIntoLine()
     {
@@ -185,20 +216,15 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
         string prefixSpace = (_spaceBeforeWord && _currentLine.Length > 0) ? " " : "";
         string candidateLine = _currentLine + prefixSpace + _currentWord;
 
-        // If the word doesn't fit in current line, move to next line
         if (LineExceedsWidth(candidateLine))
         {
             if (_currentLine.Length > 0)
             {
-                // Before pushing the current line, handle paging
                 PushLineWithPaging();
-
-                // Start new line with the word (no leading space)
                 _currentLine = _currentWord;
             }
             else
             {
-                // Line is empty but word still doesn't fit => break long word
                 BreakVeryLongWordCharByCharWithPaging();
                 _currentWord = "";
                 _spaceBeforeWord = false;
@@ -214,10 +240,6 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
         _spaceBeforeWord = false;
     }
 
-    /// <summary>
-    /// Push currentLine into lines, but BEFORE that, check if adding this line would overflow height.
-    /// If yes => clear page first, then add.
-    /// </summary>
     private void PushLineWithPaging()
     {
         if (!newPageOnBottom)
@@ -227,10 +249,8 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
             return;
         }
 
-        // Simulate adding this line and see if it would exceed height
         if (WouldOverflowIfAddLine(_currentLine))
         {
-            // New page
             _lines.Clear();
         }
 
@@ -238,9 +258,6 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
         _currentLine = "";
     }
 
-    /// <summary>
-    /// For extremely long words: break char-by-char, pushing lines with paging when needed.
-    /// </summary>
     private void BreakVeryLongWordCharByCharWithPaging()
     {
         if (string.IsNullOrEmpty(_currentWord))
@@ -255,7 +272,6 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
 
             if (LineExceedsWidth(cand))
             {
-                // before pushing temp, handle paging
                 if (newPageOnBottom && WouldOverflowIfAddLine(temp))
                     _lines.Clear();
 
@@ -273,10 +289,6 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
         _spaceBeforeWord = false;
     }
 
-    // -----------------------------
-    // Measuring & Rendering
-    // -----------------------------
-
     private bool LineExceedsWidth(string rawLine)
     {
         string fixedLine = LocalizationManager.IsRTL ? ArabicFixer.Fix(rawLine, true, true) : rawLine;
@@ -291,10 +303,6 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
         return w > (_maxWidthPx - 4f);
     }
 
-    /// <summary>
-    /// Check if adding a new completed line would make the text exceed the box height.
-    /// This is where the "clear before overflow" happens.
-    /// </summary>
     private bool WouldOverflowIfAddLine(string newLineRaw)
     {
         string raw;
@@ -305,10 +313,7 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
             raw = string.Join("\n", _lines) + "\n" + newLineRaw;
 
         string fixedText = FixLineByLine(raw);
-
         float h = _textUI.cachedTextGeneratorForLayout.GetPreferredHeight(fixedText, _settings);
-
-        // ✅ Key tuning line: increase padding => clear page sooner
         return h > (_boxHeightPx - pageClearPaddingPx);
     }
 
@@ -325,7 +330,6 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
             string prefixSpace = (_spaceBeforeWord && _currentLine.Length > 0) ? " " : "";
             linePlusWord = _currentLine + prefixSpace + _currentWord;
 
-            // If while typing, the word would overflow width, jump to next line early (word-wrap)
             if (LineExceedsWidth(linePlusWord) && _currentLine.Length > 0)
             {
                 PushLineWithPaging();
@@ -350,48 +354,119 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
         return string.Join("\n", lines);
     }
 
-    // Non-typewriter helper
-    private string ManualWrapWholeText(string raw)
+    private string ManualWrapWholeText(string rawText)
     {
-        _lines.Clear();
-        _currentLine = "";
-        _currentWord = "";
-        _spaceBeforeWord = false;
+        if (string.IsNullOrEmpty(rawText)) return "";
 
-        for (int i = 0; i < (raw ?? "").Length; i++)
+        List<string> resultLines = new List<string>();
+        string currentL = "";
+        string currentW = "";
+        bool spaceBefore = false;
+
+        for (int i = 0; i < rawText.Length; i++)
         {
-            char c = raw[i];
+            char c = rawText[i];
 
             if (c == '\n')
             {
-                FlushWordIntoLine();
-                PushLineWithPaging();
-                _spaceBeforeWord = false;
+                if (!string.IsNullOrEmpty(currentW))
+                {
+                    string pref = (spaceBefore && currentL.Length > 0) ? " " : "";
+                    currentL += pref + currentW;
+                    currentW = "";
+                }
+                resultLines.Add(currentL);
+                currentL = "";
+                spaceBefore = false;
             }
             else if (c == ' ' || c == '\t')
             {
-                FlushWordIntoLine();
-                _spaceBeforeWord = true;
+                if (!string.IsNullOrEmpty(currentW))
+                {
+                    string pref = (spaceBefore && currentL.Length > 0) ? " " : "";
+                    string cand = currentL + pref + currentW;
+                    if (LineExceedsWidth(cand))
+                    {
+                        if (currentL.Length > 0)
+                        {
+                            resultLines.Add(currentL);
+                            currentL = currentW;
+                        }
+                        else
+                        {
+                            resultLines.Add(currentW);
+                            currentL = "";
+                        }
+                    }
+                    else
+                    {
+                        currentL = cand;
+                    }
+                    currentW = "";
+                }
+                spaceBefore = true;
             }
             else
             {
-                _currentWord += c;
-                if (WordAloneExceedsWidth(_currentWord) && _currentLine.Length == 0)
-                    BreakVeryLongWordCharByCharWithPaging();
+                currentW += c;
             }
         }
 
-        FlushWordIntoLine();
+        if (!string.IsNullOrEmpty(currentW))
+        {
+            string pref = (spaceBefore && currentL.Length > 0) ? " " : "";
+            string cand = currentL + pref + currentW;
+            if (LineExceedsWidth(cand) && currentL.Length > 0)
+            {
+                resultLines.Add(currentL);
+                currentL = currentW;
+            }
+            else
+            {
+                currentL = cand;
+            }
+        }
 
-        string finalRaw;
-        if (_lines.Count == 0) finalRaw = _currentLine;
-        else finalRaw = string.Join("\n", _lines) + (_currentLine.Length > 0 ? "\n" + _currentLine : "");
+        if (!string.IsNullOrEmpty(currentL))
+        {
+            resultLines.Add(currentL);
+        }
 
-        _lines.Clear();
-        _currentLine = "";
-        _currentWord = "";
-        _spaceBeforeWord = false;
+        return string.Join("\n", resultLines);
+    }
 
-        return finalRaw;
+    private string BalanceTextLines(string text, int targetLineCount)
+    {
+        if (string.IsNullOrEmpty(text) || targetLineCount <= 1) return text;
+        string[] words = text.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        if (words.Length <= targetLineCount) return text;
+
+        int totalChars = text.Length;
+        int targetCharsPerLine = Mathf.Max(1, totalChars / targetLineCount);
+
+        List<string> resultLines = new List<string>();
+        System.Text.StringBuilder currentLine = new System.Text.StringBuilder();
+
+        for (int i = 0; i < words.Length; i++)
+        {
+            if (currentLine.Length > 0 && resultLines.Count < targetLineCount - 1)
+            {
+                if (currentLine.Length + 1 + words[i].Length > targetCharsPerLine)
+                {
+                    resultLines.Add(currentLine.ToString());
+                    currentLine.Clear();
+                }
+            }
+
+            if (currentLine.Length > 0) currentLine.Append(" ");
+            currentLine.Append(words[i]);
+        }
+
+        if (currentLine.Length > 0)
+        {
+            resultLines.Add(currentLine.ToString());
+        }
+
+        return string.Join("\n", resultLines);
     }
 }

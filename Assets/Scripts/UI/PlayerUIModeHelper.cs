@@ -4,14 +4,23 @@ using UnityEngine.UI;
 
 public static class PlayerUIModeHelper
 {
-    
-    public static void PlayerEnterUIMode(PlayerController player)
+    public static void PlayerEnterUIMode(PlayerController player = null)
     {
+        if (player == null)
+        {
+            var pObj = GameObject.FindWithTag("Player");
+            if (pObj != null) player = pObj.GetComponent<PlayerController>();
+        }
         if (player != null) player.isUIActive = true;
     }
 
-    public static void PlayerExitUIMode(PlayerController player)
+    public static void PlayerExitUIMode(PlayerController player = null)
     {
+        if (player == null)
+        {
+            var pObj = GameObject.FindWithTag("Player");
+            if (pObj != null) player = pObj.GetComponent<PlayerController>();
+        }
         if (player != null) player.isUIActive = false;
     }
 

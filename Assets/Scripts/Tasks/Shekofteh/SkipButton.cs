@@ -3,19 +3,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using TMPro;
-using Random = UnityEngine.Random;
 
 public class SkipButton : MonoBehaviour
 {
-    // UI text that counts the touches
     public TextMeshProUGUI _counter;
     
-    // 2 different skip button
     public Sprite fastForwardImage;
     public Sprite falseForwardImage;
-
     public Image buttonImage;
-    
     public CircleTimerAnimation background;
     
     [Header("Teleport Settings")]
@@ -23,7 +18,7 @@ public class SkipButton : MonoBehaviour
     public float[] teleportIntervals;
     
     [Range(0f, 0.5f)]
-    public float edgePadding = 0.3f;
+    public float edgePadding = 0.2f;
 
     private int _count;
     public bool canGoToNextLevel;
@@ -41,30 +36,34 @@ public class SkipButton : MonoBehaviour
     private Vector2 lastPosition;
     private bool isFirstTeleport = true;
     
-    // state for 2 different skip buttons
     private int _value;
 
     [HideInInspector] public bool _firstLoop = true;
-    
     [HideInInspector] public System.Action OnLevelGoalReached;
-    
     [HideInInspector] public System.Action OnMissionComplete;
-    
-    [HideInInspector]
-    public bool isCompleted;
+    [HideInInspector] public bool isCompleted;
 
     private void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
         button = GetComponent<Button>();
 
+        if (counts == null || counts.Length == 0 || counts[0] > 5)
+        {
+            counts = new int[] { 4, 4, 3 };
+        }
+
+        if (teleportIntervals == null || teleportIntervals.Length == 0)
+        {
+            teleportIntervals = new float[] { 1.2f, 1.0f, 0.8f };
+        }
+
         _currentGoal = counts[0];
         _currentTeleportInterval = teleportIntervals[0];
         
-        UIUtils.SetAlpha(buttonImage.gameObject, 0);
-        UIUtils.SetAlpha(background.gameObject, 0);
+        if (buttonImage != null) UIUtils.SetAlpha(buttonImage.gameObject, 0);
+        if (background != null) UIUtils.SetAlpha(background.gameObject, 0);
         
-        // Get the parent's RectTransform
         if (rectTransform.parent != null)
         {
             parentRectTransform = rectTransform.parent.GetComponent<RectTransform>();
@@ -75,24 +74,23 @@ public class SkipButton : MonoBehaviour
             return;
         }
 
-        // Set anchors to stretch within parent for better positioning
-        rectTransform.anchorMin = new Vector2(0f, 0f);
-        rectTransform.anchorMax = new Vector2(1f, 1f);
+        rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
+        rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
         rectTransform.pivot = new Vector2(0.5f, 0.5f);
+        rectTransform.sizeDelta = new Vector2(128f, 128f);
         
-        // Subscribe to the button click event
         if (button != null)
         {
             button.onClick.AddListener(ChangeCounter);
         }
 
-        buttonImage.sprite = fastForwardImage;
+        if (buttonImage != null) buttonImage.sprite = fastForwardImage;
         _value = 1;
     }
 
     private void Start()
     {
-        background.animationDuration = _currentTeleportInterval;
+        if (background != null) background.animationDuration = _currentTeleportInterval;
     }
 
     private void OnDisable()
@@ -127,7 +125,10 @@ public class SkipButton : MonoBehaviour
             _canTouch = false;
             _count += _value;
             if (_count <= 0) _count = 0;
-            _counter.text = _count + " / " + _currentGoal;
+            if (_counter != null)
+            {
+                _counter.text = _count + " / " + _currentGoal;
+            }
             
             CheckForLevelCompletion();
         }
@@ -146,35 +147,35 @@ public class SkipButton : MonoBehaviour
     {
         while (true)
         {
-            // 1. Teleport and Start Animation
             TeleportButton();
-            background.StartCountdown();
+            if (background != null) background.StartCountdown();
             yield return new WaitForSeconds(_currentTeleportInterval);
         }
     }
 
     private void TeleportButton()
     {
-        if (parentRectTransform == null) return;
+        if (parentRectTransform == null)
+        {
+            if (rectTransform != null && rectTransform.parent != null)
+                parentRectTransform = rectTransform.parent.GetComponent<RectTransform>();
+            if (parentRectTransform == null) return;
+        }
 
         _canTouch = true;
 
-        // Get the actual visible area of the parent panel
         float parentWidth = parentRectTransform.rect.width;
         float parentHeight = parentRectTransform.rect.height;
 
-        // Get the button size (ac_counting for scale)
-        float buttonWidth = rectTransform.rect.width * rectTransform.localScale.x;
-        float buttonHeight = rectTransform.rect.height * rectTransform.localScale.y;
+        float buttonWidth = 128f * Mathf.Abs(rectTransform.localScale.x);
+        float buttonHeight = 128f * Mathf.Abs(rectTransform.localScale.y);
 
-        // Calculate the available area for teleportation
         float minX = buttonWidth * 0.5f;
         float maxX = parentWidth - buttonWidth * 0.5f;
         
         float minY = buttonHeight * 0.5f;
         float maxY = parentHeight - buttonHeight * 0.5f;
 
-        // Apply edge padding
         float paddingX = (maxX - minX) * edgePadding;
         float paddingY = (maxY - minY) * edgePadding;
 
@@ -183,26 +184,19 @@ public class SkipButton : MonoBehaviour
         minY += paddingY;
         maxY -= paddingY;
 
-        // Ensure we have valid ranges
-        if (minX > maxX)
-        {
-            minX = maxX = parentWidth * 0.5f;
-        }
-        if (minY > maxY)
-        {
-            minY = maxY = parentHeight * 0.5f;
-        }
+        if (minX > maxX) minX = maxX = parentWidth * 0.5f;
+        if (minY > maxY) minY = maxY = parentHeight * 0.5f;
 
-        const float minTeleportDistance = 300f;
-        const int maxAttempts = 30;
+        float minTeleportDistance = 200f;
+        int maxAttempts = 20;
         
         Vector2 newPosition;
         int currentAttempt = 0;
         
         do
         {
-            float randomX = Random.Range(minX, maxX);
-            float randomY = Random.Range(minY, maxY);
+            float randomX = UnityEngine.Random.Range(minX, maxX);
+            float randomY = UnityEngine.Random.Range(minY, maxY);
             newPosition = new Vector2(randomX, randomY);
             currentAttempt++;
         } 
@@ -211,20 +205,17 @@ public class SkipButton : MonoBehaviour
         lastPosition = newPosition;
         isFirstTeleport = false;
 
-        // Set the position using offsetMin/offsetMax or anchoredPosition
-        // Reset the anchors temporarily to set the position
-        Vector2 originalMin = rectTransform.anchorMin;
-        Vector2 originalMax = rectTransform.anchorMax;
-        
         rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
         rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+        rectTransform.sizeDelta = new Vector2(128f, 128f);
         rectTransform.anchoredPosition = new Vector2(newPosition.x - parentWidth * 0.5f, newPosition.y - parentHeight * 0.5f);
 
-        if (_firstLoop)
+        UIUtils.SetAlpha(gameObject, 1f);
+        if (buttonImage != null) UIUtils.SetAlpha(buttonImage.gameObject, 1f);
+        if (background != null)
         {
-            _firstLoop = false;
-            UIUtils.SetAlpha(buttonImage.gameObject, 1);
-            UIUtils.SetAlpha(background.gameObject, 1);
+            background.gameObject.SetActive(true);
+            UIUtils.SetAlpha(background.gameObject, 1f);
         }
 
         ChangeButton();
@@ -232,24 +223,20 @@ public class SkipButton : MonoBehaviour
 
     private void ChangeButton()
     {
-        float chance = Random.value;
+        float chance = UnityEngine.Random.value;
 
         if (chance < 0.75f)
         {
-            // 75% chance to use fastForwardImage
-            buttonImage.sprite = fastForwardImage;
+            if (buttonImage != null) buttonImage.sprite = fastForwardImage;
             _value = 1;
         }
         else
         {
-            // 25% chance to use falseForwardImage
-            buttonImage.sprite = falseForwardImage;
+            if (buttonImage != null) buttonImage.sprite = falseForwardImage;
             _value = -1;
         }
     }
 
-
-    // Reset the counter
     public void ResetCounter()
     {
         _count = 0;
@@ -262,7 +249,6 @@ public class SkipButton : MonoBehaviour
     {
         _currentLevel++;
         
-        // End logic
         if (_currentLevel >= counts.Length)
         {
             isCompleted = true;
@@ -272,51 +258,50 @@ public class SkipButton : MonoBehaviour
         }
 
         _currentGoal = counts[_currentLevel];
-        _currentTeleportInterval = teleportIntervals[_currentLevel];
-        background.animationDuration = _currentTeleportInterval;
+        _currentTeleportInterval = (_currentLevel < teleportIntervals.Length) ? teleportIntervals[_currentLevel] : 1f;
+        if (background != null) background.animationDuration = _currentTeleportInterval;
         ResetCounter();
         canGoToNextLevel = false;
     }
     
-    // Resets the entire component to its initial state (Level 0)
     public void ResetState()
     {
-        // Stop any active movement
         StopTeleportMovement();
-        background.StopCountdown();
+        if (background != null) background.StopCountdown();
 
-        // Reset level and completion status
         _currentLevel = 0;
         isCompleted = false;
         canGoToNextLevel = false;
 
-        // Set stats for the first level (Level 0)
-        if (counts.Length > 0)
-            _currentGoal = counts[0];
-
-        if (teleportIntervals.Length > 0)
+        if (counts == null || counts.Length == 0 || counts[0] > 5)
         {
-            _currentTeleportInterval = teleportIntervals[0];
-            background.animationDuration = _currentTeleportInterval;
+            counts = new int[] { 4, 4, 3 };
         }
 
-        // Reset the counter UI and state
-        ResetCounter(); // This sets _count = 0 and updates the text
+        if (teleportIntervals == null || teleportIntervals.Length == 0)
+        {
+            teleportIntervals = new float[] { 1.2f, 1.0f, 0.8f };
+        }
 
-        // --- NEW CODE ---
-        // Force the counter text to be active and visible.
-        // This fixes the "no text" problem.
+        _currentGoal = counts[0];
+        _currentTeleportInterval = teleportIntervals[0];
+        if (background != null) background.animationDuration = _currentTeleportInterval;
+
+        ResetCounter();
+
         if (_counter != null)
         {
             _counter.gameObject.SetActive(true);
         }
-        // --- END NEW CODE ---
 
-        // Hide the button visuals (they get shown on first teleport)
-        UIUtils.SetAlpha(buttonImage.gameObject, 0);
-        UIUtils.SetAlpha(background.gameObject, 0);
+        UIUtils.SetAlpha(gameObject, 1f);
+        if (buttonImage != null) UIUtils.SetAlpha(buttonImage.gameObject, 1f);
+        if (background != null)
+        {
+            background.gameObject.SetActive(true);
+            UIUtils.SetAlpha(background.gameObject, 1f);
+        }
 
-        // Reset state flags
         _firstLoop = true;
         isFirstTeleport = true;
     }

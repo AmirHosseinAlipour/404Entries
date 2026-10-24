@@ -30,10 +30,11 @@ public class ExitDoor : MonoBehaviour
             if (teacher != null)
             {
                 teacher.StopLooking();
-                if (TaskManager.Instance != null)
-                    TaskManager.Instance.CompleteTask(teacher.TaskOrderNumber);
-                if (UIAnimationManager.Instance != null && teacher.firstWinDialogue != null)
-                    UIAnimationManager.Instance.ShowDialogueWindow(teacher.firstWinDialogue, 0.5f, teacher.firstWinDialogueFtw);
+                teacher.CompleteMission();
+            }
+            else if (TaskManager.Instance != null)
+            {
+                TaskManager.Instance.CompleteCurrentTask();
             }
             if (gameManager != null) gameManager._win = true;
             if (roomCamera != null) roomCamera.Priority = 0;

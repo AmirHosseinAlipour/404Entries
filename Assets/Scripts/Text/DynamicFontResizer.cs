@@ -12,6 +12,7 @@ public class DynamicFontResizer : MonoBehaviour
 
     private Text textComponent;
     private RectTransform rectTransform;
+    private string _lastTargetText = "";
 
     void Awake()
     {
@@ -21,13 +22,11 @@ public class DynamicFontResizer : MonoBehaviour
 
     void OnEnable()
     {
-        // Adjust font size when the component is enabled
         AdjustFontSize();
     }
 
     void OnRectTransformDimensionsChange()
     {
-        // Adjust font size if the container's size changes
         AdjustFontSize();
     }
     
@@ -35,61 +34,73 @@ public class DynamicFontResizer : MonoBehaviour
     {
         if (textComponent == null)
         {
-            // Fallback in case Awake hasn't run yet or component was added dynamically
             textComponent = GetComponent<Text>();
             rectTransform = GetComponent<RectTransform>();
-            
-            if (textComponent.horizontalOverflow != HorizontalWrapMode.Overflow)
-            {
-                textComponent.horizontalOverflow = HorizontalWrapMode.Overflow;
-            }
         }
-        
-        // 1. Set the new text
-        textComponent.text = newText;
-        
-        // 2. Adjust the font size
+
+        _lastTargetText = newText;
+        if (textComponent != null)
+        {
+            textComponent.text = newText;
+        }
         AdjustFontSize();
     }
 
-    // ---
-    // You MUST call this function manually from your other scripts
-    // whenever you change the text content.
-    //
-    // Example:
-    // myTextComponent.text = "New dynamic text";
-    // myTextComponent.GetComponent<DynamicFontResizer>().AdjustFontSize();
-    // ---
     public void AdjustFontSize()
     {
-        if (textComponent == null) return;
+        if (textComponent == null)
+        {
+            textComponent = GetComponent<Text>();
+            rectTransform = GetComponent<RectTransform>();
+        }
+        if (textComponent == null || rectTransform == null) return;
 
-        // CRITICAL: Must be set to Overflow for preferredWidth to be accurate.
         if (textComponent.horizontalOverflow != HorizontalWrapMode.Overflow)
         {
             textComponent.horizontalOverflow = HorizontalWrapMode.Overflow;
         }
 
-        float containerWidth = rectTransform.rect.width;
+        string textToMeasure = textComponent.text;
+        if (string.IsNullOrEmpty(textToMeasure))
+        {
+            if (!string.IsNullOrEmpty(_lastTargetText))
+            {
+                textToMeasure = _lastTargetText;
+            }
+            else
+            {
+                var ftw = GetComponent<FarsiTypewriter>();
+                if (ftw != null && !string.IsNullOrEmpty(ftw.GetFixedText()))
+                {
+                    textToMeasure = ftw.GetFixedText();
+                }
+            }
+        }
 
-        // Start from the max size and work down
+        if (string.IsNullOrEmpty(textToMeasure)) return;
+
+        string originalText = textComponent.text;
+        textComponent.text = textToMeasure;
+
+        float containerWidth = rectTransform.rect.width;
+        if (containerWidth <= 0)
+        {
+            textComponent.text = originalText;
+            return;
+        }
+
         for (int i = maxFontSize; i >= minFontSize; i--)
         {
-            // Set the font size
             textComponent.fontSize = i;
-
-            // Force the canvas to update to get the correct preferredWidth
             Canvas.ForceUpdateCanvases();
 
-            // Check if the text now fits
             if (textComponent.preferredWidth <= containerWidth)
             {
-                // It fits, so we are done
+                textComponent.text = originalText;
                 return;
             }
         }
         
-        // If the loop completes, it means even at minFontSize,
-        // it doesn't fit. It will just stay at minFontSize.
+        textComponent.text = originalText;
     }
 }

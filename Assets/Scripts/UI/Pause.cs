@@ -1,16 +1,30 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 public class Pause : MonoBehaviour
 {
     public RectTransform pausePanel;
     private bool isPaused = false;
 
-    private void Update()
+    private void OnEnable()
     {
-        if (Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
+        InputReader.OnPausePressed += TogglePause;
+    }
+
+    private void OnDisable()
+    {
+        InputReader.OnPausePressed -= TogglePause;
+    }
+
+    private void Start()
+    {
+        if (pausePanel != null)
         {
-            TogglePause();
+            var img = pausePanel.GetComponent<Image>();
+            if (img != null)
+            {
+                img.enabled = false;
+            }
         }
     }
 
@@ -29,9 +43,10 @@ public class Pause : MonoBehaviour
     public void OnPause()
     {
         isPaused = true;
+        PlayerUIModeHelper.PlayerEnterUIMode();
         if (pausePanel != null)
         {
-            UIAnimationManager.Instance.ShowWindow(pausePanel, 0.5f);
+            UIAnimationManager.Instance.ShowWindow(pausePanel, 0.25f);
         }
         Time.timeScale = 0;
     }
@@ -42,7 +57,8 @@ public class Pause : MonoBehaviour
         Time.timeScale = 1;
         if (pausePanel != null)
         {
-            UIAnimationManager.Instance.HideWindow(pausePanel, 0.5f);
+            UIAnimationManager.Instance.HideWindow(pausePanel, 0.2f);
         }
+        PlayerUIModeHelper.PlayerExitUIMode();
     }
 }

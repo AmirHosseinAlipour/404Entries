@@ -51,6 +51,14 @@ public class Amozesh : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        if (TaskManager.Instance != null)
+        {
+            TaskManager.Instance.OnCurrentIndexChange -= ChangeCurrentIndex;
+        }
+    }
+
     private void SetDialogues()
     {
         if (dialoguePhases == null || dialoguePhases.Count == 0) return;
