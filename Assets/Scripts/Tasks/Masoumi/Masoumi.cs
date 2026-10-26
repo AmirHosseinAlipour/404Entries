@@ -42,19 +42,31 @@ public class Masoumi : BaseProfessors
         _musicChange = GetComponent<MusicChange>();
     }
 
-    private void Update()
+    protected override void OnTriggerEnter2D(Collider2D other)
     {
-        if (missionPanel != null && missionPanel.gameObject.activeSelf && !isMinigameActive)
+        if (other.gameObject.CompareTag("Player") && !isMinigameActive && !IsAnyMinigameActive)
         {
-            StartMinigame();
+            if (acceptRect != null)
+            {
+                acceptRect.gameObject.SetActive(true);
+                UIUtils.SetAlpha(acceptRect.gameObject, 1f);
+            }
+            if (speechPanel != null)
+            {
+                speechPanel.gameObject.SetActive(false);
+            }
+            _currentLevel = 0;
         }
+        base.OnTriggerEnter2D(other);
     }
 
     public void StartGame()
     {
         StartMinigame();
+        _currentLevel = 0;
         if (missionPanel != null) UIAnimationManager.Instance.ShowWindow(missionPanel, 0.5f);
         if (speechPanel != null) UIAnimationManager.Instance.ShowWindow(speechPanel, 0.5f);
+        SetupLevel(0);
     }
 
     public void StartMission()
@@ -111,17 +123,9 @@ public class Masoumi : BaseProfessors
         NextLevel();
     }
 
-    private void NextLevel()
+    private void SetupLevel(int level)
     {
-        _currentLevel++;
-
-        if (levelKeys == null || _currentLevel >= levelKeys.Count)
-        {
-            HandleEnding();
-            return;
-        }
-        
-        if (speechPanel != null) UIAnimationManager.Instance.ShowWindow(speechPanel, 0.5f);
+        _currentLevel = level;
 
         if (initialZones != null && items != null)
         {
@@ -162,9 +166,25 @@ public class Masoumi : BaseProfessors
         }
     }
 
+    private void NextLevel()
+    {
+        _currentLevel++;
+
+        if (levelKeys == null || _currentLevel >= levelKeys.Count)
+        {
+            HandleEnding();
+            return;
+        }
+        
+        if (speechPanel != null) UIAnimationManager.Instance.ShowWindow(speechPanel, 0.5f);
+        SetupLevel(_currentLevel);
+    }
+
     private void HandleEnding()
     {
+        if (speechPanel != null) UIAnimationManager.Instance.HideWindow(speechPanel, 0.5f);
         if (missionPanel != null) UIAnimationManager.Instance.HideWindow(missionPanel, 0.5f);
+        if (StartPanel != null) UIAnimationManager.Instance.HideWindow(StartPanel, 0.5f);
         CompleteMission();
     }
 }

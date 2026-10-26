@@ -19,15 +19,8 @@ public class Mazaheri : BaseProfessors
 
     public void HandleEnding()
     {
+        if (bootPanel != null) UIAnimationManager.Instance.HideWindow(bootPanel, 0.5f);
+        if (StartPanel != null) UIAnimationManager.Instance.HideWindow(StartPanel, 0.5f);
         CompleteMission();
-        if (StartPanel != null && StartPanel.transform.parent != null)
-        {
-            RectTransform parent = StartPanel.transform.parent.GetComponent<RectTransform>();
-            if (parent != null)
-            {
-                parent.gameObject.SetActive(false);
-                UIAnimationManager.Instance.HideWindow(parent, 0.5f);
-            }
-        }
     }
 }

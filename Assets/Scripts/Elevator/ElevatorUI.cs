@@ -25,6 +25,49 @@ public class ElevatorUI : MonoBehaviour
         if (playerObj != null) player = playerObj.transform;
         if (messageText != null) messageText.gameObject.SetActive(false);
         musicChange = GetComponent<MusicChange>();
+        UpdateFloorButtonsHighlight();
+    }
+
+    private void OnEnable()
+    {
+        UpdateFloorButtonsHighlight();
+    }
+
+    private void Update()
+    {
+        UpdateFloorButtonsHighlight();
+    }
+
+    public void UpdateFloorButtonsHighlight()
+    {
+        if (floorButtons == null) return;
+        int targetFloor = MinimapIndicator2D.TargetFloorIndex;
+        bool shouldHighlight = MinimapIndicator2D.IsDifferentFloor && targetFloor >= 0 && targetFloor < floorButtons.Length;
+
+        for (int i = 0; i < floorButtons.Length; i++)
+        {
+            if (floorButtons[i] == null) continue;
+            ColorBlock cb = floorButtons[i].colors;
+            Image img = floorButtons[i].GetComponent<Image>();
+
+            if (shouldHighlight && i == targetFloor)
+            {
+                Color blueTint = new Color(0.35f, 0.72f, 1f, 1f);
+                cb.normalColor = blueTint;
+                cb.selectedColor = blueTint;
+                cb.highlightedColor = new Color(0.55f, 0.85f, 1f, 1f);
+                floorButtons[i].colors = cb;
+                if (img != null) img.color = blueTint;
+            }
+            else
+            {
+                cb.normalColor = Color.white;
+                cb.selectedColor = Color.white;
+                cb.highlightedColor = new Color(0.96f, 0.96f, 0.96f, 1f);
+                floorButtons[i].colors = cb;
+                if (img != null) img.color = Color.white;
+            }
+        }
     }
 
     private void OnFloorButtonPressed(int floorIndex)

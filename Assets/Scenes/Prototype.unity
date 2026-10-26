@@ -132541,8 +132541,11 @@ MonoBehaviour:
   playerTransform: {fileID: 1966445465}
   holderRect: {fileID: 1094039618}
   indicatorPrefab: {fileID: 7685794844069604962, guid: 0af1cc1a36a9021428bf4e74d520c6be, type: 3}
+  targetSprite: {fileID: 21300000, guid: 9142ebb1cc92f01f6d77df9bc008a790, type: 3}
+  elevatorSprite: {fileID: 21300000, guid: 681dff78d41e8109deafddf403a7e1ab, type: 3}
+  ringSprite: {fileID: 21300000, guid: c40a5932d8a4cd149aa34f00ac047f6b, type: 3}
   detectionRadius: 20
-  uiRadius: 110
+  uiRadius: 0
 --- !u!224 &699851638
 RectTransform:
   m_ObjectHideFlags: 0
@@ -136376,7 +136379,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 250, y: 250}
+  m_SizeDelta: {x: 270, y: 270}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &960223725
 MonoBehaviour:
@@ -136398,9 +136401,9 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 09fd496cf9945a84b9058a27a289a255, type: 3}
+  m_Sprite: {fileID: 21300000, guid: e639cc51c9b930b094c01c4b8532beac, type: 3}
   m_Type: 0
-  m_PreserveAspect: 0
+  m_PreserveAspect: 1
   m_FillCenter: 1
   m_FillMethod: 4
   m_FillAmount: 1

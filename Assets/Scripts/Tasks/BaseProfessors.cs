@@ -39,6 +39,21 @@ public class BaseProfessors : MonoBehaviour
     {
         FindReferences();
         target = gameObject.GetComponent<Target>();
+        EnsureDialogueSortingOrder(afterWinDialogue);
+        EnsureDialogueSortingOrder(firstWinDialogue);
+        EnsureDialogueSortingOrder(afterFailDialogue);
+        EnsureDialogueSortingOrder(firstFailDialogue);
+    }
+
+    public void EnsureDialogueSortingOrder(RectTransform rect)
+    {
+        if (rect == null) return;
+        Canvas c = rect.GetComponentInParent<Canvas>();
+        if (c != null && c.sortingOrder < 10)
+        {
+            c.overrideSorting = true;
+            c.sortingOrder = 10;
+        }
     }
 
     protected virtual void Start()
@@ -101,6 +116,7 @@ public class BaseProfessors : MonoBehaviour
             {
                 if (afterWinDialogue != null)
                 {
+                    EnsureDialogueSortingOrder(afterWinDialogue);
                     UIAnimationManager.Instance.ShowWindow(afterWinDialogue, 0.25f);
                 }
             }
@@ -215,6 +231,7 @@ public class BaseProfessors : MonoBehaviour
 
         if (firstWinDialogue != null && UIAnimationManager.Instance != null)
         {
+            EnsureDialogueSortingOrder(firstWinDialogue);
             UIAnimationManager.Instance.ShowDialogueWindow(firstWinDialogue, 0.5f, firstWinDialogueFtw);
         }
 
@@ -244,6 +261,7 @@ public class BaseProfessors : MonoBehaviour
 
         if (firstFailDialogue != null && UIAnimationManager.Instance != null)
         {
+            EnsureDialogueSortingOrder(firstFailDialogue);
             UIAnimationManager.Instance.ShowDialogueWindow(firstFailDialogue, 0.5f, firstFailDialogueFtw);
         }
 

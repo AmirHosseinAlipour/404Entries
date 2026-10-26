@@ -48,10 +48,17 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
     void Awake()
     {
         if (_textUI == null) _textUI = GetComponent<Text>();
+        if (GetComponentInParent<Button>() != null && _textUI != null)
+        {
+            _textUI.raycastTarget = false;
+        }
         if (_textUI != null)
         {
-            _rawOriginalText = _textUI.text ?? "";
-            FixAndPrepareText(_rawOriginalText);
+            if (string.IsNullOrEmpty(_rawOriginalText))
+            {
+                _rawOriginalText = _textUI.text ?? "";
+                FixAndPrepareText(_rawOriginalText);
+            }
         }
     }
 
@@ -85,6 +92,10 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
     private void Start()
     {
         if (_textUI == null) _textUI = GetComponent<Text>();
+        if (GetComponentInParent<Button>() != null && _textUI != null)
+        {
+            _textUI.raycastTarget = false;
+        }
 
         if (!typeWriterEffect)
         {
@@ -169,6 +180,10 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
             {
                 _textUI.lineSpacing = 1f;
             }
+            if (GetComponentInParent<Button>() != null)
+            {
+                _textUI.raycastTarget = false;
+            }
         }
 
         ApplyAlignment();
@@ -247,6 +262,7 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
     private void Update()
     {
         if (!allowClickToSkip) return;
+        if (GetComponentInParent<Button>() != null) return;
         if (CompareTag("CurrentTaskButton") || gameObject.name == "CurrentTaskText") return;
         if (Time.frameCount <= _startFrame) return;
         
@@ -273,24 +289,32 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
             {
                 OnClickWhenComplete.Invoke();
             }
-            else
-            {
-                var btn = GetComponentInParent<Button>();
-                if (btn != null && btn.interactable)
-                {
-                    if (btn.CompareTag("CurrentTaskButton") || btn.CompareTag("AllTasksBackButton") ||
-                        btn.GetComponent<TaskUI>() != null || btn.GetComponentInParent<TaskUI>() != null)
-                    {
-                        return;
-                    }
-                    btn.onClick.Invoke();
-                }
-            }
         }
     }
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        Button btn = GetComponentInParent<Button>();
+        if (btn != null)
+        {
+            if (btn.interactable)
+            {
+                ExecuteEvents.ExecuteHierarchy(btn.gameObject, eventData, ExecuteEvents.pointerClickHandler);
+            }
+            return;
+        }
+
+        if (allowClickToSkip)
+        {
+            if (isTyping)
+            {
+                SkipTyping();
+            }
+            else if (isComplete && OnClickWhenComplete != null)
+            {
+                OnClickWhenComplete.Invoke();
+            }
+        }
     }
 
     public void StartTyping()

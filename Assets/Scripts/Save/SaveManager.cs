@@ -207,6 +207,7 @@ public class SaveManager : MonoBehaviour
             }
             TaskManager.Instance.SetImage();
             TaskManager.Instance.NotifyTasksUpdated();
+            TaskManager.Instance.UpdateActiveTarget();
         }
 
         BaseProfessors.IsAnyMinigameActive = false;
