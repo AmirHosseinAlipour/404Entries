@@ -40,6 +40,11 @@ public class PaperManager : MonoBehaviour
     public RectTransform dialogueBox;
     public Text[] texts;
 
+    [Header("Stamp Settings")]
+    public Sprite passStampSprite;
+    public Sprite failStampSprite;
+    public AudioClip stampAudioClip;
+
     private int _currentItemIndex;
     
     private DraggableItem _currentItem;
@@ -109,6 +114,8 @@ public class PaperManager : MonoBehaviour
 
         if (_failedPapers == null) _failedPapers = new List<GameObject>();
         else _failedPapers.Clear();
+
+        ClearAllStamps();
 
         if (counterFtw != null)
         {
@@ -300,10 +307,14 @@ public class PaperManager : MonoBehaviour
 
         if (_currentItem != null)
         {
+            bool isPass = _currentZone != null && _currentZone.isPassSlot;
+            GameObject paperObj = _currentItem.gameObject;
+
             _currentItem.CompleteDrop();
             _counter--;
             
             UpdateDropZone(_currentItem);
+            ApplyStamp(paperObj, isPass);
             StartCoroutine(UpdatePaperStackRoutine(rotationDuration));
             
             _currentItem = null;
@@ -311,6 +322,194 @@ public class PaperManager : MonoBehaviour
 
             UIAnimationManager.Instance.HideWindow(dialogueBox, 0.5f);
         }
+    }
+
+    public void ApplyStamp(GameObject paper, bool isPass)
+    {
+        if (paper == null) return;
+
+        // Clean up any old stamp on this paper
+        Transform existing = paper.transform.Find("PaperStamp");
+        if (existing != null)
+        {
+            Destroy(existing.gameObject);
+        }
+
+        GameObject stampObj = new GameObject("PaperStamp", typeof(RectTransform), typeof(CanvasRenderer), typeof(Image));
+        stampObj.transform.SetParent(paper.transform, false);
+        stampObj.transform.SetAsLastSibling();
+
+        RectTransform rt = stampObj.GetComponent<RectTransform>();
+        rt.anchorMin = new Vector2(0.5f, 0.5f);
+        rt.anchorMax = new Vector2(0.5f, 0.5f);
+        rt.pivot = new Vector2(0.5f, 0.5f);
+
+        // Account for paper's localScale so the stamp has consistent screen-pixel dimensions
+        float scaleX = Mathf.Abs(paper.transform.localScale.x);
+        float scaleY = Mathf.Abs(paper.transform.localScale.y);
+        if (scaleX < 0.001f) scaleX = 1f;
+        if (scaleY < 0.001f) scaleY = 1f;
+        Vector3 targetScale = new Vector3(1f / scaleX, 1f / scaleY, 1f);
+
+        // Stamp size tuned cleanly for the paper aspect ratio
+        rt.sizeDelta = new Vector2(215f, 93f);
+
+        float angle = Random.Range(-11f, -5f);
+        rt.localRotation = Quaternion.Euler(0f, 0f, angle);
+
+        // Paper dimensions & rotated bounds to ensure stamp NEVER spills outside paper edges
+        RectTransform paperRt = paper.GetComponent<RectTransform>();
+        float paperHalfW = (paperRt != null && paperRt.rect.width > 0) ? paperRt.rect.width * 0.5f : 24.5f;
+        float paperHalfH = (paperRt != null && paperRt.rect.height > 0) ? paperRt.rect.height * 0.5f : 32.0f;
+
+        float stampW = rt.sizeDelta.x * targetScale.x;
+        float stampH = rt.sizeDelta.y * targetScale.y;
+
+        float rad = Mathf.Abs(angle) * Mathf.Deg2Rad;
+        float halfRotW = (stampW * Mathf.Cos(rad) + stampH * Mathf.Sin(rad)) * 0.5f;
+        float halfRotH = (stampW * Mathf.Sin(rad) + stampH * Mathf.Cos(rad)) * 0.5f;
+
+        // Safety margins inside the paper borders
+        float marginX = 3.5f;
+        float marginY = 4.0f;
+
+        float maxAllowedX = Mathf.Max(0f, paperHalfW - halfRotW - marginX);
+        float maxAllowedY = paperHalfH - halfRotH - marginY;
+        float minAllowedY = -paperHalfH + halfRotH + marginY;
+
+        // Keep stamp positioned nicely in upper-center area with guaranteed margins
+        float minPreferredY = Mathf.Clamp(3f, minAllowedY, maxAllowedY);
+        float maxPreferredY = Mathf.Clamp(13f, minPreferredY, maxAllowedY);
+
+        float posX = Random.Range(-Mathf.Min(maxAllowedX, 3.5f), Mathf.Min(maxAllowedX, 3.5f));
+        float posY = Random.Range(minPreferredY, maxPreferredY);
+
+        rt.anchoredPosition = new Vector2(posX, posY);
+
+        Image img = stampObj.GetComponent<Image>();
+        img.raycastTarget = false;
+        img.preserveAspect = true;
+
+        Sprite sprite = isPass ? passStampSprite : failStampSprite;
+        if (sprite == null)
+        {
+            sprite = Resources.Load<Sprite>(isPass ? "UI/stamp_pass" : "UI/stamp_fail");
+        }
+
+        if (sprite != null)
+        {
+            img.sprite = sprite;
+            img.color = Color.white;
+        }
+        else
+        {
+            // Fallback color tint
+            img.color = isPass ? new Color(0.1f, 0.65f, 0.25f, 0.95f) : new Color(0.8f, 0.15f, 0.15f, 0.95f);
+        }
+
+        StartCoroutine(AnimateStampRoutine(rt, targetScale, paper.GetComponent<RectTransform>()));
+    }
+
+    private IEnumerator AnimateStampRoutine(RectTransform stampRt, Vector3 targetScale, RectTransform paperRt)
+    {
+        if (stampRt == null) yield break;
+
+        Image img = stampRt.GetComponent<Image>();
+        Color baseColor = img != null ? img.color : Color.white;
+
+        // Phase 1: Slam down from 2.8x scale in 0.12s
+        float slamDuration = 0.12f;
+        float elapsed = 0f;
+        Vector3 startScale = targetScale * 2.8f;
+        Vector3 impactScale = targetScale * 0.92f;
+
+        while (elapsed < slamDuration)
+        {
+            if (stampRt == null) yield break;
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / slamDuration);
+            float easeT = t * t; // Accelerating downward slam
+
+            stampRt.localScale = Vector3.Lerp(startScale, impactScale, easeT);
+            if (img != null)
+            {
+                img.color = new Color(baseColor.r, baseColor.g, baseColor.b, Mathf.Lerp(0.1f, 1f, t));
+            }
+            yield return null;
+        }
+
+        if (stampRt == null) yield break;
+        stampRt.localScale = impactScale;
+        if (img != null) img.color = baseColor;
+
+        PlayStampSound();
+
+        // Phase 2: Impact bounce & settle
+        Vector2 origPaperPos = paperRt != null ? paperRt.anchoredPosition : Vector2.zero;
+        if (paperRt != null)
+        {
+            paperRt.anchoredPosition = origPaperPos + new Vector2(0, -3f);
+        }
+
+        float reboundDuration = 0.08f;
+        elapsed = 0f;
+        while (elapsed < reboundDuration)
+        {
+            if (stampRt == null) yield break;
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / reboundDuration);
+
+            stampRt.localScale = Vector3.Lerp(impactScale, targetScale, t);
+            if (paperRt != null)
+            {
+                paperRt.anchoredPosition = Vector2.Lerp(origPaperPos + new Vector2(0, -3f), origPaperPos, t);
+            }
+            yield return null;
+        }
+
+        if (stampRt != null) stampRt.localScale = targetScale;
+        if (paperRt != null) paperRt.anchoredPosition = origPaperPos;
+    }
+
+    private void PlayStampSound()
+    {
+        try
+        {
+            if (stampAudioClip != null)
+            {
+                AudioSource src = GetComponent<AudioSource>();
+                if (src == null) src = gameObject.AddComponent<AudioSource>();
+                src.PlayOneShot(stampAudioClip);
+                return;
+            }
+
+            if (_soundPlayer != null)
+            {
+                _soundPlayer.Play("Stamp");
+            }
+        }
+        catch {}
+    }
+
+    public void ClearAllStamps()
+    {
+        void RemoveFromList(List<GameObject> list)
+        {
+            if (list == null) return;
+            foreach (var item in list)
+            {
+                if (item == null) continue;
+                Transform stamp = item.transform.Find("PaperStamp");
+                if (stamp != null)
+                {
+                    Destroy(stamp.gameObject);
+                }
+            }
+        }
+
+        RemoveFromList(listOfPapers);
+        RemoveFromList(_passedPapers);
+        RemoveFromList(_failedPapers);
     }
 
     private void UpdateDropZone(DraggableItem currentItem)

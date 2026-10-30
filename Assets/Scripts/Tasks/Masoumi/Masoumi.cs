@@ -291,7 +291,7 @@ public class Masoumi : BaseProfessors
         {
             textLevels.color = Color.white;
             textLevels.alignment = TextAnchor.MiddleCenter;
-            textLevels.fontSize = 28;
+            textLevels.fontSize = 24;
             var ftw = textLevels.GetComponent<FarsiTypewriter>();
             if (ftw != null)
             {
@@ -322,7 +322,7 @@ public class Masoumi : BaseProfessors
                     Text optTxt = itemsOptionsTexts[i];
                     optTxt.color = Color.white;
                     optTxt.alignment = TextAnchor.MiddleCenter;
-                    optTxt.fontSize = 22;
+                    optTxt.fontSize = 18;
                     optTxt.raycastTarget = false;
 
                     var ftw = optTxt.GetComponent<FarsiTypewriter>();
@@ -413,7 +413,7 @@ public class Masoumi : BaseProfessors
         {
             textLevels.color = Color.white;
             textLevels.alignment = TextAnchor.MiddleCenter;
-            textLevels.fontSize = 28;
+            textLevels.fontSize = 24;
 
             Shadow shadow = textLevels.GetComponent<Shadow>();
             if (shadow == null)
@@ -487,7 +487,7 @@ public class Masoumi : BaseProfessors
                 Text optTxt = itemsOptionsTexts[i];
                 optTxt.color = Color.white;
                 optTxt.alignment = TextAnchor.MiddleCenter;
-                optTxt.fontSize = 22;
+                optTxt.fontSize = 18;
                 optTxt.raycastTarget = false;
 
                 Shadow shadow = optTxt.GetComponent<Shadow>();
@@ -542,7 +542,7 @@ public class Masoumi : BaseProfessors
                         {
                             numTexts[t].color = new Color(0.35f, 0.88f, 1f, 1f);
                             numTexts[t].alignment = TextAnchor.MiddleCenter;
-                            numTexts[t].fontSize = 34;
+                            numTexts[t].fontSize = 30;
                             numTexts[t].raycastTarget = false;
 
                             Shadow s = numTexts[t].GetComponent<Shadow>();

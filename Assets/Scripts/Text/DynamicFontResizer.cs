@@ -5,10 +5,10 @@ using UnityEngine.UI;
 public class DynamicFontResizer : MonoBehaviour
 {
     [Tooltip("The smallest font size the text can be.")]
-    public int minFontSize = 10;
+    public int minFontSize = 8;
     
     [Tooltip("The largest font size the text can be.")]
-    public int maxFontSize = 40;
+    public int maxFontSize = 36;
 
     private Text textComponent;
     private RectTransform rectTransform;

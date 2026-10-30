@@ -28,6 +28,7 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
     public bool isComplete { get; private set; }
     
     private int _startFrame = -1;
+    private int _baseFontSize = -1;
     
     private Text _textUI;
     private string _rawOriginalText = "";
@@ -245,6 +246,15 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
 
         if (_textUI != null)
         {
+            if (_baseFontSize <= 0)
+            {
+                _baseFontSize = _textUI.fontSize;
+            }
+            else
+            {
+                _textUI.fontSize = _baseFontSize;
+            }
+
             var dfr = GetComponent<DynamicFontResizer>();
             if (dfr != null)
             {
@@ -255,6 +265,22 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
             else
             {
                 _textUI.horizontalOverflow = HorizontalWrapMode.Wrap;
+
+                // Auto-fit guard: ensure text never spills out of the dialogue box
+                if (_textUI.rectTransform != null && !string.IsNullOrEmpty(_fixedText))
+                {
+                    float containerHeight = _textUI.rectTransform.rect.height;
+                    if (containerHeight > 10f)
+                    {
+                        _textUI.text = _fixedText;
+                        int minLimit = Mathf.Max(10, _baseFontSize - 16);
+                        while (_textUI.preferredHeight > containerHeight && _textUI.fontSize > minLimit)
+                        {
+                            _textUI.fontSize -= 2;
+                        }
+                    }
+                }
+
                 if (!LocalizationManager.IsRTL)
                 {
                     _textUI.resizeTextForBestFit = true;
@@ -414,6 +440,22 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
         isTyping = true;
         isComplete = false;
         _startFrame = Time.frameCount;
+
+        if (_textUI != null && _textUI.rectTransform != null && !string.IsNullOrEmpty(_fixedText))
+        {
+            float containerHeight = _textUI.rectTransform.rect.height;
+            if (containerHeight > 10f)
+            {
+                int baseSz = _baseFontSize > 0 ? _baseFontSize : _textUI.fontSize;
+                _textUI.fontSize = baseSz;
+                _textUI.text = _fixedText;
+                int minLimit = Mathf.Max(10, baseSz - 16);
+                while (_textUI.preferredHeight > containerHeight && _textUI.fontSize > minLimit)
+                {
+                    _textUI.fontSize -= 2;
+                }
+            }
+        }
 
         ApplyAlignment();
         if (_textUI != null) _textUI.text = "";
