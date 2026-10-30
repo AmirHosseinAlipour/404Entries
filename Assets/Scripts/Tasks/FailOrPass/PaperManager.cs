@@ -207,6 +207,38 @@ public class PaperManager : MonoBehaviour
             BaseProfessors.StyleCardPanel(panelImg, cardPanel);
         }
 
+        // Style the question text box (TextPanel) with the sleek blue button theme
+        Transform textPanelTrans = null;
+        if (texts != null && texts.Length > 0 && texts[0] != null)
+        {
+            textPanelTrans = texts[0].transform.parent;
+        }
+        if (textPanelTrans == null && dialogueBox != null)
+        {
+            textPanelTrans = dialogueBox.Find("Accept/TextPanel");
+        }
+
+        if (textPanelTrans != null)
+        {
+            Image textPanelImg = textPanelTrans.GetComponent<Image>();
+            if (textPanelImg != null && btnNormal != null)
+            {
+                textPanelImg.material = null;
+                textPanelImg.sprite = btnNormal;
+                textPanelImg.type = Image.Type.Sliced;
+                textPanelImg.color = Color.white;
+            }
+
+            MonoBehaviour[] monos = textPanelTrans.GetComponents<MonoBehaviour>();
+            for (int m = 0; m < monos.Length; m++)
+            {
+                if (monos[m] != null && monos[m].GetType().Name.Contains("RoundedCorners"))
+                {
+                    monos[m].enabled = false;
+                }
+            }
+        }
+
         Button[] btns = dialogueBox.GetComponentsInChildren<Button>(true);
         for (int i = 0; i < btns.Length; i++)
         {
@@ -290,7 +322,7 @@ public class PaperManager : MonoBehaviour
             }
             else
             {
-                texts[0].text = LocalizationManager.IsRTL ? ArabicFixer.Fix(question, true, true) : question;
+                texts[0].text = LocalizationManager.IsRTL ? FarsiTypewriter.FixRTL(question, texts[0]) : question;
             }
         }
 

@@ -185,7 +185,7 @@ public class ElevatorUI : MonoBehaviour
         if (messageText != null)
         {
             string translated = LocalizationManager.Translate(message);
-            messageText.text = LocalizationManager.IsRTL ? ArabicSupport.ArabicFixer.Fix(translated, true, true) : translated;
+            messageText.text = LocalizationManager.IsRTL ? FarsiTypewriter.FixRTL(translated, messageText) : translated;
             messageText.alignment = LocalizationManager.IsRTL ? TextAnchor.MiddleCenter : TextAnchor.MiddleCenter;
             messageText.gameObject.SetActive(true);
             yield return new WaitForSeconds(1.5f);

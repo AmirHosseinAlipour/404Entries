@@ -10,7 +10,7 @@ public class SpeechTypeWriterShekofteh : MonoBehaviour
 {
     [Header("Typewriter Settings")]
     public bool typeWriterEffect = true;
-    public float typeCharTime = 0.05f;
+    public float typeCharTime = 0.035f;
 
     [Header("Paging")]
     public bool newPageOnBottom = true;

@@ -13,7 +13,7 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
 {
     [Header("Typewriter Settings")]
     public bool typeWriterEffect;
-    public float typeCharTime = 0.05f;
+    public float typeCharTime = 0.035f;
     public bool autoResetText;
     public bool allowClickToSkip = true;
     
@@ -81,6 +81,11 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
 
     void Awake()
     {
+        if (Mathf.Approximately(typeCharTime, 0.05f))
+        {
+            typeCharTime = 0.035f;
+        }
+
         EnsureTextCaptured();
 
         // Only disable raycastTarget on direct button text children, never override typeWriterEffect!
@@ -222,14 +227,21 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
 
         string targetText = LocalizationManager.Translate(rawText);
 
+        if (_textUI != null)
+        {
+            if (_baseFontSize <= 0)
+            {
+                _baseFontSize = _textUI.fontSize;
+            }
+            else
+            {
+                _textUI.fontSize = _baseFontSize;
+            }
+        }
+
         if (LocalizationManager.IsRTL)
         {
-            string[] lines = targetText.Split('\n');
-            for (int i = 0; i < lines.Length; i++)
-            {
-                lines[i] = ArabicFixer.Fix(lines[i], true, true);
-            }
-            _fixedText = string.Join("\n", lines);
+            PrepareRtlFixedText(targetText);
         }
         else
         {
@@ -246,15 +258,6 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
 
         if (_textUI != null)
         {
-            if (_baseFontSize <= 0)
-            {
-                _baseFontSize = _textUI.fontSize;
-            }
-            else
-            {
-                _textUI.fontSize = _baseFontSize;
-            }
-
             var dfr = GetComponent<DynamicFontResizer>();
             if (dfr != null)
             {
@@ -265,21 +268,6 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
             else
             {
                 _textUI.horizontalOverflow = HorizontalWrapMode.Wrap;
-
-                // Auto-fit guard: ensure text never spills out of the dialogue box
-                if (_textUI.rectTransform != null && !string.IsNullOrEmpty(_fixedText))
-                {
-                    float containerHeight = _textUI.rectTransform.rect.height;
-                    if (containerHeight > 10f)
-                    {
-                        _textUI.text = _fixedText;
-                        int minLimit = Mathf.Max(10, _baseFontSize - 16);
-                        while (_textUI.preferredHeight > containerHeight && _textUI.fontSize > minLimit)
-                        {
-                            _textUI.fontSize -= 2;
-                        }
-                    }
-                }
 
                 if (!LocalizationManager.IsRTL)
                 {
@@ -306,6 +294,194 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
         _builder.Clear();
         _counter = 0;
         isComplete = false;
+    }
+
+    private void PrepareRtlFixedText(string targetText)
+    {
+        if (string.IsNullOrEmpty(targetText))
+        {
+            _fixedText = "";
+            return;
+        }
+
+        float containerWidth = GetContainerWidth(_textUI);
+        float containerHeight = _textUI != null && _textUI.rectTransform != null ? _textUI.rectTransform.rect.height : 0f;
+
+        float maxWidth = containerWidth - 14f;
+        int baseSz = _baseFontSize > 0 ? _baseFontSize : (_textUI != null ? _textUI.fontSize : 24);
+        if (_textUI != null) _textUI.fontSize = baseSz;
+        int minLimit = Mathf.Max(10, baseSz - 16);
+
+        while (true)
+        {
+            string[] paragraphs = targetText.Split('\n');
+            List<string> fixedLines = new List<string>();
+
+            foreach (string para in paragraphs)
+            {
+                if (string.IsNullOrWhiteSpace(para))
+                {
+                    fixedLines.Add("");
+                    continue;
+                }
+
+                List<string> wrapped = WrapParagraph(para, maxWidth, _textUI);
+                foreach (string w in wrapped)
+                {
+                    fixedLines.Add(ArabicFixer.Fix(w, true, true));
+                }
+            }
+
+            string candidate = string.Join("\n", fixedLines);
+
+            if (_textUI != null && containerHeight > 10f && _textUI.fontSize > minLimit)
+            {
+                _textUI.text = candidate;
+                if (_textUI.preferredHeight > containerHeight)
+                {
+                    _textUI.fontSize -= 2;
+                    continue;
+                }
+            }
+
+            _fixedText = candidate;
+            break;
+        }
+    }
+
+    public static string FixRTL(string rawText, Text textUI)
+    {
+        if (string.IsNullOrEmpty(rawText)) return "";
+        if (textUI == null) return ArabicFixer.Fix(rawText, true, true);
+
+        float containerWidth = GetContainerWidth(textUI);
+        float maxWidth = containerWidth - 14f;
+        string[] paragraphs = rawText.Split('\n');
+        List<string> finalFixedLines = new List<string>();
+
+        foreach (string para in paragraphs)
+        {
+            if (string.IsNullOrWhiteSpace(para))
+            {
+                finalFixedLines.Add("");
+                continue;
+            }
+
+            List<string> wrapped = WrapParagraph(para, maxWidth, textUI);
+            foreach (string w in wrapped)
+            {
+                finalFixedLines.Add(ArabicFixer.Fix(w, true, true));
+            }
+        }
+
+        return string.Join("\n", finalFixedLines);
+    }
+
+    public static List<string> WrapParagraph(string paragraph, float maxWidth, Text textUI)
+    {
+        List<string> result = new List<string>();
+        if (string.IsNullOrEmpty(paragraph)) return result;
+
+        string[] words = paragraph.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        if (words.Length == 0) return result;
+
+        // Ensure safe margin so Unity UI Text NEVER wraps unexpectedly at runtime
+        float safeMaxWidth = Mathf.Max(50f, maxWidth - 45f);
+
+        // If the entire paragraph fits safely on one line, return it as single line
+        if (MeasureWidth(paragraph, textUI) <= safeMaxWidth)
+        {
+            result.Add(paragraph);
+            return result;
+        }
+
+        StringBuilder currentLine = new StringBuilder();
+
+        for (int i = 0; i < words.Length; i++)
+        {
+            string word = words[i];
+            if (currentLine.Length == 0)
+            {
+                currentLine.Append(word);
+            }
+            else
+            {
+                string candidate = currentLine.ToString() + " " + word;
+                if (MeasureWidth(candidate, textUI) <= safeMaxWidth)
+                {
+                    currentLine.Append(" ").Append(word);
+                }
+                else
+                {
+                    result.Add(currentLine.ToString());
+                    currentLine.Clear();
+                    currentLine.Append(word);
+                }
+            }
+        }
+
+        if (currentLine.Length > 0)
+        {
+            result.Add(currentLine.ToString());
+        }
+
+        return result;
+    }
+
+    public static float MeasureWidth(string rawText, Text textUI)
+    {
+        if (textUI == null || textUI.font == null || string.IsNullOrEmpty(rawText)) return 0f;
+        try
+        {
+            string fixedText = ArabicFixer.Fix(rawText, true, true);
+            TextGenerationSettings settings = textUI.GetGenerationSettings(new Vector2(10000f, 1000f));
+            float ppu = textUI.pixelsPerUnit > 0.001f ? textUI.pixelsPerUnit : 1f;
+            float measured = textUI.cachedTextGeneratorForLayout.GetPreferredWidth(fixedText, settings) / ppu;
+            if (measured > 1f) return measured;
+        }
+        catch
+        {
+        }
+        return rawText.Length * (textUI.fontSize * 0.58f);
+    }
+
+    public static float GetContainerWidth(Text textUI)
+    {
+        if (textUI == null || textUI.rectTransform == null) return 900f;
+
+        // Force canvas layout update if not yet evaluated
+        if (textUI.rectTransform.rect.width <= 1f)
+        {
+            Canvas.ForceUpdateCanvases();
+        }
+
+        float w = textUI.rectTransform.rect.width;
+        if (w > 20f) return w;
+
+        if (textUI.rectTransform.sizeDelta.x > 20f)
+            return textUI.rectTransform.sizeDelta.x;
+
+        // Traverse ancestors to find container width
+        Transform curr = textUI.transform.parent;
+        while (curr != null)
+        {
+            RectTransform prt = curr as RectTransform;
+            if (prt != null)
+            {
+                if (prt.rect.width > 20f)
+                {
+                    float padding = Mathf.Abs(textUI.rectTransform.offsetMin.x) + Mathf.Abs(textUI.rectTransform.offsetMax.x);
+                    return padding > 0f && padding < prt.rect.width * 0.5f ? prt.rect.width - padding : prt.rect.width * 0.9f;
+                }
+                if (prt.sizeDelta.x > 20f)
+                {
+                    return prt.sizeDelta.x * 0.9f;
+                }
+            }
+            curr = curr.parent;
+        }
+
+        return 900f; // Robust fallback for standard dialogue box
     }
 
     private string BalanceTextLines(string text, int targetLineCount)
@@ -441,20 +617,9 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
         isComplete = false;
         _startFrame = Time.frameCount;
 
-        if (_textUI != null && _textUI.rectTransform != null && !string.IsNullOrEmpty(_fixedText))
+        if (LocalizationManager.IsRTL && !string.IsNullOrEmpty(_rawOriginalText))
         {
-            float containerHeight = _textUI.rectTransform.rect.height;
-            if (containerHeight > 10f)
-            {
-                int baseSz = _baseFontSize > 0 ? _baseFontSize : _textUI.fontSize;
-                _textUI.fontSize = baseSz;
-                _textUI.text = _fixedText;
-                int minLimit = Mathf.Max(10, baseSz - 16);
-                while (_textUI.preferredHeight > containerHeight && _textUI.fontSize > minLimit)
-                {
-                    _textUI.fontSize -= 2;
-                }
-            }
+            PrepareRtlFixedText(LocalizationManager.Translate(_rawOriginalText));
         }
 
         ApplyAlignment();

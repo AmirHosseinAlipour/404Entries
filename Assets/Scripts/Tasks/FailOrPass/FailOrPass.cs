@@ -207,7 +207,7 @@ public class FailOrPass : BaseProfessors
         else if (dialogueText != null)
         {
             string localized = LocalizationManager.Get(challengeDialogue, challengeDialogue);
-            dialogueText.text = LocalizationManager.IsRTL ? ArabicFixer.Fix(localized, true, true) : localized;
+            dialogueText.text = LocalizationManager.IsRTL ? FarsiTypewriter.FixRTL(localized, dialogueText) : localized;
         }
 
         SetAcceptButtonsVisible(true);

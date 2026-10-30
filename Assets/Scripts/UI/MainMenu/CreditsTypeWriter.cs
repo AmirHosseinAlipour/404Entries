@@ -11,7 +11,7 @@ public class CreditsTypeWriter : MonoBehaviour
 {
     [Header("Typewriter Settings")]
     public bool typeWriterEffect;
-    public float typeCharTime = 0.05f;
+    public float typeCharTime = 0.035f;
     
     [Header("Alignment Settings")]
     public bool centerAlign;
