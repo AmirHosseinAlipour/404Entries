@@ -78,9 +78,29 @@ public class BaseTasks : MonoBehaviour
                 FarsiTypewriter text = listOfTexts[i].gameObject.GetComponent<FarsiTypewriter>();
                 if (text != null)
                 {
-                    int len = text.len;
                     text.StartTyping();
-                    yield return new WaitForSeconds(text.typeCharTime * len);
+                    while (text.isTyping)
+                    {
+                        if (InputReader.IsAnyClickDown())
+                        {
+                            text.SkipTyping();
+                            break;
+                        }
+                        yield return null;
+                    }
+
+                    yield return null;
+
+                    float autoTimer = 3.5f;
+                    while (autoTimer > 0f)
+                    {
+                        autoTimer -= Time.deltaTime;
+                        if (InputReader.IsAnyClickDown())
+                        {
+                            break;
+                        }
+                        yield return null;
+                    }
                 }
             }
         }

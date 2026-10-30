@@ -11,27 +11,34 @@ public class TouchButton : MonoBehaviour
     [Header("Input")]
     public InputActionReference touchPositionAction;
     public InputActionReference touchPressAction;
+
+    private void Awake()
+    {
+        EnsureReferences();
+    }
     
     private void Start()
     {
-        // Auto-get references if not assigned in Inspector
+        EnsureReferences();
+    }
+
+    private void EnsureReferences()
+    {
         if (_button == null)
             _button = GetComponent<Button>();
             
         if (_buttonRect == null)
             _buttonRect = GetComponent<RectTransform>();
         
-        // If _button is still null, try getting it from the same object
         if (_button == null)
             _button = GetComponentInChildren<Button>();
     }
     
     private void OnEnable()
     {
-        // Safety check - ensure we have required components
+        EnsureReferences();
         if (_button == null || touchPressAction == null || touchPositionAction == null)
         {
-            Debug.LogWarning("Touch_button missing required references!", this);
             return;
         }
         
@@ -62,7 +69,6 @@ public class TouchButton : MonoBehaviour
         if (IsTouchOver_button(touchPosition))
         {
             _button.onClick.Invoke();
-            // Optional: Add visual feedback
             if (_button.animator != null)
                 _button.animator.SetTrigger("Pressed");
         }
@@ -70,7 +76,6 @@ public class TouchButton : MonoBehaviour
     
     private void OnTouchEnded(InputAction.CallbackContext context)
     {
-        // Optional: Reset _button state
     }
     
     private bool IsTouchOver_button(Vector2 screenPosition)

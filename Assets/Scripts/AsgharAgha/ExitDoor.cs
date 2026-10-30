@@ -37,7 +37,14 @@ public class ExitDoor : MonoBehaviour
                 TaskManager.Instance.CompleteCurrentTask();
             }
             if (gameManager != null) gameManager._win = true;
-            if (roomCamera != null) roomCamera.Priority = 0;
+            if (roomCamera != null && roomCamera != AsgharRoomCamera.Instance?.roomCamera)
+            {
+                roomCamera.Priority = 0;
+            }
+            if (AsgharRoomCamera.Instance != null)
+            {
+                AsgharRoomCamera.Instance.ExitRoom();
+            }
             if (musicChange != null)
             {
                 musicChange.ToggleMusic();

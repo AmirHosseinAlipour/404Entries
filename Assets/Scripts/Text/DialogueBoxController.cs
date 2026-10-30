@@ -38,6 +38,18 @@ public class DialogueBoxController : MonoBehaviour
         {
             dialoguePanel.gameObject.SetActive(false);
         }
+
+        if (dialogueText != null)
+        {
+            dialogueText.color = Color.white;
+            Shadow s = dialogueText.GetComponent<Shadow>();
+            if (s == null)
+            {
+                s = dialogueText.gameObject.AddComponent<Shadow>();
+            }
+            s.effectColor = new Color(0f, 0f, 0f, 0.85f);
+            s.effectDistance = new Vector2(1.5f, -1.5f);
+        }
     }
 
     private void OnEnable()

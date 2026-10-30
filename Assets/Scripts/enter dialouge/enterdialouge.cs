@@ -7,14 +7,16 @@ public class enterdialouge : MonoBehaviour
     public FarsiTypewriter dialougeFtw;
     private void OnTriggerEnter2D(Collider2D other)
     {
+        if (GetComponent<DialogueSequenceTrigger>() != null) return;
         if (other.CompareTag("Player"))
         {
-            UIAnimationManager.Instance.ShowDialogueWindow(dialouge, 0.5f,dialougeFtw);
+            UIAnimationManager.Instance.ShowDialogueWindow(dialouge, 0.5f, dialougeFtw);
         }
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
+        if (GetComponent<DialogueSequenceTrigger>() != null) return;
         if (other.CompareTag("Player"))
         {
             UIAnimationManager.Instance.HideWindow(dialouge, 0.5f);

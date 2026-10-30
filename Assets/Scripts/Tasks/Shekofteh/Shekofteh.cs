@@ -7,6 +7,8 @@ using UnityEngine.Video;
 
 public class Shekofteh : BaseProfessors
 {
+    public override ProfessorUIType UIType => ProfessorUIType.ScreenSpaceUI;
+
     [Header("Character")]
     public RectTransform UICharacterRectTransform;
     public float UICharacterMoveSpeed = 800f;
@@ -73,6 +75,26 @@ public class Shekofteh : BaseProfessors
             SkipButton.OnLevelGoalReached += HandleLevelGoalReached;
             SkipButton.OnMissionComplete += HandleEnding;
         }
+
+        HideMinigameUI();
+    }
+
+    public override void HideMinigameUI()
+    {
+        base.HideMinigameUI();
+        if (counter != null) counter.SetActive(false);
+        if (textPanel != null)
+        {
+            if (textPanel.transform.parent != null) textPanel.transform.parent.gameObject.SetActive(false);
+            textPanel.SetActive(false);
+        }
+        if (SkipButton != null) SkipButton.gameObject.SetActive(false);
+        if (buttonBackground != null) buttonBackground.gameObject.SetActive(false);
+    }
+
+    public override void AcceptChallenge()
+    {
+        StartMission();
     }
 
     private void OnDestroy()
@@ -353,6 +375,23 @@ public class Shekofteh : BaseProfessors
         HandleLoose();
     }
     
+    public override void ApplyModernVisualStyles()
+    {
+        base.ApplyModernVisualStyles();
+
+        Sprite cardPanel = Resources.Load<Sprite>("UI/dialogue_card_panel");
+        if (textPanel != null && cardPanel != null)
+        {
+            Image panelImg = textPanel.GetComponent<Image>();
+            if (panelImg != null)
+            {
+                panelImg.sprite = cardPanel;
+                panelImg.type = Image.Type.Sliced;
+                panelImg.color = Color.white;
+            }
+        }
+    }
+
     private void HandleLoose()
     {
         if (StartPanel != null) UIAnimationManager.Instance.HideWindow(StartPanel, 0.5f);

@@ -38,7 +38,12 @@ public class MinigameTransitionController : MonoBehaviour
 
     private void FindHUDReferences()
     {
-        if (_miniMap == null) _miniMap = GameObject.FindWithTag("MiniMap");
+        if (_miniMap == null)
+        {
+            _miniMap = GameObject.Find("MiniMapCanvas");
+            if (_miniMap == null) _miniMap = GameObject.Find("MiniMap_Canvas");
+            if (_miniMap == null) _miniMap = GameObject.Find("MiniMap");
+        }
         if (_joystick == null) _joystick = GameObject.FindWithTag("JoyStick");
     }
 

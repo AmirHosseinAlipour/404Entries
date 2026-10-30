@@ -79,7 +79,7 @@ public class GameManager : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            if (currentTaskIndex >= 0 && currentTaskIndex % 2 == 0)
+            if (currentTaskIndex >= 0 && currentTaskIndex % 2 == 0 && currentTaskIndex < 16)
             {
                 if (TaskManager.Instance != null)
                 {

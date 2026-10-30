@@ -330,6 +330,7 @@ public class LocalizationManager : MonoBehaviour
         Add("ای بابا یکی دیگه؟ تو نفر ۶۵امی هستی که امروز اومدی. چرا اینقدر شما حواس پرتین؟", "Oh great, another one? You're the 65th student to show up today! Why are freshmen so absent-minded?");
         Add("آره، آره تو راست میگی. آموزش مدرکتو گم کرده مگه نه؟", "Yeah, yeah, sure you did. Education 'lost' your documents again, right?");
         Add("ولی آموش مدرک منو..", "But Education really did--");
+        Add("ولی آموزش مدرک منو..", "But Education really did--");
         Add("ببین من سرم خیلی شلوغه، تو بیا جای من برگه بچه ها‌ رو تصحیح کن تا مدارکتو پیدا کنم", "Look, I'm completely swamped. Take over grading these student exam papers for me while I dig through the files for your documents.");
         Add("باوشه ولی چطوری تصحیح کنم؟ من که اصلا چیزی بلد نیستم", "Okay, but how do I grade them? I don't know the first thing about grading CS exams!");
         Add("هرطور دلت خواست اصلا خواستی تاس بریز نمره بده", "Grade however you like—roll a die if you have to, just get through them!");
@@ -337,6 +338,7 @@ public class LocalizationManager : MonoBehaviour
         Add("سوال نپرس تصحیح کن! فقط بعد از تصحیح برگه ها رو درست دسته بندی کن", "Quit asking philosophical questions and start grading! Just make sure you categorize the papers correctly into High, Medium, and Low.");
         Add("بابا به خدا..", "Oh, come on...");
         Add("خب آماده ای برگه ها رو تصحیح کنی؟", "So, are you ready to grade these exam papers?");
+        Add("از این تصمیم مطمئنی؟", "Are you sure about this decision?");
         Add("خب اینم از مدرک هات راستی یه 2 تا نامه دیدم دستت اونا چی بودن؟", "Alright, here are your signed certificates. By the way, I saw two letters in your hand—what were those?");
         Add("خب اینم از مدرک هات راستی یه ۲ تا نامه دیدم دستت اونا چی بودن؟", "Alright, here are your signed certificates. By the way, I saw two letters in your hand—what were those?");
         Add("چیز خاصی نبودن… خودتون بعدا میفهمین.... فعلا!!!", "Nothing important... you'll find out in due time. Catch you later!");

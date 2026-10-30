@@ -308,7 +308,17 @@ public class DynamicFloatingJoystick : MonoBehaviour
 
         if (_isDragging)
         {
-            if (Mouse.current != null && !Mouse.current.leftButton.isPressed && UnityEngine.InputSystem.EnhancedTouch.Touch.activeTouches.Count == 0)
+            bool hasPointer = false;
+            if (Mouse.current != null && Mouse.current.leftButton.isPressed)
+                hasPointer = true;
+            else if (Input.GetMouseButton(0))
+                hasPointer = true;
+            else if (Input.touchCount > 0)
+                hasPointer = true;
+            else if (Touchscreen.current != null && Touchscreen.current.primaryTouch.press.isPressed)
+                hasPointer = true;
+
+            if (!hasPointer)
             {
                 ResetJoystick();
                 return;

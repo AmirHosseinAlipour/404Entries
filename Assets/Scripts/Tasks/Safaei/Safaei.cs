@@ -1,7 +1,54 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System.Collections;
 using TMPro;
+using DG.Tweening;
+
+public class OptionButtonHover : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
+{
+    private Vector3 originalScale = Vector3.one;
+    private Button button;
+
+    private void Awake()
+    {
+        originalScale = transform.localScale;
+        button = GetComponent<Button>();
+    }
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if (button != null && (!button.interactable || !button.enabled)) return;
+        transform.DOKill();
+        transform.DOScale(originalScale * 1.05f, 0.15f).SetUpdate(true);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        transform.DOKill();
+        transform.DOScale(originalScale, 0.15f).SetUpdate(true);
+    }
+
+    public void OnPointerDown(PointerEventData eventData)
+    {
+        if (button != null && (!button.interactable || !button.enabled)) return;
+        transform.DOKill();
+        transform.DOScale(originalScale * 0.95f, 0.1f).SetUpdate(true);
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (button != null && (!button.interactable || !button.enabled)) return;
+        transform.DOKill();
+        transform.DOScale(originalScale * 1.05f, 0.1f).SetUpdate(true);
+    }
+
+    private void OnDisable()
+    {
+        transform.DOKill();
+        transform.localScale = originalScale;
+    }
+}
 
 [System.Serializable]
 public class PhaseOptions
@@ -12,6 +59,8 @@ public class PhaseOptions
 
 public class Safaei : BaseProfessors
 {
+    public override ProfessorUIType UIType => ProfessorUIType.ScreenSpaceUI;
+
     public Text dialogueText;
     public RectTransform textPanel;
     public Button[] optionButtons;
@@ -29,34 +78,27 @@ public class Safaei : BaseProfessors
     {
         base.Start();
         musicChange = GetComponent<MusicChange>();
-        if (ButtonCanvas != null)
-        {
-            ButtonCanvas.gameObject.SetActive(false);
-        }
-        if (textPanel != null)
-        {
-            textPanel.gameObject.SetActive(false);
-        }
+        HideMinigameUI();
+        ApplyModernVisualStyles();
+    }
+
+    public override void HideMinigameUI()
+    {
+        base.HideMinigameUI();
+        if (ButtonCanvas != null) ButtonCanvas.gameObject.SetActive(false);
+        if (textPanel != null) textPanel.gameObject.SetActive(false);
         SetOptionButtonsInteractable(false);
+    }
+
+    public override void AcceptChallenge()
+    {
+        StartGame();
     }
 
     protected override void OnTriggerEnter2D(Collider2D other)
     {
         if (other.gameObject.CompareTag("Player") && !isMinigameActive && !IsAnyMinigameActive)
         {
-            if (acceptRect != null)
-            {
-                acceptRect.gameObject.SetActive(true);
-                UIUtils.SetAlpha(acceptRect.gameObject, 1f);
-            }
-            if (textPanel != null)
-            {
-                textPanel.gameObject.SetActive(false);
-            }
-            if (ButtonCanvas != null)
-            {
-                ButtonCanvas.gameObject.SetActive(false);
-            }
             currentPhase = 0;
             isProcessingAnswer = false;
         }
@@ -161,6 +203,8 @@ public class Safaei : BaseProfessors
 
     private void ShowOptions()
     {
+        ApplyModernVisualStyles();
+
         if (ButtonCanvas != null)
         {
             var panelImg = ButtonCanvas.GetComponent<Image>();
@@ -168,12 +212,18 @@ public class Safaei : BaseProfessors
             {
                 panelImg.raycastTarget = false;
             }
-            UIAnimationManager.Instance.ShowWindow(ButtonCanvas, 0.3f);
+            UIAnimationManager.Instance.ShowWindow(ButtonCanvas, 0.25f);
             var cg = ButtonCanvas.GetComponent<CanvasGroup>();
             if (cg != null)
             {
                 cg.blocksRaycasts = true;
                 cg.interactable = true;
+                cg.alpha = 1f;
+            }
+
+            if (optionButtons == null || optionButtons.Length == 0 || optionButtons[0] == null)
+            {
+                optionButtons = ButtonCanvas.GetComponentsInChildren<Button>(true);
             }
         }
 
@@ -186,20 +236,26 @@ public class Safaei : BaseProfessors
                 {
                     if (optionButtons[i] == null) continue;
                     int index = i;
-                    optionButtons[i].onClick.RemoveAllListeners();
-                    optionButtons[i].onClick.AddListener(() => OnOptionSelected(index));
-                    optionButtons[i].interactable = true;
+                    Button btn = optionButtons[i];
 
-                    var btnGraphic = optionButtons[i].targetGraphic != null ? optionButtons[i].targetGraphic : optionButtons[i].GetComponent<Graphic>();
-                    if (btnGraphic != null)
+                    btn.gameObject.SetActive(true);
+                    btn.enabled = true;
+                    btn.interactable = true;
+
+                    Image img = btn.GetComponent<Image>();
+                    if (img != null)
                     {
-                        btnGraphic.raycastTarget = true;
+                        img.enabled = true;
+                        img.raycastTarget = true;
                     }
 
-                    Graphic[] childGraphics = optionButtons[i].GetComponentsInChildren<Graphic>(true);
+                    btn.onClick.RemoveAllListeners();
+                    btn.onClick.AddListener(() => OnOptionSelected(index));
+
+                    Graphic[] childGraphics = btn.GetComponentsInChildren<Graphic>(true);
                     for (int g = 0; g < childGraphics.Length; g++)
                     {
-                        if (childGraphics[g] != null && childGraphics[g].gameObject != optionButtons[i].gameObject)
+                        if (childGraphics[g] != null && childGraphics[g].gameObject != btn.gameObject)
                         {
                             childGraphics[g].raycastTarget = false;
                         }
@@ -208,7 +264,7 @@ public class Safaei : BaseProfessors
                     if (i < currentOpts.Length)
                     {
                         string optText = currentOpts[i];
-                        var ftw = optionButtons[i].GetComponentInChildren<FarsiTypewriter>(true);
+                        var ftw = btn.GetComponentInChildren<FarsiTypewriter>(true);
                         if (ftw != null)
                         {
                             ftw.allowClickToSkip = false;
@@ -217,14 +273,14 @@ public class Safaei : BaseProfessors
                         }
                         else
                         {
-                            var txt = optionButtons[i].GetComponentInChildren<Text>(true);
+                            var txt = btn.GetComponentInChildren<Text>(true);
                             if (txt != null)
                             {
                                 txt.text = optText;
                             }
                         }
 
-                        var dfr = optionButtons[i].GetComponentInChildren<DynamicFontResizer>(true);
+                        var dfr = btn.GetComponentInChildren<DynamicFontResizer>(true);
                         if (dfr != null)
                         {
                             dfr.AdjustFontSize();
@@ -344,6 +400,147 @@ public class Safaei : BaseProfessors
         }
 
         CompleteMission();
+    }
+
+    public override void ApplyModernVisualStyles()
+    {
+        base.ApplyModernVisualStyles();
+
+        Sprite cardPanel = Resources.Load<Sprite>("UI/dialogue_card_panel");
+        Sprite btnNormal = Resources.Load<Sprite>("UI/dialogue_button_normal");
+        Sprite btnHover = Resources.Load<Sprite>("UI/dialogue_button_hover");
+        Sprite btnPressed = Resources.Load<Sprite>("UI/dialogue_button_pressed");
+
+        if (textPanel != null && cardPanel != null)
+        {
+            Image panelImg = textPanel.GetComponent<Image>();
+            if (panelImg != null)
+            {
+                panelImg.sprite = cardPanel;
+                panelImg.type = Image.Type.Sliced;
+                panelImg.color = Color.white;
+            }
+        }
+
+        if (dialogueText != null)
+        {
+            dialogueText.color = Color.white;
+            Shadow shadow = dialogueText.GetComponent<Shadow>();
+            if (shadow == null)
+            {
+                shadow = dialogueText.gameObject.AddComponent<Shadow>();
+            }
+            shadow.effectColor = new Color(0f, 0f, 0f, 0.85f);
+            shadow.effectDistance = new Vector2(1.5f, -1.5f);
+        }
+
+        if (ButtonCanvas != null)
+        {
+            var panelImg = ButtonCanvas.GetComponent<Image>();
+            if (panelImg != null)
+            {
+                panelImg.raycastTarget = false;
+            }
+
+            if (optionButtons == null || optionButtons.Length == 0 || optionButtons[0] == null)
+            {
+                optionButtons = ButtonCanvas.GetComponentsInChildren<Button>(true);
+            }
+        }
+
+        if (optionButtons != null)
+        {
+            for (int i = 0; i < optionButtons.Length; i++)
+            {
+                if (optionButtons[i] == null) continue;
+                Button btn = optionButtons[i];
+                btn.gameObject.SetActive(true);
+                btn.enabled = true;
+                btn.interactable = true;
+
+                Image img = btn.GetComponent<Image>();
+                if (img == null)
+                {
+                    img = btn.gameObject.AddComponent<Image>();
+                }
+                img.enabled = true;
+                img.raycastTarget = true;
+                img.material = null;
+                img.color = Color.white;
+                if (btnNormal != null)
+                {
+                    img.sprite = btnNormal;
+                    img.type = Image.Type.Sliced;
+                }
+
+                MonoBehaviour[] monos = btn.GetComponents<MonoBehaviour>();
+                for (int m = 0; m < monos.Length; m++)
+                {
+                    if (monos[m] != null && monos[m].GetType().Name.Contains("RoundedCorners"))
+                    {
+                        monos[m].enabled = false;
+                    }
+                }
+
+                btn.targetGraphic = img;
+
+                if (btnHover != null && btnPressed != null)
+                {
+                    btn.transition = Selectable.Transition.SpriteSwap;
+                    SpriteState ss = btn.spriteState;
+                    ss.highlightedSprite = btnHover;
+                    ss.pressedSprite = btnPressed;
+                    ss.selectedSprite = btnHover;
+                    ss.disabledSprite = btnNormal != null ? btnNormal : (img != null ? img.sprite : null);
+                    btn.spriteState = ss;
+                }
+                else
+                {
+                    btn.transition = Selectable.Transition.ColorTint;
+                    ColorBlock cb = btn.colors;
+                    cb.normalColor = Color.white;
+                    cb.highlightedColor = new Color(0.85f, 0.95f, 1f, 1f);
+                    cb.pressedColor = new Color(0.7f, 0.85f, 1f, 1f);
+                    cb.selectedColor = cb.highlightedColor;
+                    btn.colors = cb;
+                }
+
+                OptionButtonHover hover = btn.GetComponent<OptionButtonHover>();
+                if (hover == null)
+                {
+                    hover = btn.gameObject.AddComponent<OptionButtonHover>();
+                }
+
+                Graphic[] childGraphics = btn.GetComponentsInChildren<Graphic>(true);
+                for (int g = 0; g < childGraphics.Length; g++)
+                {
+                    if (childGraphics[g] != null && childGraphics[g].gameObject != btn.gameObject)
+                    {
+                        childGraphics[g].raycastTarget = false;
+                    }
+                }
+
+                Text btnTxt = btn.GetComponentInChildren<Text>(true);
+                if (btnTxt != null)
+                {
+                    btnTxt.color = Color.white;
+                    Shadow shadow = btnTxt.GetComponent<Shadow>();
+                    if (shadow == null)
+                    {
+                        shadow = btnTxt.gameObject.AddComponent<Shadow>();
+                    }
+                    shadow.effectColor = new Color(0f, 0f, 0f, 0.9f);
+                    shadow.effectDistance = new Vector2(1.2f, -1.2f);
+                }
+
+                var dfr = btn.GetComponentInChildren<DynamicFontResizer>(true);
+                if (dfr != null)
+                {
+                    dfr.minFontSize = 18;
+                    dfr.maxFontSize = 26;
+                }
+            }
+        }
     }
 
     private void OnDestroy()

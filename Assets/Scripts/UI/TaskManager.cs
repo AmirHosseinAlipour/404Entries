@@ -241,6 +241,11 @@ public class TaskManager : MonoBehaviour
 
     public void HandleEnding()
     {
+        if (screenFaderEnd == null)
+        {
+            screenFaderEnd = FindAnyObjectByType<ScreenFaderEnd>(FindObjectsInactive.Include);
+        }
+
         if (screenFaderEnd != null)
         {
             screenFaderEnd.gameObject.SetActive(true);

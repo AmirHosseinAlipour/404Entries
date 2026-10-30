@@ -25,11 +25,13 @@ public class ElevatorUI : MonoBehaviour
         if (playerObj != null) player = playerObj.transform;
         if (messageText != null) messageText.gameObject.SetActive(false);
         musicChange = GetComponent<MusicChange>();
+        SyncCurrentFloorWithPlayerPosition();
         UpdateFloorButtonsHighlight();
     }
 
     private void OnEnable()
     {
+        SyncCurrentFloorWithPlayerPosition();
         UpdateFloorButtonsHighlight();
     }
 
@@ -38,11 +40,28 @@ public class ElevatorUI : MonoBehaviour
         UpdateFloorButtonsHighlight();
     }
 
+    public void SyncCurrentFloorWithPlayerPosition()
+    {
+        if (player == null)
+        {
+            GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+            if (playerObj != null) player = playerObj.transform;
+        }
+        if (player != null)
+        {
+            currentFloor = MinimapIndicator2D.GetFloorIndex(player.position);
+            if (AnotherInstace != null)
+            {
+                AnotherInstace.currentFloor = currentFloor;
+            }
+        }
+    }
+
     public void UpdateFloorButtonsHighlight()
     {
         if (floorButtons == null) return;
         int targetFloor = MinimapIndicator2D.TargetFloorIndex;
-        bool shouldHighlight = MinimapIndicator2D.IsDifferentFloor && targetFloor >= 0 && targetFloor < floorButtons.Length;
+        bool shouldHighlight = (targetFloor >= 0 && targetFloor < floorButtons.Length && targetFloor != currentFloor);
 
         for (int i = 0; i < floorButtons.Length; i++)
         {
@@ -52,18 +71,20 @@ public class ElevatorUI : MonoBehaviour
 
             if (shouldHighlight && i == targetFloor)
             {
-                Color blueTint = new Color(0.35f, 0.72f, 1f, 1f);
-                cb.normalColor = blueTint;
-                cb.selectedColor = blueTint;
-                cb.highlightedColor = new Color(0.55f, 0.85f, 1f, 1f);
+                Color paleTurquoise = new Color(0.55f, 0.92f, 0.90f, 1f);
+                cb.normalColor = paleTurquoise;
+                cb.selectedColor = paleTurquoise;
+                cb.highlightedColor = new Color(0.70f, 0.97f, 0.95f, 1f);
+                cb.pressedColor = new Color(0.40f, 0.82f, 0.80f, 1f);
                 floorButtons[i].colors = cb;
-                if (img != null) img.color = blueTint;
+                if (img != null) img.color = paleTurquoise;
             }
             else
             {
                 cb.normalColor = Color.white;
                 cb.selectedColor = Color.white;
                 cb.highlightedColor = new Color(0.96f, 0.96f, 0.96f, 1f);
+                cb.pressedColor = new Color(0.78f, 0.78f, 0.78f, 1f);
                 floorButtons[i].colors = cb;
                 if (img != null) img.color = Color.white;
             }
@@ -72,13 +93,6 @@ public class ElevatorUI : MonoBehaviour
 
     private void OnFloorButtonPressed(int floorIndex)
     {
-        if (floorIndex == currentFloor)
-        {
-            StopCoroutine("ShowMessageRoutine");
-            StartCoroutine(ShowMessageRoutine("شما در همین طبقه هستید!"));
-            return;
-        }
-
         UIAnimationManager.Instance.StartCoroutine(MoveToFloor(floorIndex));
     }
 
@@ -99,6 +113,36 @@ public class ElevatorUI : MonoBehaviour
             p.SetIdleDirection(new Vector2(0, -1));
         }
 
+        // If player pressed the floor they are already on, exit immediately on that floor
+        if (floorIndex == currentFloor)
+        {
+            if (buttonsPanel != null)
+                buttonsPanel.gameObject.SetActive(false);
+            
+            RectTransform myRect = gameObject.GetComponent<RectTransform>();
+            if (myRect != null)
+                myRect.gameObject.SetActive(false);
+
+            if (musicChange != null)
+                musicChange.ToggleMusic();
+
+            if (player != null && floorPositions[floorIndex] != null)
+            {
+                player.position = floorPositions[floorIndex].transform.position;
+            }
+
+            yield return new WaitForSeconds(0.15f);
+
+            if (doorAnimation != null)
+                doorAnimation.OpenDoors();
+
+            if (musicChange != null)
+                musicChange.PlayMainMusic();
+
+            PlayerUIModeHelper.PlayerExitUIMode();
+            yield break;
+        }
+
         if (doorAnimation != null)
             doorAnimation.CloseDoors();
 
@@ -107,9 +151,9 @@ public class ElevatorUI : MonoBehaviour
         if (buttonsPanel != null)
             buttonsPanel.gameObject.SetActive(false);
         
-        RectTransform myRect = gameObject.GetComponent<RectTransform>();
-        if (myRect != null)
-            myRect.gameObject.SetActive(false);
+        RectTransform myRectTransit = gameObject.GetComponent<RectTransform>();
+        if (myRectTransit != null)
+            myRectTransit.gameObject.SetActive(false);
 
         if (musicChange != null)
             musicChange.ToggleMusic();

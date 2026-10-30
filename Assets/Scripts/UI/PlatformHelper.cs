@@ -9,14 +9,12 @@ public static class PlatformHelper
 
     public static bool IsMobile()
     {
-        if (!forceShowMobileControls) return false;
-
-#if UNITY_EDITOR
-        return forceShowMobileControls;
-#elif UNITY_ANDROID || UNITY_IOS
+#if UNITY_ANDROID || UNITY_IOS
         return true;
 #else
-        return Application.isMobilePlatform || SystemInfo.deviceType == DeviceType.Handheld;
+        if (Application.isMobilePlatform || SystemInfo.deviceType == DeviceType.Handheld)
+            return true;
+        return forceShowMobileControls;
 #endif
     }
 

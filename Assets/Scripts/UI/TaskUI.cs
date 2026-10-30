@@ -174,9 +174,12 @@ public class TaskUI : MonoBehaviour
 
             if (_currentTaskFtw != null)
             {
+                _currentTaskFtw.allowClickToSkip = false;
+                _currentTaskFtw.typeWriterEffect = false;
                 _currentTaskFtw.SetText(taskName);
+                _currentTaskFtw.SkipTyping();
             }
-            else
+            if (currentTaskText != null)
             {
                 currentTaskText.text = LocalizationManager.IsRTL ? ArabicFixer.Fix(translated, true, true) : translated;
             }
@@ -201,9 +204,21 @@ public class TaskUI : MonoBehaviour
                 if (allTaskTexts[i] == null) continue;
                 if (i < tm.taskNames.Length)
                 {
-                    string translated = LocalizationManager.Translate(tm.taskNames[i]);
-                    string fixedText = LocalizationManager.IsRTL ? ArabicFixer.Fix(translated) : translated;
-                    allTaskTexts[i].text = fixedText;
+                    string rawTaskName = tm.taskNames[i];
+                    var ftw = allTaskTexts[i].GetComponent<FarsiTypewriter>();
+                    if (ftw != null)
+                    {
+                        ftw.allowClickToSkip = false;
+                        ftw.typeWriterEffect = false;
+                        ftw.SetText(rawTaskName);
+                        ftw.SkipTyping();
+                    }
+                    else
+                    {
+                        string translated = LocalizationManager.Translate(rawTaskName);
+                        string fixedText = LocalizationManager.IsRTL ? ArabicFixer.Fix(translated, true, true) : translated;
+                        allTaskTexts[i].text = fixedText;
+                    }
                     allTaskTexts[i].alignment = LocalizationManager.IsRTL ? TextAnchor.MiddleRight : TextAnchor.MiddleLeft;
                     if (allTaskImages != null && i < allTaskImages.Length && allTaskImages[i] != null)
                     {
@@ -225,9 +240,21 @@ public class TaskUI : MonoBehaviour
                 }
                 if (missionTaskIndex < tm.taskNames.Length)
                 {
-                    string translated = LocalizationManager.Translate(tm.taskNames[missionTaskIndex]);
-                    string fixedText = LocalizationManager.IsRTL ? ArabicFixer.Fix(translated) : translated;
-                    allTaskTexts[i].text = fixedText;
+                    string rawTaskName = tm.taskNames[missionTaskIndex];
+                    var ftw = allTaskTexts[i].GetComponent<FarsiTypewriter>();
+                    if (ftw != null)
+                    {
+                        ftw.allowClickToSkip = false;
+                        ftw.typeWriterEffect = false;
+                        ftw.SetText(rawTaskName);
+                        ftw.SkipTyping();
+                    }
+                    else
+                    {
+                        string translated = LocalizationManager.Translate(rawTaskName);
+                        string fixedText = LocalizationManager.IsRTL ? ArabicFixer.Fix(translated, true, true) : translated;
+                        allTaskTexts[i].text = fixedText;
+                    }
                     allTaskTexts[i].alignment = LocalizationManager.IsRTL ? TextAnchor.MiddleRight : TextAnchor.MiddleLeft;
                     if (allTaskImages != null && i < allTaskImages.Length && allTaskImages[i] != null)
                     {
@@ -251,6 +278,7 @@ public class TaskUI : MonoBehaviour
             UIAnimationManager.Instance.HideWindow(allRect, 0.5f);
             RectTransform currRect = currentTaskPanel.GetComponent<RectTransform>();
             UIAnimationManager.Instance.ShowWindow(currRect, 0.5f);
+            UpdateUI();
         }
         else
         {

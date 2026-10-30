@@ -21,40 +21,47 @@ public class UIAnimationManager : MonoBehaviour
     public void ShowWindow(RectTransform window, float duration = 0.25f)
     {
         if (window == null) return;
+
+        CanvasGroup cg = GetOrAddCanvasGroup(window);
+        cg.DOKill();
+        cg.alpha = 0f;
     
         window.gameObject.SetActive(true);
         window.localScale = Vector3.one;
         window.DOKill();
 
         float fadeDuration = Mathf.Min(duration, 0.25f);
-        CanvasGroup cg = GetOrAddCanvasGroup(window);
-        cg.DOKill();
-        cg.alpha = 0f;
         cg.DOFade(1f, fadeDuration).SetEase(Ease.Linear).SetUpdate(true);
     }
     
-    public void ShowDialogueWindow(RectTransform window, float duration, FarsiTypewriter fw)
+    public void ShowDialogueWindow(RectTransform window, float duration, FarsiTypewriter fw = null)
     {
         if (window == null) return;
+
+        CanvasGroup cg = GetOrAddCanvasGroup(window);
+        cg.DOKill();
+        cg.alpha = 0f;
 
         window.gameObject.SetActive(true);
         window.localScale = Vector3.one;
         window.DOKill();
 
-        float fadeDuration = Mathf.Min(duration, 0.2f);
-        CanvasGroup cg = GetOrAddCanvasGroup(window);
-        cg.DOKill();
-        cg.alpha = 0f;
-        cg.DOFade(1f, fadeDuration).SetEase(Ease.Linear).SetUpdate(true).OnComplete(() =>
+        FarsiTypewriter targetFw = fw;
+        if (targetFw == null)
         {
-            if (fw != null)
-            {
-                if (!fw.gameObject.activeInHierarchy)
-                    fw.gameObject.SetActive(true);
-                
-                fw.StartTyping();
-            }
-        });
+            targetFw = window.GetComponentInChildren<FarsiTypewriter>(true);
+        }
+
+        if (targetFw != null)
+        {
+            if (!targetFw.gameObject.activeInHierarchy)
+                targetFw.gameObject.SetActive(true);
+            
+            targetFw.StartTyping();
+        }
+
+        float fadeDuration = Mathf.Min(duration, 0.2f);
+        cg.DOFade(1f, fadeDuration).SetEase(Ease.Linear).SetUpdate(true);
     }
     
     public void HideWindow(RectTransform window, float duration = 0.2f)

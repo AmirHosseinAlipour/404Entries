@@ -92,11 +92,36 @@ public class SwitchWindow : MonoBehaviour
         }
     }
 
+    private float _lastSkipTime = -1f;
+
+    private FarsiTypewriter GetCurrentTypewriter()
+    {
+        if (windowToHide != null)
+        {
+            FarsiTypewriter ftw = windowToHide.GetComponentInChildren<FarsiTypewriter>(true);
+            if (ftw != null) return ftw;
+        }
+        return GetComponentInChildren<FarsiTypewriter>(true);
+    }
+
     public void DialogueToggle()
     {
+        FarsiTypewriter currentFtw = GetCurrentTypewriter();
+        if (currentFtw != null && currentFtw.isTyping)
+        {
+            currentFtw.SkipTyping();
+            _lastSkipTime = Time.time;
+            return;
+        }
+
+        if (Time.time - _lastSkipTime < 0.15f)
+        {
+            return;
+        }
+
         HideWindow();
         
-        if (dialogueWindowToShow != null && dialogueTypeWriter != null)
+        if (dialogueWindowToShow != null)
         {
             UIAnimationManager.Instance.ShowDialogueWindow(dialogueWindowToShow, 0.5f, dialogueTypeWriter);
         }
@@ -125,8 +150,45 @@ public class SwitchWindow : MonoBehaviour
     public int currentDialogueIndex = 0;
     public Amozesh amozesh;
 
+    private void Update()
+    {
+        if (windowToHide == null || !windowToHide.gameObject.activeInHierarchy) return;
+
+        bool advance = false;
+        if (UnityEngine.InputSystem.Keyboard.current != null)
+        {
+            if (UnityEngine.InputSystem.Keyboard.current.spaceKey.wasPressedThisFrame ||
+                UnityEngine.InputSystem.Keyboard.current.enterKey.wasPressedThisFrame)
+            {
+                advance = true;
+            }
+        }
+        if (!advance && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)))
+        {
+            advance = true;
+        }
+
+        if (advance)
+        {
+            ShowNextDialogue();
+        }
+    }
+
     public void ShowNextDialogue()
     {
+        FarsiTypewriter currentFtw = GetCurrentTypewriter();
+        if (currentFtw != null && currentFtw.isTyping)
+        {
+            currentFtw.SkipTyping();
+            _lastSkipTime = Time.time;
+            return;
+        }
+
+        if (Time.time - _lastSkipTime < 0.15f)
+        {
+            return;
+        }
+
         if (amozesh == null)
         {
             return;
@@ -140,11 +202,12 @@ public class SwitchWindow : MonoBehaviour
                 shouldInvoke = true;
                 HideWindow();
                 if (_taskUI != null) _taskUI.UpdateUI();
+                amozesh.OnDialogueFinished(pIdx);
                 return;
             }
         }
         
-        if (dialogueWindowToShow != null && dialogueTypeWriter != null)
+        if (dialogueWindowToShow != null)
         {
             UIAnimationManager.Instance.ShowDialogueWindow(dialogueWindowToShow, 0.5f, dialogueTypeWriter);
         }

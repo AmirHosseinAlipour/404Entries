@@ -268,17 +268,33 @@ public class SaveManager : MonoBehaviour
         }
     }
 
-    public void DeleteSaveAndRestart()
+    public void DeleteSaveFile()
     {
         string path = GetSaveFilePath();
         if (File.Exists(path))
         {
-            File.Delete(path);
+            try
+            {
+                File.Delete(path);
+                Debug.Log("[SaveManager] Save file deleted: " + path);
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError("[SaveManager] Error deleting save file: " + ex.Message);
+            }
         }
+    }
+
+    public void DeleteSaveAndRestart()
+    {
+        DeleteSaveFile();
         if (SelectionPlayer.instance != null)
         {
             Destroy(SelectionPlayer.instance.gameObject);
         }
+        BaseProfessors.IsAnyMinigameActive = false;
+        BaseProfessors.ActiveProfessor = null;
+        Time.timeScale = 1f;
         SceneManager.LoadScene(0);
     }
 }

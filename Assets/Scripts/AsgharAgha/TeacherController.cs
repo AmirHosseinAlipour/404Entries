@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class TeacherController : BaseProfessors
 {
+    public override ProfessorUIType UIType => ProfessorUIType.InWorldStealth;
+
     public Animator animator;
     public bool isFacingPlayer = false;
     private bool flag = false; 
@@ -20,16 +22,44 @@ public class TeacherController : BaseProfessors
         soundPlayer = GetComponent<SoundPlayer>();
     }
 
-    private void Start()
+    protected override void Start()
     {
+        base.Start();
+        if (GetComponent<AsgharRoomCamera>() == null)
+        {
+            gameObject.AddComponent<AsgharRoomCamera>();
+        }
         if (animator == null) animator = GetComponent<Animator>();
         if (animator != null) animator.Play("FacingBack");
+        HideMinigameUI();
+        ApplyModernVisualStyles();
+    }
+
+    public override void HideMinigameUI()
+    {
+        base.HideMinigameUI();
+        _isActive = false;
+        if (lookRoutine != null)
+        {
+            StopCoroutine(lookRoutine);
+            lookRoutine = null;
+        }
+        if (animator != null) animator.Play("FacingBack");
+    }
+
+    public override void AcceptChallenge()
+    {
+        StartLooking();
     }
 
     public void StartLooking()
     {
         StartMinigame();
         PlayerUIModeHelper.PlayerExitUIMode(_player);
+        if (AsgharRoomCamera.Instance != null)
+        {
+            AsgharRoomCamera.Instance.EnterRoom();
+        }
         if (_isActive) return;
         _isActive = true;
         lookRoutine = StartCoroutine(RandomLookRoutine());
@@ -43,14 +73,11 @@ public class TeacherController : BaseProfessors
         
             if (isFacingPlayer)
             {
-                // Player is safe immediately
                 if (animator != null) animator.SetTrigger("FacingBack");
                 isFacingPlayer = false; 
             }
             else
             {
-                // Just trigger the animation.
-                // The Animation Event will call OnFacingFrontComplete() when it's done.
                 if (animator != null) animator.SetTrigger("FacingFront");
             }
         }
@@ -85,6 +112,5 @@ public class TeacherController : BaseProfessors
 
     protected override void OnTriggerEnter2D(Collider2D other)
     {
-        //ignore the base method!
     }
 }

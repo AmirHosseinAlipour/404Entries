@@ -45,31 +45,99 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
     private float _counter;
     private bool _canReset;
 
-    void Awake()
+    public void EnsureTextCaptured()
     {
         if (_textUI == null) _textUI = GetComponent<Text>();
-        if (GetComponentInParent<Button>() != null && _textUI != null)
+        if (string.IsNullOrEmpty(_rawOriginalText))
         {
-            _textUI.raycastTarget = false;
+            if (_textUI != null && !string.IsNullOrEmpty(_textUI.text))
+            {
+                _rawOriginalText = _textUI.text;
+                FixAndPrepareText(_rawOriginalText);
+            }
         }
+        else if (string.IsNullOrEmpty(_fixedText))
+        {
+            FixAndPrepareText(_rawOriginalText);
+        }
+    }
+
+    public void PrepareForTyping()
+    {
+        EnsureTextCaptured();
+        StopAllCoroutines();
+        if (_textUI == null) _textUI = GetComponent<Text>();
+        typeWriterEffect = true;
+        isTyping = false;
+        isComplete = false;
+        _builder.Clear();
+        _counter = 0;
         if (_textUI != null)
         {
-            if (string.IsNullOrEmpty(_rawOriginalText))
+            _textUI.text = "";
+        }
+    }
+
+    void Awake()
+    {
+        EnsureTextCaptured();
+
+        // Only disable raycastTarget on direct button text children, never override typeWriterEffect!
+        if (transform.parent != null && transform.parent.GetComponent<Button>() != null && !transform.parent.name.ToLower().Contains("person"))
+        {
+            if (_textUI != null)
             {
-                _rawOriginalText = _textUI.text ?? "";
-                FixAndPrepareText(_rawOriginalText);
+                _textUI.raycastTarget = false;
+            }
+        }
+
+        if (_textUI != null)
+        {
+            if (!typeWriterEffect)
+            {
+                ApplyCompletedText();
+            }
+            else
+            {
+                _textUI.text = "";
             }
         }
     }
 
     private void OnEnable()
     {
+        EnsureTextCaptured();
         LocalizationManager.OnLanguageChanged += HandleLanguageChanged;
+        if (!typeWriterEffect)
+        {
+            ApplyCompletedText();
+        }
+        else
+        {
+            if (!isTyping && !isComplete)
+            {
+                if (_textUI == null) _textUI = GetComponent<Text>();
+                if (_textUI != null)
+                {
+                    _textUI.text = "";
+                }
+            }
+        }
     }
 
     private void OnDisable()
     {
         LocalizationManager.OnLanguageChanged -= HandleLanguageChanged;
+        if (typeWriterEffect)
+        {
+            isTyping = false;
+            isComplete = false;
+            StopAllCoroutines();
+            if (_textUI != null)
+            {
+                _textUI.text = "";
+            }
+        }
     }
 
     private void HandleLanguageChanged(GameLanguage newLang)
@@ -83,14 +151,19 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
         {
             StartTyping();
         }
-        else
+        else if (!typeWriterEffect || isComplete)
         {
             ApplyCompletedText();
+        }
+        else
+        {
+            if (_textUI != null) _textUI.text = "";
         }
     }
 
     private void Start()
     {
+        EnsureTextCaptured();
         if (_textUI == null) _textUI = GetComponent<Text>();
         if (GetComponentInParent<Button>() != null && _textUI != null)
         {
@@ -100,6 +173,13 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
         if (!typeWriterEffect)
         {
             ApplyCompletedText();
+        }
+        else
+        {
+            if (!isTyping && !isComplete)
+            {
+                if (_textUI != null) _textUI.text = "";
+            }
         }
         
         if (_textUI != null)
@@ -116,11 +196,18 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
         _rawOriginalText = newRawFarsiText ?? "";
         FixAndPrepareText(_rawOriginalText);
 
-        if (typeWriterEffect)
+        isTyping = false;
+        isComplete = false;
+        if (typeWriterEffect && _textUI != null)
+        {
+            _textUI.text = "";
+        }
+
+        if (typeWriterEffect && gameObject.activeInHierarchy)
         {
             StartTyping();
         }
-        else
+        else if (!typeWriterEffect)
         {
             ApplyCompletedText();
         }
@@ -294,6 +381,12 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
+        if (allowClickToSkip && isTyping)
+        {
+            SkipTyping();
+            return;
+        }
+
         Button btn = GetComponentInParent<Button>();
         if (btn != null)
         {
@@ -304,27 +397,27 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
             return;
         }
 
-        if (allowClickToSkip)
+        if (allowClickToSkip && isComplete && OnClickWhenComplete != null)
         {
-            if (isTyping)
-            {
-                SkipTyping();
-            }
-            else if (isComplete && OnClickWhenComplete != null)
-            {
-                OnClickWhenComplete.Invoke();
-            }
+            OnClickWhenComplete.Invoke();
         }
     }
 
     public void StartTyping()
     {
+        EnsureTextCaptured();
         StopAllCoroutines();
+        if (_textUI == null) _textUI = GetComponent<Text>();
         
+        typeWriterEffect = true;
         _builder.Clear();
         isTyping = true;
         isComplete = false;
         _startFrame = Time.frameCount;
+
+        ApplyAlignment();
+        if (_textUI != null) _textUI.text = "";
+
         StartCoroutine(TypeTextCoroutine());
     }
     
@@ -353,6 +446,19 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
 
     private IEnumerator TypeTextCoroutine()
     {
+        if (string.IsNullOrEmpty(_fixedText))
+        {
+            if (!string.IsNullOrEmpty(_rawOriginalText))
+            {
+                FixAndPrepareText(_rawOriginalText);
+            }
+            else if (_textUI != null && !string.IsNullOrEmpty(_textUI.text))
+            {
+                _rawOriginalText = _textUI.text;
+                FixAndPrepareText(_rawOriginalText);
+            }
+        }
+
         if (string.IsNullOrEmpty(_fixedText))
         {
             isTyping = false;

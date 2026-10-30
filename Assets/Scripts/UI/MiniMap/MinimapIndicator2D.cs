@@ -81,7 +81,17 @@ public class MinimapIndicator2D : MonoBehaviour
         Vector2 playerPos = playerTransform.position;
         Vector2 targetPos = activeTarget.position;
 
-        int playerFloor = GetFloorIndex(playerPos);
+        int spatialPlayerFloor = GetFloorIndex(playerPos);
+        if (elevatorUI != null && elevatorUI.currentFloor != spatialPlayerFloor)
+        {
+            elevatorUI.currentFloor = spatialPlayerFloor;
+            if (elevatorUI.AnotherInstace != null)
+            {
+                elevatorUI.AnotherInstace.currentFloor = spatialPlayerFloor;
+            }
+        }
+
+        int playerFloor = spatialPlayerFloor;
         int targetFloor = GetFloorIndex(targetPos);
         TargetFloorIndex = targetFloor;
         IsDifferentFloor = (playerFloor != targetFloor);
@@ -93,10 +103,6 @@ public class MinimapIndicator2D : MonoBehaviour
             if (nearestElevator != null)
             {
                 destinationPos = nearestElevator.transform.position;
-            }
-            else if (elevatorUI != null && elevatorUI.floorPositions != null && playerFloor >= 0 && playerFloor < elevatorUI.floorPositions.Length && elevatorUI.floorPositions[playerFloor] != null)
-            {
-                destinationPos = elevatorUI.floorPositions[playerFloor].transform.position;
             }
             else
             {
@@ -228,55 +234,73 @@ public class MinimapIndicator2D : MonoBehaviour
         if (elevatorUI == null || elevatorTriggers == null || elevatorTriggers.Length == 0 || Time.time - lastElevatorRefreshTime > 2f)
         {
             lastElevatorRefreshTime = Time.time;
-            if (elevatorUI == null) elevatorUI = Object.FindAnyObjectByType<ElevatorUI>();
+            if (elevatorUI == null) elevatorUI = Object.FindAnyObjectByType<ElevatorUI>(FindObjectsInactive.Include);
             elevatorTriggers = Object.FindObjectsByType<ElevatorTrigger>(FindObjectsInactive.Include);
         }
     }
 
-    private int GetFloorIndex(Vector2 pos)
+    public static int GetFloorIndex(Vector2 pos)
     {
-        if (elevatorUI != null && elevatorUI.floorPositions != null && elevatorUI.floorPositions.Length > 0)
+        if (pos.x < 350f)
         {
-            int bestIndex = -1;
-            float minDistance = float.MaxValue;
-            for (int i = 0; i < elevatorUI.floorPositions.Length; i++)
+            if (pos.y > 75f)
             {
-                if (elevatorUI.floorPositions[i] == null) continue;
-                float d = Vector2.Distance(pos, elevatorUI.floorPositions[i].transform.position);
-                if (d < minDistance)
-                {
-                    minDistance = d;
-                    bestIndex = i;
-                }
+                return 0;
             }
-            if (bestIndex >= 0) return bestIndex;
+            if (pos.y >= -60f)
+            {
+                return 1;
+            }
+            if (pos.y >= -180f)
+            {
+                return 2;
+            }
+            if (pos.y >= -320f)
+            {
+                return 3;
+            }
+            return 4;
         }
-
-        if (elevatorTriggers != null && elevatorTriggers.Length > 0)
+        else
         {
-            int nearestIdx = 0;
-            float minD = float.MaxValue;
-            for (int i = 0; i < elevatorTriggers.Length; i++)
+            if (pos.y > 275f)
             {
-                if (elevatorTriggers[i] == null) continue;
-                float d = Vector2.Distance(pos, elevatorTriggers[i].transform.position);
-                if (d < minD)
-                {
-                    minD = d;
-                    nearestIdx = i;
-                }
+                return 0;
             }
-            return nearestIdx;
+            if (pos.y >= 165f)
+            {
+                return 1;
+            }
+            if (pos.y >= 40f)
+            {
+                return 2;
+            }
+            if (pos.y >= -110f)
+            {
+                return 3;
+            }
+            return 4;
         }
-
-        return 0;
     }
 
     private ElevatorTrigger GetNearestElevator(Vector2 pos)
     {
         if (elevatorTriggers == null || elevatorTriggers.Length == 0) return null;
+        int currentFloor = GetFloorIndex(pos);
         ElevatorTrigger best = null;
         float minD = float.MaxValue;
+        for (int i = 0; i < elevatorTriggers.Length; i++)
+        {
+            if (elevatorTriggers[i] == null) continue;
+            if (GetFloorIndex(elevatorTriggers[i].transform.position) != currentFloor) continue;
+            float d = Vector2.Distance(pos, elevatorTriggers[i].transform.position);
+            if (d < minD)
+            {
+                minD = d;
+                best = elevatorTriggers[i];
+            }
+        }
+        if (best != null) return best;
         for (int i = 0; i < elevatorTriggers.Length; i++)
         {
             if (elevatorTriggers[i] == null) continue;

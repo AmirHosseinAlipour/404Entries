@@ -22,6 +22,10 @@ public class ClassEntrance : MonoBehaviour
         {
             started = true;
             Debug.Log("🎬 Class started!");
+            if (AsgharRoomCamera.Instance != null)
+            {
+                AsgharRoomCamera.Instance.EnterRoom();
+            }
             musicChange.ToggleMusic();
             musicChange.PlayThemeMusic();   
             teacher.StartLooking();
