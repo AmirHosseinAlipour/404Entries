@@ -304,20 +304,30 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
             return;
         }
 
+        // Normalize awkward single newlines into spaces so text flows naturally across the dialogue box width
+        // Preserves double newlines (paragraphs) if any
+        string normalized = targetText.Replace("\r\n", "\n").Replace('\r', '\n');
+        string[] rawParagraphs = normalized.Split(new[] { "\n\n" }, StringSplitOptions.None);
+        List<string> cleanParagraphs = new List<string>();
+        foreach (string p in rawParagraphs)
+        {
+            cleanParagraphs.Add(p.Replace('\n', ' ').Trim());
+        }
+
         float containerWidth = GetContainerWidth(_textUI);
         float containerHeight = _textUI != null && _textUI.rectTransform != null ? _textUI.rectTransform.rect.height : 0f;
 
-        float maxWidth = containerWidth - 14f;
+        float maxWidth = containerWidth;
         int baseSz = _baseFontSize > 0 ? _baseFontSize : (_textUI != null ? _textUI.fontSize : 24);
+        if (baseSz > 48) baseSz = 46;
         if (_textUI != null) _textUI.fontSize = baseSz;
-        int minLimit = Mathf.Max(10, baseSz - 16);
+        int minLimit = Mathf.Max(12, baseSz - 16);
 
         while (true)
         {
-            string[] paragraphs = targetText.Split('\n');
             List<string> fixedLines = new List<string>();
 
-            foreach (string para in paragraphs)
+            foreach (string para in cleanParagraphs)
             {
                 if (string.IsNullOrWhiteSpace(para))
                 {
@@ -354,12 +364,19 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
         if (string.IsNullOrEmpty(rawText)) return "";
         if (textUI == null) return ArabicFixer.Fix(rawText, true, true);
 
+        string normalized = rawText.Replace("\r\n", "\n").Replace('\r', '\n');
+        string[] rawParagraphs = normalized.Split(new[] { "\n\n" }, StringSplitOptions.None);
+        List<string> cleanParagraphs = new List<string>();
+        foreach (string p in rawParagraphs)
+        {
+            cleanParagraphs.Add(p.Replace('\n', ' ').Trim());
+        }
+
         float containerWidth = GetContainerWidth(textUI);
-        float maxWidth = containerWidth - 14f;
-        string[] paragraphs = rawText.Split('\n');
+        float maxWidth = containerWidth;
         List<string> finalFixedLines = new List<string>();
 
-        foreach (string para in paragraphs)
+        foreach (string para in cleanParagraphs)
         {
             if (string.IsNullOrWhiteSpace(para))
             {
@@ -385,16 +402,17 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
         string[] words = paragraph.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
         if (words.Length == 0) return result;
 
-        // Ensure safe margin so Unity UI Text NEVER wraps unexpectedly at runtime
-        float safeMaxWidth = Mathf.Max(50f, maxWidth - 45f);
+        // Effective width inside dialogue box with safe inner breathing room
+        float safeMaxWidth = Mathf.Max(60f, maxWidth - 20f);
 
-        // If the entire paragraph fits safely on one line, return it as single line
+        // If entire paragraph fits safely on one line, return single line
         if (MeasureWidth(paragraph, textUI) <= safeMaxWidth)
         {
             result.Add(paragraph);
             return result;
         }
 
+        List<string> lines = new List<string>();
         StringBuilder currentLine = new StringBuilder();
 
         for (int i = 0; i < words.Length; i++)
@@ -403,29 +421,67 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
             if (currentLine.Length == 0)
             {
                 currentLine.Append(word);
+                continue;
+            }
+
+            string candidate = currentLine.ToString() + " " + word;
+            float candidateWidth = MeasureWidth(candidate, textUI);
+
+            if (candidateWidth <= safeMaxWidth)
+            {
+                currentLine.Append(" ").Append(word);
+
+                // Smart break at natural clause/sentence endings (. ? ! : ،)
+                // If line is >= 55% full and ends with punctuation, and at least 2 words remain:
+                char lastChar = word[word.Length - 1];
+                bool isPunctuation = (lastChar == '.' || lastChar == '!' || lastChar == '؟' || lastChar == '?' || lastChar == ':' || lastChar == '،' || lastChar == ',');
+                if (isPunctuation && candidateWidth >= safeMaxWidth * 0.55f && (words.Length - 1 - i) >= 2)
+                {
+                    lines.Add(currentLine.ToString().Trim());
+                    currentLine.Clear();
+                }
             }
             else
             {
-                string candidate = currentLine.ToString() + " " + word;
-                if (MeasureWidth(candidate, textUI) <= safeMaxWidth)
-                {
-                    currentLine.Append(" ").Append(word);
-                }
-                else
-                {
-                    result.Add(currentLine.ToString());
-                    currentLine.Clear();
-                    currentLine.Append(word);
-                }
+                lines.Add(currentLine.ToString().Trim());
+                currentLine.Clear();
+                currentLine.Append(word);
             }
         }
 
         if (currentLine.Length > 0)
         {
-            result.Add(currentLine.ToString());
+            lines.Add(currentLine.ToString().Trim());
         }
 
-        return result;
+        // Post-processing: Widow / Orphan prevention!
+        // If the last line has only 1 word, and the previous line has at least 3 words:
+        if (lines.Count >= 2)
+        {
+            string lastLine = lines[lines.Count - 1];
+            string[] lastLineWords = lastLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+            if (lastLineWords.Length == 1)
+            {
+                string prevLine = lines[lines.Count - 2];
+                string[] prevLineWords = prevLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                if (prevLineWords.Length >= 3)
+                {
+                    string movedWord = prevLineWords[prevLineWords.Length - 1];
+                    string newPrevLine = string.Join(" ", prevLineWords, 0, prevLineWords.Length - 1);
+                    string newLastLine = movedWord + " " + lastLine;
+
+                    if (MeasureWidth(newLastLine, textUI) <= safeMaxWidth)
+                    {
+                        lines[lines.Count - 2] = newPrevLine;
+                        lines[lines.Count - 1] = newLastLine;
+                    }
+                }
+            }
+        }
+
+        return lines;
     }
 
     public static float MeasureWidth(string rawText, Text textUI)
@@ -434,7 +490,7 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
         try
         {
             string fixedText = ArabicFixer.Fix(rawText, true, true);
-            TextGenerationSettings settings = textUI.GetGenerationSettings(new Vector2(10000f, 1000f));
+            TextGenerationSettings settings = textUI.GetGenerationSettings(Vector2.zero);
             float ppu = textUI.pixelsPerUnit > 0.001f ? textUI.pixelsPerUnit : 1f;
             float measured = textUI.cachedTextGeneratorForLayout.GetPreferredWidth(fixedText, settings) / ppu;
             if (measured > 1f) return measured;
@@ -442,12 +498,12 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
         catch
         {
         }
-        return rawText.Length * (textUI.fontSize * 0.58f);
+        return rawText.Length * (textUI.fontSize * 0.52f);
     }
 
     public static float GetContainerWidth(Text textUI)
     {
-        if (textUI == null || textUI.rectTransform == null) return 900f;
+        if (textUI == null || textUI.rectTransform == null) return 1020f;
 
         // Force canvas layout update if not yet evaluated
         if (textUI.rectTransform.rect.width <= 1f)
@@ -470,18 +526,17 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
             {
                 if (prt.rect.width > 20f)
                 {
-                    float padding = Mathf.Abs(textUI.rectTransform.offsetMin.x) + Mathf.Abs(textUI.rectTransform.offsetMax.x);
-                    return padding > 0f && padding < prt.rect.width * 0.5f ? prt.rect.width - padding : prt.rect.width * 0.9f;
+                    return prt.rect.width - 120f;
                 }
                 if (prt.sizeDelta.x > 20f)
                 {
-                    return prt.sizeDelta.x * 0.9f;
+                    return prt.sizeDelta.x - 120f;
                 }
             }
             curr = curr.parent;
         }
 
-        return 900f; // Robust fallback for standard dialogue box
+        return 1020f; // Robust fallback for standard dialogue box (1140 - 120)
     }
 
     private string BalanceTextLines(string text, int targetLineCount)

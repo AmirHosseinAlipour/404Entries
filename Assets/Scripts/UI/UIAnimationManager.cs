@@ -115,6 +115,33 @@ public class UIAnimationManager : MonoBehaviour
                 childRt.pivot = new Vector2(0.5f, 0f);
                 childRt.anchoredPosition = new Vector2(0f, childRt.anchoredPosition.y > 0 ? childRt.anchoredPosition.y : 20f);
                 childRt.sizeDelta = new Vector2(1140f, 350f);
+
+                // Ensure the inner Text component is perfectly fitted, balanced, and centered inside the dialogue box
+                UnityEngine.UI.Text textComp = child.GetComponentInChildren<UnityEngine.UI.Text>(true);
+                if (textComp != null)
+                {
+                    RectTransform textRt = textComp.rectTransform;
+                    if (textRt != childRt)
+                    {
+                        textRt.anchorMin = new Vector2(0f, 0f);
+                        textRt.anchorMax = new Vector2(1f, 1f);
+                        textRt.pivot = new Vector2(0.5f, 0.5f);
+                        textRt.anchoredPosition = Vector2.zero; // Perfectly centered (no right skew!)
+                        textRt.sizeDelta = new Vector2(-120f, -80f); // 60px padding left/right, 40px padding top/bottom
+                    }
+
+                    if (textComp.fontSize > 48 || textComp.fontSize < 36)
+                    {
+                        textComp.fontSize = 46;
+                    }
+                    textComp.lineSpacing = 1.15f;
+
+                    FarsiTypewriter ftw = textComp.GetComponent<FarsiTypewriter>();
+                    if (ftw != null)
+                    {
+                        ftw.middleAlign = true;
+                    }
+                }
             }
             // Handle Portrait Image
             else if (childName == "image" || childName.Contains("portrait") || childName.Contains("person") || childName.Contains("avatar"))
