@@ -30,7 +30,7 @@ public class TeacherController : BaseProfessors
             gameObject.AddComponent<AsgharRoomCamera>();
         }
         if (animator == null) animator = GetComponent<Animator>();
-        if (animator != null) animator.Play("FacingBack");
+        if (animator != null) animator.Play("idle");
         HideMinigameUI();
         ApplyModernVisualStyles();
     }
@@ -39,12 +39,19 @@ public class TeacherController : BaseProfessors
     {
         base.HideMinigameUI();
         _isActive = false;
+        flag = false;
+        isFacingPlayer = false;
         if (lookRoutine != null)
         {
             StopCoroutine(lookRoutine);
             lookRoutine = null;
         }
-        if (animator != null) animator.Play("FacingBack");
+        if (soundPlayer != null)
+        {
+            AudioSource src = soundPlayer.GetComponent<AudioSource>();
+            if (src != null) src.Stop();
+        }
+        if (animator != null) animator.Play("idle");
     }
 
     public override void AcceptChallenge()
@@ -85,18 +92,13 @@ public class TeacherController : BaseProfessors
 
     public void PlayGreenLightSound()
     {
-        if (flag == true)
-        {
-            if (soundPlayer != null) soundPlayer.Play("GreenLight");
-        }
-        else
-        {
-            flag = true;
-        }
+        if (!_isActive) return;
+        if (soundPlayer != null) soundPlayer.Play("GreenLight");
     }
     
     public void OnFacingFrontComplete()
     {
+        if (!_isActive) return;
         isFacingPlayer = true;
         if (soundPlayer != null) soundPlayer.Play("RedLight");
     }
@@ -104,10 +106,20 @@ public class TeacherController : BaseProfessors
     public void StopLooking()
     {
         _isActive = false;
+        flag = false;
+        isFacingPlayer = false;
         if (lookRoutine != null)
+        {
             StopCoroutine(lookRoutine);
+            lookRoutine = null;
+        }
+        if (soundPlayer != null)
+        {
+            AudioSource src = soundPlayer.GetComponent<AudioSource>();
+            if (src != null) src.Stop();
+        }
         if (animator != null)
-            animator.Play("FacingBack");
+            animator.Play("idle");
     }
 
     protected override void OnTriggerEnter2D(Collider2D other)

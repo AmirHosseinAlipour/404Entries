@@ -38,6 +38,24 @@ public class ElevatorUI : MonoBehaviour
     private void Update()
     {
         UpdateFloorButtonsHighlight();
+
+        bool cancel = false;
+        if (UnityEngine.InputSystem.Keyboard.current != null)
+        {
+            if (UnityEngine.InputSystem.Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                cancel = true;
+            }
+        }
+        if (!cancel && Input.GetKeyDown(KeyCode.Escape))
+        {
+            cancel = true;
+        }
+
+        if (cancel && gameObject.activeInHierarchy)
+        {
+            OnFloorButtonPressed(currentFloor);
+        }
     }
 
     public void SyncCurrentFloorWithPlayerPosition()

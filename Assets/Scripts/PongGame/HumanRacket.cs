@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 
 public class HumanRacket : Racket
@@ -14,11 +14,18 @@ public class HumanRacket : Racket
     {
         float moveAxesValue = 0f;
 
-        
         if (Input.GetKey("w") || Input.GetKey(KeyCode.UpArrow))
             moveAxesValue = 1f;
         else if (Input.GetKey("s") || Input.GetKey(KeyCode.DownArrow))
             moveAxesValue = -1f;
+
+        if (UnityEngine.InputSystem.Keyboard.current != null)
+        {
+            if (UnityEngine.InputSystem.Keyboard.current.wKey.isPressed || UnityEngine.InputSystem.Keyboard.current.upArrowKey.isPressed)
+                moveAxesValue = 1f;
+            else if (UnityEngine.InputSystem.Keyboard.current.sKey.isPressed || UnityEngine.InputSystem.Keyboard.current.downArrowKey.isPressed)
+                moveAxesValue = -1f;
+        }
 
         // کنترل با تاچ برای موبایل
         if (Input.touchCount > 0)
@@ -33,7 +40,8 @@ public class HumanRacket : Racket
                 moveAxesValue = -1f;
         }
 
-        rb.linearVelocity = new Vector2(0f, moveAxesValue * moveSpeed);
+        if (rb != null)
+            rb.linearVelocity = new Vector2(0f, moveAxesValue * moveSpeed);
     }
 
     public override void GetScore()
@@ -75,9 +83,13 @@ public class HumanRacket : Racket
             yield return null;
         }
 
-        fadeActivator.FadeOutAndDeactivate();
-        PlayerController _player = GameObject.FindWithTag("Player").GetComponent<PlayerController>();
-        _player.isUIActive = false;
+        if (fadeActivator != null) fadeActivator.FadeOutAndDeactivate();
+        var pObj = GameObject.FindWithTag("Player");
+        if (pObj != null)
+        {
+            var pCtrl = pObj.GetComponent<PlayerController>();
+            if (pCtrl != null) pCtrl.isUIActive = false;
+        }
 
         isScaling = false; 
     }

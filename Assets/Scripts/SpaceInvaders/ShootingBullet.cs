@@ -29,6 +29,30 @@ public class ShootingBullet : MonoBehaviour
         if (shootButton != null)
             shootButton.onClick.AddListener(() => TryShoot());
     }
+
+    private void Update()
+    {
+        bool shootInput = false;
+        if (UnityEngine.InputSystem.Keyboard.current != null)
+        {
+            if (UnityEngine.InputSystem.Keyboard.current.spaceKey.wasPressedThisFrame ||
+                UnityEngine.InputSystem.Keyboard.current.upArrowKey.wasPressedThisFrame ||
+                UnityEngine.InputSystem.Keyboard.current.wKey.wasPressedThisFrame ||
+                UnityEngine.InputSystem.Keyboard.current.enterKey.wasPressedThisFrame)
+            {
+                shootInput = true;
+            }
+        }
+        if (!shootInput && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.Return)))
+        {
+            shootInput = true;
+        }
+
+        if (shootInput)
+        {
+            TryShoot();
+        }
+    }
     private void TryShoot()
     {
         if (canShoot)

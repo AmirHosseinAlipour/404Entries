@@ -165,6 +165,15 @@ public class Amozesh : MonoBehaviour
         PlayerUIModeHelper.PlayerExitUIMode(_player);
         PlayerUIModeHelper.EnableTasksButton(_allTasksBackButton, _currentTaskButton);
 
+        if (TaskManager.Instance != null && TaskManager.Instance.taskCompleted != null)
+        {
+            int taskToComplete = phaseIndex * 2;
+            if (taskToComplete < TaskManager.Instance.taskCompleted.Length)
+            {
+                TaskManager.Instance.CompleteTask(taskToComplete);
+            }
+        }
+
         if (phaseIndex >= 8)
         {
             _hasFinishedEndingDialogue = true;

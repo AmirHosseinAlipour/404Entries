@@ -14,7 +14,7 @@ public class PongManager : MonoBehaviour
 
     public void InitialSettings()
     {
-        cam.Priority = 20;
+        if (cam != null) cam.Priority = 20;
         ScaleSpriteToCamera();
     }
 
@@ -54,10 +54,10 @@ public class PongManager : MonoBehaviour
             if (done)
             {
                 isFadingOut = false;
-                targetObject.SetActive(false);
-                PongGameObject.SetActive(false);
-                cam.Priority = 0;
-                blackBackground.sortingOrder = -10;
+                if (targetObject != null) targetObject.SetActive(false);
+                if (PongGameObject != null) PongGameObject.SetActive(false);
+                if (cam != null) cam.Priority = 0;
+                if (blackBackground != null) blackBackground.sortingOrder = -10;
                 if (prof != null)
                 {
                     prof.CompleteMission();
@@ -115,11 +115,14 @@ public class PongManager : MonoBehaviour
     }
     private void ScaleSpriteToCamera()
     {
+        if (cam == null || blackBackground == null || blackBackground.sprite == null) return;
         float cameraHeight = cam.Lens.OrthographicSize * 2f;
         float cameraWidth = cameraHeight * cam.Lens.Aspect;
 
         float spriteHeight = blackBackground.sprite.bounds.size.y;
         float spriteWidth = blackBackground.sprite.bounds.size.x;
+
+        if (spriteHeight <= 0.001f || spriteWidth <= 0.001f) return;
 
         float scaleX = cameraWidth / spriteWidth;
         float scaleY = cameraHeight / spriteHeight;

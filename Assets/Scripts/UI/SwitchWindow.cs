@@ -125,6 +125,10 @@ public class SwitchWindow : MonoBehaviour
         {
             UIAnimationManager.Instance.ShowDialogueWindow(dialogueWindowToShow, 0.5f, dialogueTypeWriter);
         }
+        else
+        {
+            ExitMission();
+        }
     }
 
     private void HideWindow()
@@ -158,12 +162,13 @@ public class SwitchWindow : MonoBehaviour
         if (UnityEngine.InputSystem.Keyboard.current != null)
         {
             if (UnityEngine.InputSystem.Keyboard.current.spaceKey.wasPressedThisFrame ||
-                UnityEngine.InputSystem.Keyboard.current.enterKey.wasPressedThisFrame)
+                UnityEngine.InputSystem.Keyboard.current.enterKey.wasPressedThisFrame ||
+                UnityEngine.InputSystem.Keyboard.current.eKey.wasPressedThisFrame)
             {
                 advance = true;
             }
         }
-        if (!advance && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)))
+        if (!advance && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.E)))
         {
             advance = true;
         }
@@ -191,20 +196,27 @@ public class SwitchWindow : MonoBehaviour
 
         if (amozesh == null)
         {
+            DialogueToggle();
             return;
         }
         
         int pIdx = amozesh.getCrrrentIndex();
+        bool isLastInPhase = false;
         if (amozesh.dialoguePhases != null && pIdx < amozesh.dialoguePhases.Count && amozesh.dialoguePhases[pIdx].dialogues != null)
         {
             if (amozesh.dialoguePhases[pIdx].dialogues.Count <= currentDialogueIndex)
             {
-                shouldInvoke = true;
-                HideWindow();
-                if (_taskUI != null) _taskUI.UpdateUI();
-                amozesh.OnDialogueFinished(pIdx);
-                return;
+                isLastInPhase = true;
             }
+        }
+
+        if (isLastInPhase || dialogueWindowToShow == null)
+        {
+            shouldInvoke = true;
+            HideWindow();
+            if (_taskUI != null) _taskUI.UpdateUI();
+            amozesh.OnDialogueFinished(pIdx);
+            return;
         }
         
         if (dialogueWindowToShow != null)

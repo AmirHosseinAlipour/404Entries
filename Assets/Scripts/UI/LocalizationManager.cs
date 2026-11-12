@@ -190,6 +190,17 @@ public class LocalizationManager : MonoBehaviour
         Add("بله", "Yes");
         Add("خیر", "No");
         Add("ممنون", "Thank you");
+        Add("تایید و شروع بازی", "Confirm & Start");
+        Add("شروع بازی", "Start Game");
+        Add("خروج", "Exit");
+        Add("طراحان", "Credits");
+        Add("ادامه بازی", "Resume");
+        Add("برگشت", "Back");
+        Add("تنظیمات", "Settings");
+        Add("صدا", "Audio");
+        Add("موسیقی", "Music");
+        Add("افکت صوتی", "SFX");
+        Add("زبان", "Language");
         Add("در چالش شکست خوردی", "Challenge Failed!");
         Add("خب مثل اینکه باید دوباره تلاش کنم", "Looks like I need to try again...");
         Add("خب بیا اینم مدرک", "Alright, here is your signed certificate.");

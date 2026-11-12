@@ -126,14 +126,11 @@ public class UIAnimationManager : MonoBehaviour
                         textRt.anchorMin = new Vector2(0f, 0f);
                         textRt.anchorMax = new Vector2(1f, 1f);
                         textRt.pivot = new Vector2(0.5f, 0.5f);
-                        textRt.anchoredPosition = Vector2.zero; // Perfectly centered (no right skew!)
-                        textRt.sizeDelta = new Vector2(-120f, -80f); // 60px padding left/right, 40px padding top/bottom
+                        textRt.anchoredPosition = Vector2.zero; // Perfectly centered
+                        textRt.sizeDelta = new Vector2(-80f, -60f); // 40px padding left/right, 30px padding top/bottom
                     }
 
-                    if (textComp.fontSize > 48 || textComp.fontSize < 36)
-                    {
-                        textComp.fontSize = 46;
-                    }
+                    textComp.fontSize = 36;
                     textComp.lineSpacing = 1.15f;
 
                     FarsiTypewriter ftw = textComp.GetComponent<FarsiTypewriter>();

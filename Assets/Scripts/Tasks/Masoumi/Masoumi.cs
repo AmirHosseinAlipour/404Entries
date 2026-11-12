@@ -128,11 +128,28 @@ public class Masoumi : BaseProfessors
         ApplyModernVisualStyles();
     }
 
+    private RectTransform GetActualMissionPanel()
+    {
+        if (missionPanel != null && missionPanel != StartPanel) return missionPanel;
+        if (StartPanel != null)
+        {
+            Transform m = StartPanel.Find("Mission");
+            if (m != null) return m as RectTransform;
+            foreach (Transform ch in StartPanel)
+            {
+                if (ch != null && ch.name.ToLower().Contains("mission"))
+                    return ch as RectTransform;
+            }
+        }
+        return missionPanel;
+    }
+
     public override void HideMinigameUI()
     {
         base.HideMinigameUI();
         if (speechPanel != null) speechPanel.gameObject.SetActive(false);
-        if (missionPanel != null) missionPanel.gameObject.SetActive(false);
+        RectTransform mp = GetActualMissionPanel();
+        if (mp != null && mp != StartPanel) mp.gameObject.SetActive(false);
     }
 
     public override void AcceptChallenge()
@@ -174,6 +191,8 @@ public class Masoumi : BaseProfessors
         {
             acceptRect.gameObject.SetActive(false);
         }
+
+        missionPanel = GetActualMissionPanel();
 
         if (missionPanel != null)
         {
@@ -361,7 +380,8 @@ public class Masoumi : BaseProfessors
     private void HandleEnding()
     {
         if (speechPanel != null) UIAnimationManager.Instance.HideWindow(speechPanel, 0.5f);
-        if (missionPanel != null) UIAnimationManager.Instance.HideWindow(missionPanel, 0.5f);
+        RectTransform mp = GetActualMissionPanel();
+        if (mp != null && mp != StartPanel) UIAnimationManager.Instance.HideWindow(mp, 0.5f);
         if (StartPanel != null) UIAnimationManager.Instance.HideWindow(StartPanel, 0.5f);
         CompleteMission();
     }

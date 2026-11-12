@@ -107,6 +107,25 @@ public class SleepManager : MonoBehaviour
 
         if (left <= 0f && sleepProgress < sleepProgressToSleep && redClickCount < redClicksToSleep)
             OnWin();
+
+        bool clickInput = false;
+        if (UnityEngine.InputSystem.Keyboard.current != null)
+        {
+            if (UnityEngine.InputSystem.Keyboard.current.spaceKey.wasPressedThisFrame ||
+                UnityEngine.InputSystem.Keyboard.current.enterKey.wasPressedThisFrame)
+            {
+                clickInput = true;
+            }
+        }
+        if (!clickInput && (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return)))
+        {
+            clickInput = true;
+        }
+
+        if (clickInput)
+        {
+            HandleClick();
+        }
     }
 
     public void HandleClick()
@@ -132,7 +151,7 @@ public class SleepManager : MonoBehaviour
 
     void OnSleep()
     {
-        barRect.gameObject.SetActive(false);
+        if (barRect != null) barRect.gameObject.SetActive(false);
         Debug.Log("on sleep");
         targetSleepProgress = 0.5f;
         sleepProgress = Mathf.Lerp(sleepProgress, 0.5f, Time.deltaTime * smoothSpeed);
@@ -144,10 +163,10 @@ public class SleepManager : MonoBehaviour
         yield return new WaitForSeconds(1f);
         targetSleepProgress = 0;
         sleepProgress = Mathf.Lerp(sleepProgress, 0f, Time.deltaTime * 5 * smoothSpeed);
-        PanelToChange.sprite = Loosing_Sprite;
+        if (PanelToChange != null) PanelToChange.sprite = Loosing_Sprite;
         yield return new WaitForSeconds(0.5f);
         IsLose = true;
-        UIAnimationManager.Instance.HideWindow(mainPanel, 0.5f);
+        if (mainPanel != null) UIAnimationManager.Instance.HideWindow(mainPanel, 0.5f);
 
         HandleLoose();
     }
@@ -174,7 +193,7 @@ public class SleepManager : MonoBehaviour
         targetSleepProgress = 0f;
         lastInteractionTime = Time.time;
         IsLose = false;
-        barRect.gameObject.SetActive(true);
+        if (barRect != null) barRect.gameObject.SetActive(true);
         if (PanelToChange != null && main_Sprite != null)
         {
             PanelToChange.sprite = main_Sprite;
@@ -197,8 +216,11 @@ public class SleepManager : MonoBehaviour
             // Avoid division by zero; just set a huge time so it never triggers
             timePerSpeedIncrease = float.MaxValue;
         }
-        _musicChange.ToggleMusic();
-        _musicChange.PlayThemeMusic();
+        if (_musicChange != null)
+        {
+            _musicChange.ToggleMusic();
+            _musicChange.PlayThemeMusic();
+        }
     }
     
     private void HandleLoose()
@@ -212,6 +234,8 @@ public class SleepManager : MonoBehaviour
 
     private void SetInitialPos()
     {
+        if (mainPanel == null || upperCover == null || lowerCover == null) return;
+
         float halfHeight = mainPanel.rect.height;
 
         // Move upper cover UP
@@ -223,7 +247,6 @@ public class SleepManager : MonoBehaviour
         Vector2 lowerPos = lowerCover.anchoredPosition;
         lowerPos.y = -halfHeight;
         lowerCover.anchoredPosition = lowerPos;
-
     }
 #if UNITY_EDITOR
     void OnDrawGizmos()
