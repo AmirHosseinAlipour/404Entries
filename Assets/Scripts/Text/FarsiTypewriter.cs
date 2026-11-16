@@ -95,6 +95,8 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
             {
                 _textUI.raycastTarget = false;
             }
+            centerAlign = true;
+            middleAlign = true;
         }
 
         if (_textUI != null)
@@ -652,19 +654,23 @@ public class FarsiTypewriter : MonoBehaviour, IPointerClickHandler
     {
         if (_textUI == null) return;
 
+        bool isButton = GetComponentInParent<Button>() != null;
+        bool isCenter = centerAlign || isButton;
+        bool isMiddle = middleAlign || isButton;
+
         if (LocalizationManager.IsRTL)
         {
-            if (middleAlign)
-                _textUI.alignment = centerAlign ? TextAnchor.MiddleCenter : TextAnchor.MiddleRight;
+            if (isMiddle)
+                _textUI.alignment = isCenter ? TextAnchor.MiddleCenter : TextAnchor.MiddleRight;
             else
-                _textUI.alignment = centerAlign ? TextAnchor.UpperCenter : TextAnchor.UpperRight;
+                _textUI.alignment = isCenter ? TextAnchor.UpperCenter : TextAnchor.UpperRight;
         }
         else
         {
-            if (middleAlign)
-                _textUI.alignment = centerAlign ? TextAnchor.MiddleCenter : TextAnchor.MiddleLeft;
+            if (isMiddle)
+                _textUI.alignment = isCenter ? TextAnchor.MiddleCenter : TextAnchor.MiddleLeft;
             else
-                _textUI.alignment = centerAlign ? TextAnchor.UpperCenter : TextAnchor.UpperLeft;
+                _textUI.alignment = isCenter ? TextAnchor.UpperCenter : TextAnchor.UpperLeft;
         }
     }
 

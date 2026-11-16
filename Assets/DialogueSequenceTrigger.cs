@@ -65,11 +65,29 @@ public class DialogueSequenceTrigger : MonoBehaviour
     public static void EnsureDialogueSortingOrder(RectTransform rt)
     {
         if (rt == null) return;
+        if (UIAnimationManager.Instance != null)
+        {
+            UIAnimationManager.Instance.EnsureDialogueSorting(rt);
+            return;
+        }
+
         Canvas c = rt.GetComponentInParent<Canvas>(true);
         if (c != null)
         {
             c.overrideSorting = true;
             c.sortingOrder = 50;
+        }
+
+        Canvas winCanvas = rt.GetComponent<Canvas>();
+        if (winCanvas == null)
+        {
+            winCanvas = rt.gameObject.AddComponent<Canvas>();
+        }
+        winCanvas.overrideSorting = true;
+        winCanvas.sortingOrder = 50;
+        if (rt.GetComponent<UnityEngine.UI.GraphicRaycaster>() == null)
+        {
+            rt.gameObject.AddComponent<UnityEngine.UI.GraphicRaycaster>();
         }
     }
 

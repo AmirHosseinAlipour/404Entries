@@ -22,6 +22,8 @@ public class UIAnimationManager : MonoBehaviour
     {
         if (window == null) return;
 
+        EnsureDialogueSorting(window);
+
         // NOTE: Generic windows (elevator buttons, menus, popups) MUST NOT call CenterDialogueLayout!
         CanvasGroup cg = GetOrAddCanvasGroup(window);
         cg.DOKill();
@@ -38,6 +40,8 @@ public class UIAnimationManager : MonoBehaviour
     public void ShowDialogueWindow(RectTransform window, float duration, FarsiTypewriter fw = null)
     {
         if (window == null) return;
+
+        EnsureDialogueSorting(window);
 
         string wName = window.gameObject.name.ToLower();
         if (wName.Contains("mission") || wName.Contains("minigame") || wName.Contains("masoumi") || wName.Contains("game"))
@@ -246,5 +250,33 @@ public class UIAnimationManager : MonoBehaviour
             cg = rect.gameObject.AddComponent<CanvasGroup>();
         }
         return cg;
+    }
+
+    public void EnsureDialogueSorting(RectTransform window)
+    {
+        if (window == null) return;
+
+        Canvas rootCanvas = window.GetComponentInParent<Canvas>(true);
+        if (rootCanvas != null)
+        {
+            rootCanvas.overrideSorting = true;
+            if (rootCanvas.sortingOrder < 50)
+            {
+                rootCanvas.sortingOrder = 50;
+            }
+        }
+
+        Canvas winCanvas = window.GetComponent<Canvas>();
+        if (winCanvas == null)
+        {
+            winCanvas = window.gameObject.AddComponent<Canvas>();
+        }
+        winCanvas.overrideSorting = true;
+        winCanvas.sortingOrder = 50;
+
+        if (window.GetComponent<UnityEngine.UI.GraphicRaycaster>() == null)
+        {
+            window.gameObject.AddComponent<UnityEngine.UI.GraphicRaycaster>();
+        }
     }
 }

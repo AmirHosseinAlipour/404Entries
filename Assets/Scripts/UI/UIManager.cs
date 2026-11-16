@@ -14,43 +14,60 @@ public class UIManager : MonoBehaviour
     private bool panel1Active = false;
     private bool panel2Active = false;
 
+    private void Awake()
+    {
+        if (panel1 != null) panel1.gameObject.SetActive(false);
+        if (panel2 != null) panel2.gameObject.SetActive(false);
+        panel1Active = false;
+        panel2Active = false;
+    }
+
     void Start()
     {
-        
-        button1.onClick.AddListener(OpenPanel1);
-        button2.onClick.AddListener(OpenPanel2);
+        if (button1 != null) button1.onClick.AddListener(OpenPanel1);
+        if (button2 != null) button2.onClick.AddListener(OpenPanel2);
         DeactivateAllPanels();
     }
+
     public void OpenPanel1()
     {
-        Deactive();
+        DeactivateAllPanels();
         panel1Active = true;
-        UIAnimationManager.Instance.ShowWindow(panel1, 0.5f);
+        if (panel1 != null)
+        {
+            panel1.gameObject.SetActive(true);
+            UIAnimationManager.Instance.ShowWindow(panel1, 0.4f);
+        }
     }
+
     public void OpenPanel2()
     {
-        Deactive();
+        DeactivateAllPanels();
         panel2Active = true;
-        UIAnimationManager.Instance.ShowWindow(panel2, 0.5f);
+        if (panel2 != null)
+        {
+            panel2.gameObject.SetActive(true);
+            UIAnimationManager.Instance.ShowWindow(panel2, 0.4f);
+        }
     }
+
     public void DeactivateAllPanels()
     {
-        if (panel1Active)
+        if (panel1 != null && panel1.gameObject.activeSelf)
         {
-            UIAnimationManager.Instance.HideWindow(panel1, 0.5f);
-            panel1Active = false;
+            UIAnimationManager.Instance.HideWindow(panel1, 0.4f);
         }
-        else if (panel2Active)
+        if (panel2 != null && panel2.gameObject.activeSelf)
         {
-            UIAnimationManager.Instance.HideWindow(panel2, 0.5f);
-            panel2Active = false;
+            UIAnimationManager.Instance.HideWindow(panel2, 0.4f);
         }
+        panel1Active = false;
+        panel2Active = false;
     }
 
     private void Deactive()
     {
-        UIAnimationManager.Instance.HideWindow(panel2, 0.5f);
-        UIAnimationManager.Instance.HideWindow(panel1, 0.5f);
+        DeactivateAllPanels();
     }
     public void ExitGame()
     {
