@@ -1,5 +1,10 @@
 using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
+using DG.Tweening;
+#if ENABLE_INPUT_SYSTEM
+using UnityEngine.InputSystem;
+#endif
 
 public class enterdialouge : MonoBehaviour
 {
@@ -10,6 +15,10 @@ public class enterdialouge : MonoBehaviour
     private GameObject _promptObj;
     private SpriteRenderer _promptSr;
     private bool _playerInRange = false;
+
+    private float _promptScaleMultiplier = 1f;
+    private Tween _scaleTween;
+    private int _lastTappedFrame = -1;
 
     public bool IsDialogueActive => dialouge != null && dialouge.gameObject.activeInHierarchy;
 
@@ -91,11 +100,11 @@ public class enterdialouge : MonoBehaviour
                     _promptObj.SetActive(true);
                 }
 
-                // Keep scale normalized against NPC flipping/scaling
+                // Keep scale normalized against NPC flipping/scaling, with scale multiplier for punch effect
                 Vector3 parentLossy = transform.lossyScale;
                 float invX = parentLossy.x != 0 ? 0.45f / Mathf.Abs(parentLossy.x) : 0.45f;
                 float invY = parentLossy.y != 0 ? 0.45f / Mathf.Abs(parentLossy.y) : 0.45f;
-                _promptObj.transform.localScale = new Vector3(invX, invY, 1f);
+                _promptObj.transform.localScale = new Vector3(invX, invY, 1f) * _promptScaleMultiplier;
 
                 // World position above NPC head with gentle sine wave bobbing
                 float topY = _npcSr != null ? _npcSr.bounds.max.y + 0.35f : transform.position.y + 1.4f;
@@ -107,6 +116,9 @@ public class enterdialouge : MonoBehaviour
                 c.a = Mathf.MoveTowards(c.a, 1f, Time.deltaTime * 6f);
                 _promptSr.color = c;
             }
+
+            // Check touch on mobile or click on PC for this overhead prompt / NPC
+            CheckTapInteraction();
         }
         else
         {
@@ -122,6 +134,160 @@ public class enterdialouge : MonoBehaviour
                 }
             }
         }
+    }
+
+    private void CheckTapInteraction()
+    {
+        if (!_playerInRange || IsDialogueActive || _promptObj == null || !_promptObj.activeSelf)
+            return;
+
+        if (_promptSr != null && _promptSr.color.a < 0.2f)
+            return;
+
+        Camera cam = Camera.main;
+        if (cam == null) return;
+
+        // 1. Mobile Touch Input (supports multi-touch)
+        if (Input.touchCount > 0)
+        {
+            for (int i = 0; i < Input.touchCount; i++)
+            {
+                UnityEngine.Touch touch = Input.GetTouch(i);
+                if (touch.phase == UnityEngine.TouchPhase.Began)
+                {
+                    if (IsPointerOverUI(touch.fingerId)) continue;
+
+                    Vector3 worldPos = cam.ScreenToWorldPoint(touch.position);
+                    worldPos.z = 0f;
+
+                    if (IsTouchHittingPromptOrNPC(worldPos))
+                    {
+                        OnPromptTapped();
+                        return;
+                    }
+                }
+            }
+        }
+
+        // 2. Mouse Click (Desktop / Unity Editor)
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (!IsPointerOverUI(-1))
+            {
+                Vector3 worldPos = cam.ScreenToWorldPoint(Input.mousePosition);
+                worldPos.z = 0f;
+
+                if (IsTouchHittingPromptOrNPC(worldPos))
+                {
+                    OnPromptTapped();
+                    return;
+                }
+            }
+        }
+
+#if ENABLE_INPUT_SYSTEM
+        // 3. New Input System Touchscreen
+        if (Touchscreen.current != null)
+        {
+            var touches = Touchscreen.current.touches;
+            for (int i = 0; i < touches.Count; i++)
+            {
+                var t = touches[i];
+                if (t.press.wasPressedThisFrame)
+                {
+                    int fingerId = t.touchId.ReadValue();
+                    if (IsPointerOverUI(fingerId)) continue;
+
+                    Vector2 screenPos = t.position.ReadValue();
+                    Vector3 worldPos = cam.ScreenToWorldPoint(screenPos);
+                    worldPos.z = 0f;
+
+                    if (IsTouchHittingPromptOrNPC(worldPos))
+                    {
+                        OnPromptTapped();
+                        return;
+                    }
+                }
+            }
+        }
+
+        // 4. New Input System Mouse
+        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
+        {
+            if (!IsPointerOverUI(-1))
+            {
+                Vector2 screenPos = Mouse.current.position.ReadValue();
+                Vector3 worldPos = cam.ScreenToWorldPoint(screenPos);
+                worldPos.z = 0f;
+
+                if (IsTouchHittingPromptOrNPC(worldPos))
+                {
+                    OnPromptTapped();
+                    return;
+                }
+            }
+        }
+#endif
+    }
+
+    private bool IsPointerOverUI(int fingerId)
+    {
+        if (EventSystem.current == null) return false;
+        if (fingerId >= 0)
+        {
+            return EventSystem.current.IsPointerOverGameObject(fingerId);
+        }
+        return EventSystem.current.IsPointerOverGameObject();
+    }
+
+    private bool IsTouchHittingPromptOrNPC(Vector3 worldPos)
+    {
+        // 1. Direct hit on the overhead E prompt (generous radius for mobile touch)
+        if (_promptObj != null)
+        {
+            Vector2 promptPos = _promptObj.transform.position;
+            if (Vector2.Distance(worldPos, promptPos) <= 0.95f)
+            {
+                return true;
+            }
+        }
+
+        // 2. Direct hit on NPC sprite bounds
+        if (_npcSr != null)
+        {
+            Bounds b = _npcSr.bounds;
+            b.Expand(0.35f);
+            if (b.Contains(worldPos))
+            {
+                return true;
+            }
+        }
+        else
+        {
+            if (Vector2.Distance(worldPos, transform.position) <= 0.95f)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void OnPromptTapped()
+    {
+        if (Time.frameCount == _lastTappedFrame) return;
+        _lastTappedFrame = Time.frameCount;
+
+        PunchOverheadPrompt();
+        TriggerInteraction();
+    }
+
+    private void PunchOverheadPrompt()
+    {
+        if (_scaleTween != null) _scaleTween.Kill();
+        _promptScaleMultiplier = 1.35f;
+        _scaleTween = DOTween.To(() => _promptScaleMultiplier, x => _promptScaleMultiplier = x, 1f, 0.25f)
+            .SetEase(Ease.OutBack);
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -176,6 +342,12 @@ public class enterdialouge : MonoBehaviour
 
     private void OnDisable()
     {
+        if (_scaleTween != null)
+        {
+            _scaleTween.Kill();
+            _scaleTween = null;
+        }
+        _promptScaleMultiplier = 1f;
         _playerInRange = false;
         NPCInteractUI.Unregister(this);
         if (_promptObj != null)

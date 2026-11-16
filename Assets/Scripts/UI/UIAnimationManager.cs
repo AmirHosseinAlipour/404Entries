@@ -39,6 +39,13 @@ public class UIAnimationManager : MonoBehaviour
     {
         if (window == null) return;
 
+        string wName = window.gameObject.name.ToLower();
+        if (wName.Contains("mission") || wName.Contains("minigame") || wName.Contains("masoumi") || wName.Contains("game"))
+        {
+            ShowWindow(window, duration);
+            return;
+        }
+
         CenterDialogueLayout(window);
 
         CanvasGroup cg = GetOrAddCanvasGroup(window);
@@ -73,8 +80,11 @@ public class UIAnimationManager : MonoBehaviour
 
         string winName = window.gameObject.name.ToLower();
 
-        // Safety Guard: NEVER modify non-dialogue UI like Elevator, Menus, or Tasks
-        if (winName.Contains("elevator") || winName.Contains("butoon") || winName.Contains("task") || winName.Contains("pause") || winName.Contains("setting"))
+        // Safety Guard: NEVER modify non-dialogue UI like Elevator, Menus, Tasks, or Minigames/Missions!
+        if (winName.Contains("elevator") || winName.Contains("butoon") || winName.Contains("task") || 
+            winName.Contains("pause") || winName.Contains("setting") || winName.Contains("mission") || 
+            winName.Contains("minigame") || winName.Contains("masoumi") || winName.Contains("game") ||
+            winName.Contains("drag") || winName.Contains("puzzle"))
         {
             return;
         }
@@ -106,6 +116,12 @@ public class UIAnimationManager : MonoBehaviour
             if (childRt == null) continue;
 
             string childName = child.gameObject.name.ToLower();
+
+            // Skip minigame containers or dropzone parents
+            if (child.Find("PlaceHolders") != null || child.GetComponentInChildren<BaseDropZone>(true) != null || child.GetComponentInChildren<BaseDraggableItem>(true) != null)
+            {
+                continue;
+            }
 
             // Handle Text / Dialogue Box Container
             if (childName == "text" || child.GetComponent<FarsiTypewriter>() != null || childName.Contains("dialogue") || childName.Contains("textpanel"))

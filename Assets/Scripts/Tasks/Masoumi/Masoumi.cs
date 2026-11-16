@@ -178,6 +178,10 @@ public class Masoumi : BaseProfessors
             {
                 btns[i].onClick.RemoveListener(StartGame);
                 btns[i].onClick.AddListener(StartGame);
+
+                // Disable conflicting SwitchWindow on the Yes button so it doesn't trigger ShowDialogueWindow on Mission
+                SwitchWindow sw = btns[i].GetComponent<SwitchWindow>();
+                if (sw != null) sw.enabled = false;
             }
         }
     }
@@ -198,14 +202,14 @@ public class Masoumi : BaseProfessors
         {
             missionPanel.gameObject.SetActive(true);
             UIUtils.SetAlpha(missionPanel.gameObject, 1f);
-            UIAnimationManager.Instance.ShowWindow(missionPanel, 0.5f);
+            UIAnimationManager.Instance.ShowWindow(missionPanel, 0.4f);
         }
 
         if (speechPanel != null)
         {
             speechPanel.gameObject.SetActive(true);
             UIUtils.SetAlpha(speechPanel.gameObject, 1f);
-            UIAnimationManager.Instance.ShowWindow(speechPanel, 0.5f);
+            UIAnimationManager.Instance.ShowWindow(speechPanel, 0.4f);
         }
 
         if (_musicChange != null)
@@ -294,7 +298,9 @@ public class Masoumi : BaseProfessors
                     {
                         items[i].rectTransform.anchorMin = new Vector2(0.5f, 0.5f);
                         items[i].rectTransform.anchorMax = new Vector2(0.5f, 0.5f);
+                        items[i].rectTransform.pivot = new Vector2(0.5f, 0.5f);
                         items[i].rectTransform.anchoredPosition = Vector2.zero;
+                        items[i].rectTransform.sizeDelta = new Vector2(330f, 140f);
                     }
 
                     Image itmImg = items[i].GetComponent<Image>();
@@ -395,9 +401,27 @@ public class Masoumi : BaseProfessors
         Sprite btnHover = Resources.Load<Sprite>("UI/dialogue_button_hover");
         Sprite btnPressed = Resources.Load<Sprite>("UI/dialogue_button_pressed");
 
-        // 1. Root speechPanel: transparent background so it doesn't cover the screen
+        // 0. StartPanel / Background_Panel should be a clean, semi-transparent dark overlay, NOT a giant card with a border!
+        if (StartPanel != null)
+        {
+            Image startImg = StartPanel.GetComponent<Image>();
+            if (startImg != null)
+            {
+                startImg.material = null;
+                startImg.sprite = null;
+                startImg.color = new Color(0.04f, 0.07f, 0.12f, 0.88f);
+            }
+        }
+
+        // 1. Root speechPanel: fills Mission completely, transparent background
         if (speechPanel != null)
         {
+            speechPanel.anchorMin = Vector2.zero;
+            speechPanel.anchorMax = Vector2.one;
+            speechPanel.pivot = new Vector2(0.5f, 0.5f);
+            speechPanel.anchoredPosition = Vector2.zero;
+            speechPanel.sizeDelta = Vector2.zero;
+
             Image panelImg = speechPanel.GetComponent<Image>();
             if (panelImg != null)
             {
@@ -405,10 +429,20 @@ public class Masoumi : BaseProfessors
             }
         }
 
-        // 2. Speech Bubble Card (the actual card at the top holding textLevels)
+        // 2. Speech Bubble Card (holding textLevels at the top of the screen)
         Transform speechCard = textLevels != null ? textLevels.transform.parent : (speechPanel != null ? speechPanel.Find("Text") : null);
         if (speechCard != null)
         {
+            RectTransform cardRt = speechCard as RectTransform;
+            if (cardRt != null)
+            {
+                cardRt.anchorMin = new Vector2(0.5f, 1f);
+                cardRt.anchorMax = new Vector2(0.5f, 1f);
+                cardRt.pivot = new Vector2(0.5f, 1f);
+                cardRt.anchoredPosition = new Vector2(-70f, -40f);
+                cardRt.sizeDelta = new Vector2(1060f, 210f);
+            }
+
             MonoBehaviour[] monos = speechCard.GetComponents<MonoBehaviour>();
             for (int m = 0; m < monos.Length; m++)
             {
@@ -428,9 +462,19 @@ public class Masoumi : BaseProfessors
             }
         }
 
-        // 3. Masoumi Speech Text (textLevels)
+        // 3. Masoumi Speech Text (textLevels) inside speechCard
         if (textLevels != null)
         {
+            RectTransform txtRt = textLevels.rectTransform;
+            if (txtRt != null)
+            {
+                txtRt.anchorMin = Vector2.zero;
+                txtRt.anchorMax = Vector2.one;
+                txtRt.pivot = new Vector2(0.5f, 0.5f);
+                txtRt.anchoredPosition = Vector2.zero;
+                txtRt.sizeDelta = new Vector2(-60f, -30f);
+            }
+
             textLevels.color = Color.white;
             textLevels.alignment = TextAnchor.MiddleCenter;
             textLevels.fontSize = 24;
@@ -451,12 +495,165 @@ public class Masoumi : BaseProfessors
             }
         }
 
-        // 4. Draggable Items (Option 1, 2, 3)
+        // 4. PlaceHolders container (middle row of the screen)
+        Transform phContainer = speechPanel != null ? speechPanel.Find("PlaceHolders") : null;
+        if (phContainer != null)
+        {
+            RectTransform phRt = phContainer as RectTransform;
+            if (phRt != null)
+            {
+                phRt.anchorMin = new Vector2(0.5f, 0.5f);
+                phRt.anchorMax = new Vector2(0.5f, 0.5f);
+                phRt.pivot = new Vector2(0.5f, 0.5f);
+                phRt.anchoredPosition = new Vector2(-70f, 40f);
+                phRt.sizeDelta = new Vector2(1060f, 160f);
+            }
+        }
+
+        // Drop target slots
+        if (zonesToDrop != null)
+        {
+            float[] xOffsets = new float[] { -360f, 0f, 360f };
+            for (int i = 0; i < zonesToDrop.Length; i++)
+            {
+                if (zonesToDrop[i] == null) continue;
+                Transform ph = zonesToDrop[i].transform.parent;
+                if (ph != null)
+                {
+                    RectTransform phItemRt = ph as RectTransform;
+                    if (phItemRt != null)
+                    {
+                        phItemRt.anchorMin = new Vector2(0.5f, 0.5f);
+                        phItemRt.anchorMax = new Vector2(0.5f, 0.5f);
+                        phItemRt.pivot = new Vector2(0.5f, 0.5f);
+                        float x = i < xOffsets.Length ? xOffsets[i] : (i - 1) * 360f;
+                        phItemRt.anchoredPosition = new Vector2(x, 0f);
+                        phItemRt.sizeDelta = new Vector2(330f, 140f);
+                    }
+
+                    MonoBehaviour[] monos = ph.GetComponents<MonoBehaviour>();
+                    for (int m = 0; m < monos.Length; m++)
+                    {
+                        if (monos[m] != null && monos[m].GetType().Name.Contains("RoundedCorners"))
+                        {
+                            monos[m].enabled = false;
+                        }
+                    }
+
+                    Image phImg = ph.GetComponent<Image>();
+                    if (phImg != null && btnNormal != null)
+                    {
+                        phImg.material = null;
+                        phImg.sprite = btnNormal;
+                        phImg.type = Image.Type.Sliced;
+                        phImg.color = new Color(0.08f, 0.22f, 0.38f, 0.55f);
+                    }
+
+                    Text[] numTexts = ph.GetComponentsInChildren<Text>(true);
+                    for (int t = 0; t < numTexts.Length; t++)
+                    {
+                        if (numTexts[t] != null && numTexts[t].gameObject != zonesToDrop[i].gameObject)
+                        {
+                            RectTransform numRt = numTexts[t].rectTransform;
+                            if (numRt != null)
+                            {
+                                numRt.anchorMin = new Vector2(0.5f, 1f);
+                                numRt.anchorMax = new Vector2(0.5f, 1f);
+                                numRt.pivot = new Vector2(0.5f, 1f);
+                                numRt.anchoredPosition = new Vector2(0f, 34f);
+                                numRt.sizeDelta = new Vector2(120f, 35f);
+                            }
+
+                            numTexts[t].color = new Color(0.35f, 0.88f, 1f, 1f);
+                            numTexts[t].alignment = TextAnchor.MiddleCenter;
+                            numTexts[t].fontSize = 28;
+                            numTexts[t].raycastTarget = false;
+
+                            Shadow s = numTexts[t].GetComponent<Shadow>();
+                            if (s == null) s = numTexts[t].gameObject.AddComponent<Shadow>();
+                            s.effectColor = new Color(0f, 0f, 0f, 0.9f);
+                            s.effectDistance = new Vector2(1.5f, -1.5f);
+                        }
+                    }
+
+                    // Ensure dropzone fills parent slot
+                    RectTransform zoneRt = zonesToDrop[i].transform as RectTransform;
+                    if (zoneRt != null)
+                    {
+                        zoneRt.anchorMin = Vector2.zero;
+                        zoneRt.anchorMax = Vector2.one;
+                        zoneRt.pivot = new Vector2(0.5f, 0.5f);
+                        zoneRt.anchoredPosition = Vector2.zero;
+                        zoneRt.sizeDelta = Vector2.zero;
+                    }
+                }
+            }
+        }
+
+        // 5. Phrases container (bottom row of the screen)
+        Transform phrasesContainer = missionPanel != null ? missionPanel.Find("Phrases") : null;
+        if (phrasesContainer != null)
+        {
+            RectTransform phrasesRt = phrasesContainer as RectTransform;
+            if (phrasesRt != null)
+            {
+                phrasesRt.anchorMin = new Vector2(0.5f, 0f);
+                phrasesRt.anchorMax = new Vector2(0.5f, 0f);
+                phrasesRt.pivot = new Vector2(0.5f, 0f);
+                phrasesRt.anchoredPosition = new Vector2(-70f, 50f);
+                phrasesRt.sizeDelta = new Vector2(1060f, 160f);
+            }
+        }
+
+        // Initial zones
+        if (initialZones != null)
+        {
+            float[] xOffsets = new float[] { -360f, 0f, 360f };
+            for (int i = 0; i < initialZones.Length; i++)
+            {
+                if (initialZones[i] == null) continue;
+                RectTransform initRt = initialZones[i].transform as RectTransform;
+                if (initRt != null)
+                {
+                    initRt.anchorMin = new Vector2(0.5f, 0.5f);
+                    initRt.anchorMax = new Vector2(0.5f, 0.5f);
+                    initRt.pivot = new Vector2(0.5f, 0.5f);
+                    float x = i < xOffsets.Length ? xOffsets[i] : (i - 1) * 360f;
+                    initRt.anchoredPosition = new Vector2(x, 0f);
+                    initRt.sizeDelta = new Vector2(330f, 140f);
+                }
+
+                MonoBehaviour[] monos = initialZones[i].GetComponents<MonoBehaviour>();
+                for (int m = 0; m < monos.Length; m++)
+                {
+                    if (monos[m] != null && monos[m].GetType().Name.Contains("RoundedCorners"))
+                    {
+                        monos[m].enabled = false;
+                    }
+                }
+
+                Image initImg = initialZones[i].GetComponent<Image>();
+                if (initImg != null && btnNormal != null)
+                {
+                    initImg.material = null;
+                    initImg.sprite = btnNormal;
+                    initImg.type = Image.Type.Sliced;
+                    initImg.color = new Color(0.05f, 0.12f, 0.22f, 0.45f);
+                }
+            }
+        }
+
+        // 6. Draggable Items (Options 1, 2, 3)
         if (items != null)
         {
             for (int i = 0; i < items.Length; i++)
             {
                 if (items[i] == null) continue;
+
+                if (items[i].rectTransform != null)
+                {
+                    items[i].rectTransform.sizeDelta = new Vector2(330f, 140f);
+                }
 
                 MonoBehaviour[] monos = items[i].GetComponents<MonoBehaviour>();
                 for (int m = 0; m < monos.Length; m++)
@@ -498,16 +695,26 @@ public class Masoumi : BaseProfessors
             }
         }
 
-        // 5. Options Texts
+        // 7. Option Texts inside draggable items
         if (itemsOptionsTexts != null)
         {
             for (int i = 0; i < itemsOptionsTexts.Length; i++)
             {
                 if (itemsOptionsTexts[i] == null) continue;
                 Text optTxt = itemsOptionsTexts[i];
+                RectTransform txtRt = optTxt.rectTransform;
+                if (txtRt != null)
+                {
+                    txtRt.anchorMin = Vector2.zero;
+                    txtRt.anchorMax = Vector2.one;
+                    txtRt.pivot = new Vector2(0.5f, 0.5f);
+                    txtRt.anchoredPosition = Vector2.zero;
+                    txtRt.sizeDelta = new Vector2(-30f, -20f);
+                }
+
                 optTxt.color = Color.white;
                 optTxt.alignment = TextAnchor.MiddleCenter;
-                optTxt.fontSize = 18;
+                optTxt.fontSize = 19;
                 optTxt.raycastTarget = false;
 
                 Shadow shadow = optTxt.GetComponent<Shadow>();
@@ -528,76 +735,20 @@ public class Masoumi : BaseProfessors
             }
         }
 
-        // 6. Target Drop Zones (PlaceHolders 1, 2, 3)
-        if (zonesToDrop != null)
+        // 8. Masoumi Portrait on the right side (restored to original pixel-perfect size)
+        Transform masoumiUi = transform.Find("Background_Panel/Masoumi_UI");
+        if (masoumiUi == null && StartPanel != null) masoumiUi = StartPanel.Find("Masoumi_UI");
+        if (masoumiUi != null)
         {
-            for (int i = 0; i < zonesToDrop.Length; i++)
+            RectTransform portraitRt = masoumiUi as RectTransform;
+            if (portraitRt != null)
             {
-                if (zonesToDrop[i] == null) continue;
-                Transform ph = zonesToDrop[i].transform.parent;
-                if (ph != null)
-                {
-                    MonoBehaviour[] monos = ph.GetComponents<MonoBehaviour>();
-                    for (int m = 0; m < monos.Length; m++)
-                    {
-                        if (monos[m] != null && monos[m].GetType().Name.Contains("RoundedCorners"))
-                        {
-                            monos[m].enabled = false;
-                        }
-                    }
-
-                    Image phImg = ph.GetComponent<Image>();
-                    if (phImg != null && btnNormal != null)
-                    {
-                        phImg.material = null;
-                        phImg.sprite = btnNormal;
-                        phImg.type = Image.Type.Sliced;
-                        phImg.color = new Color(0.08f, 0.22f, 0.38f, 0.55f);
-                    }
-
-                    Text[] numTexts = ph.GetComponentsInChildren<Text>(true);
-                    for (int t = 0; t < numTexts.Length; t++)
-                    {
-                        if (numTexts[t] != null && numTexts[t].gameObject != zonesToDrop[i].gameObject)
-                        {
-                            numTexts[t].color = new Color(0.35f, 0.88f, 1f, 1f);
-                            numTexts[t].alignment = TextAnchor.MiddleCenter;
-                            numTexts[t].fontSize = 30;
-                            numTexts[t].raycastTarget = false;
-
-                            Shadow s = numTexts[t].GetComponent<Shadow>();
-                            if (s == null) s = numTexts[t].gameObject.AddComponent<Shadow>();
-                            s.effectColor = new Color(0f, 0f, 0f, 0.9f);
-                            s.effectDistance = new Vector2(1.5f, -1.5f);
-                        }
-                    }
-                }
-            }
-        }
-
-        // 7. Initial Zones (where items start at the bottom)
-        if (initialZones != null)
-        {
-            for (int i = 0; i < initialZones.Length; i++)
-            {
-                if (initialZones[i] == null) continue;
-                MonoBehaviour[] monos = initialZones[i].GetComponents<MonoBehaviour>();
-                for (int m = 0; m < monos.Length; m++)
-                {
-                    if (monos[m] != null && monos[m].GetType().Name.Contains("RoundedCorners"))
-                    {
-                        monos[m].enabled = false;
-                    }
-                }
-
-                Image initImg = initialZones[i].GetComponent<Image>();
-                if (initImg != null && btnNormal != null)
-                {
-                    initImg.material = null;
-                    initImg.sprite = btnNormal;
-                    initImg.type = Image.Type.Sliced;
-                    initImg.color = new Color(0.05f, 0.12f, 0.22f, 0.45f);
-                }
+                portraitRt.anchorMin = new Vector2(1f, 0f);
+                portraitRt.anchorMax = new Vector2(1f, 0f);
+                portraitRt.pivot = new Vector2(1f, 0f);
+                portraitRt.anchoredPosition = new Vector2(-48f, 50f);
+                portraitRt.sizeDelta = new Vector2(25f, 59f);
+                portraitRt.localScale = new Vector3(10f, 10f, 10f);
             }
         }
     }

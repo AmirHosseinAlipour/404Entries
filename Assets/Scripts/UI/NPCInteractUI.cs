@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
@@ -8,6 +9,7 @@ public class NPCInteractUI : MonoBehaviour
 {
     public static NPCInteractUI Instance { get; private set; }
 
+    private static readonly List<enterdialouge> _activeNPCs = new List<enterdialouge>();
     private static enterdialouge _currentNPC;
     private static Sprite _ePromptSprite;
 
@@ -15,6 +17,8 @@ public class NPCInteractUI : MonoBehaviour
     private CanvasGroup _canvasGroup;
     private RectTransform _buttonRect;
     private Button _eButton;
+
+    public static enterdialouge CurrentNPC => _currentNPC;
 
     public static Sprite EPromptSprite
     {
@@ -51,6 +55,17 @@ public class NPCInteractUI : MonoBehaviour
         CreateMobileUI();
     }
 
+    private void OnEnable()
+    {
+        InputReader.OnInteractPressed -= HandleInteractInput;
+        InputReader.OnInteractPressed += HandleInteractInput;
+    }
+
+    private void OnDisable()
+    {
+        InputReader.OnInteractPressed -= HandleInteractInput;
+    }
+
     private void CreateMobileUI()
     {
         // 1. Create Canvas
@@ -65,16 +80,18 @@ public class NPCInteractUI : MonoBehaviour
 
         gameObject.AddComponent<GraphicRaycaster>();
 
-        // 2. Create Mobile E Button Container on the right side
+        // 2. Create Mobile E Button Container on the BOTTOM-RIGHT side
         GameObject btnObj = new GameObject("Mobile_E_Button");
         btnObj.transform.SetParent(transform, false);
 
         _buttonRect = btnObj.AddComponent<RectTransform>();
-        _buttonRect.anchorMin = new Vector2(1f, 0.5f);
-        _buttonRect.anchorMax = new Vector2(1f, 0.5f);
-        _buttonRect.pivot = new Vector2(1f, 0.5f);
-        _buttonRect.anchoredPosition = new Vector2(-80f, 0f); // Right-middle thumb zone
-        _buttonRect.sizeDelta = new Vector2(116f, 116f);
+        _buttonRect.anchorMin = new Vector2(1f, 0f);
+        _buttonRect.anchorMax = new Vector2(1f, 0f);
+        _buttonRect.pivot = new Vector2(0.5f, 0.5f);
+        // Positioned comfortably in the bottom-right action thumb zone (symmetrical to joystick)
+        _buttonRect.anchoredPosition = new Vector2(-160f, 160f);
+        _buttonRect.sizeDelta = new Vector2(130f, 130f);
+        _buttonRect.localScale = new Vector3(0.7f, 0.7f, 1f);
 
         _canvasGroup = btnObj.AddComponent<CanvasGroup>();
         _canvasGroup.alpha = 0f;
@@ -98,9 +115,20 @@ public class NPCInteractUI : MonoBehaviour
         {
             _buttonRect.DOKill();
             _buttonRect.localScale = Vector3.one;
-            _buttonRect.DOPunchScale(new Vector3(-0.15f, -0.15f, 0f), 0.15f, 1, 0.5f);
+            _buttonRect.DOPunchScale(new Vector3(-0.18f, -0.18f, 0f), 0.18f, 1, 0.5f);
         }
 
+        TriggerCurrentInteraction();
+    }
+
+    private void HandleInteractInput()
+    {
+        TriggerCurrentInteraction();
+    }
+
+    private void TriggerCurrentInteraction()
+    {
+        UpdateCurrentNPC();
         if (_currentNPC != null)
         {
             _currentNPC.TriggerInteraction();
@@ -109,59 +137,101 @@ public class NPCInteractUI : MonoBehaviour
 
     public static void Register(enterdialouge npc)
     {
-        _currentNPC = npc;
+        if (npc == null) return;
+        if (!_activeNPCs.Contains(npc))
+        {
+            _activeNPCs.Add(npc);
+        }
+        UpdateCurrentNPC();
     }
 
     public static void Unregister(enterdialouge npc)
     {
-        if (_currentNPC == npc)
+        if (npc == null) return;
+        _activeNPCs.Remove(npc);
+        UpdateCurrentNPC();
+    }
+
+    public static void UpdateCurrentNPC()
+    {
+        _activeNPCs.RemoveAll(n => n == null || !n.gameObject.activeInHierarchy);
+        if (_activeNPCs.Count == 0)
         {
             _currentNPC = null;
+            return;
         }
+
+        if (_activeNPCs.Count == 1)
+        {
+            _currentNPC = _activeNPCs[0];
+            return;
+        }
+
+        // Pick closest in-range NPC to the player
+        Vector3 playerPos = Vector3.zero;
+        var p = GameObject.FindWithTag("Player");
+        if (p != null) playerPos = p.transform.position;
+
+        enterdialouge closest = null;
+        float minDist = float.MaxValue;
+        for (int i = 0; i < _activeNPCs.Count; i++)
+        {
+            var item = _activeNPCs[i];
+            if (item == null) continue;
+            float d = Vector2.Distance(playerPos, item.transform.position);
+            if (d < minDist)
+            {
+                minDist = d;
+                closest = item;
+            }
+        }
+        _currentNPC = closest ?? _activeNPCs[_activeNPCs.Count - 1];
     }
 
     private void Update()
     {
-        // 1. Check PC Keyboard E key
+        // 1. Check PC Keyboard E key (direct fallback in case InputReader event was missed)
         bool ePressed = false;
-        if (Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
+        if (Keyboard.current != null && (Keyboard.current.eKey.wasPressedThisFrame || Keyboard.current.fKey.wasPressedThisFrame))
             ePressed = true;
-        else if (Input.GetKeyDown(KeyCode.E))
+        else if (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.F))
             ePressed = true;
 
         if (ePressed)
         {
-            if (_currentNPC != null)
-            {
-                _currentNPC.TriggerInteraction();
-            }
+            TriggerCurrentInteraction();
         }
 
-        // 2. Update Mobile On-Screen Button visibility
-        // Requirements:
-        // - Only show if PlatformHelper.IsMobile() is TRUE (F2 hides it!)
+        // 2. Periodic active NPC update
+        UpdateCurrentNPC();
+
+        // 3. Update Mobile On-Screen Button visibility
+        // - Shown if PlatformHelper.IsMobile() is TRUE
         // - An NPC is in range
-        // - Dialogue is not currently open
+        // - Dialogue / cutscene is not currently active
         bool isMobile = PlatformHelper.IsMobile();
-        bool shouldShowMobile = isMobile &&
-                                _currentNPC != null &&
-                                !_currentNPC.IsDialogueActive;
+        bool isDialogueActive = (_currentNPC != null && _currentNPC.IsDialogueActive) ||
+                                DialogueSequenceTrigger.IsAnyConversationActive;
+
+        bool shouldShowMobile = isMobile && _currentNPC != null && !isDialogueActive;
 
         if (_canvasGroup != null)
         {
-            if (!isMobile)
+            float targetAlpha = shouldShowMobile ? 1f : 0f;
+            _canvasGroup.alpha = Mathf.MoveTowards(_canvasGroup.alpha, targetAlpha, Time.unscaledDeltaTime * 8f);
+
+            // Pop / scale effect while showing / hiding
+            float targetScale = shouldShowMobile ? 1f : 0.7f;
+            if (_buttonRect != null && !DOTween.IsTweening(_buttonRect))
             {
-                _canvasGroup.alpha = 0f;
-                _canvasGroup.blocksRaycasts = false;
-                _canvasGroup.interactable = false;
+                float currentScale = _buttonRect.localScale.x;
+                float newScale = Mathf.MoveTowards(currentScale, targetScale, Time.unscaledDeltaTime * 6f);
+                _buttonRect.localScale = new Vector3(newScale, newScale, 1f);
             }
-            else
-            {
-                float targetAlpha = shouldShowMobile ? 1f : 0f;
-                _canvasGroup.alpha = Mathf.MoveTowards(_canvasGroup.alpha, targetAlpha, Time.deltaTime * 8f);
-                _canvasGroup.blocksRaycasts = shouldShowMobile && _canvasGroup.alpha > 0.5f;
-                _canvasGroup.interactable = shouldShowMobile && _canvasGroup.alpha > 0.5f;
-            }
+
+            bool canInteract = shouldShowMobile && _canvasGroup.alpha > 0.4f;
+            _canvasGroup.blocksRaycasts = canInteract;
+            _canvasGroup.interactable = canInteract;
         }
     }
 }
