@@ -11,9 +11,9 @@ public class AsgharManager : MonoBehaviour
     public float fadeDuration = 1f;
     public GameObject RespawnPoint;
     private CanvasGroup canvasGroup;
-    
 
     public bool _win = false;
+    private bool _isRestarting = false;
 
     private void Awake()
     {
@@ -24,12 +24,18 @@ public class AsgharManager : MonoBehaviour
         }
         var playerObj = GameObject.FindWithTag("Player");
         if (playerObj != null) player = playerObj.GetComponent<PlayerController>();
+        if (teacher == null) teacher = FindFirstObjectByType<TeacherController>();
     }
-
-    private bool _isRestarting = false;
 
     private void Update()
     {
+        if (teacher == null) teacher = FindFirstObjectByType<TeacherController>();
+        if (player == null)
+        {
+            var playerObj = GameObject.FindWithTag("Player");
+            if (playerObj != null) player = playerObj.GetComponent<PlayerController>();
+        }
+
         if (teacher != null && player != null && teacher.isFacingPlayer && player.IsMoving() && !_win && !_isRestarting)
         {
             StartCoroutine(RestartGame());
@@ -52,9 +58,16 @@ public class AsgharManager : MonoBehaviour
 
         yield return StartCoroutine(FadeIn(fadeDuration));
 
-        if (player != null && RespawnPoint != null)
+        if (player != null)
         {
-            player.Respawn(RespawnPoint.transform.position);
+            Vector3 respawnPos = (RespawnPoint != null) ? RespawnPoint.transform.position : transform.position;
+            player.Respawn(respawnPos);
+            
+            // Turn teacher back to board so player has a clean chance when screen unfades
+            if (teacher != null)
+            {
+                teacher.TurnToBoard();
+            }
         }
 
         yield return StartCoroutine(FadeOut(fadeDuration));
@@ -74,6 +87,7 @@ public class AsgharManager : MonoBehaviour
         yield return new WaitForSeconds(fadeDuration);
         Debug.Log("You escaped the class!");
     }
+
     public IEnumerator FadeIn(float duration)
     {
         if (canvasGroup == null) yield break;
@@ -86,6 +100,7 @@ public class AsgharManager : MonoBehaviour
         }
         canvasGroup.alpha = 1f;
     }
+
     public IEnumerator FadeOut(float duration)
     {
         if (canvasGroup == null) yield break;
@@ -98,5 +113,4 @@ public class AsgharManager : MonoBehaviour
         }
         canvasGroup.alpha = 0f;
     }
-
 }

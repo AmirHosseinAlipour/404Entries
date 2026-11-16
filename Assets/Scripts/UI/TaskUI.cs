@@ -43,6 +43,11 @@ public class TaskUI : MonoBehaviour
 
     public void SetTopTaskUIVisible(bool visible)
     {
+        if (visible && BaseProfessors.IsAnyMinigameActive)
+        {
+            return;
+        }
+
         if (currentTaskPanel != null)
         {
             currentTaskPanel.SetActive(visible);

@@ -34,8 +34,33 @@ public class SoundPlayer : MonoBehaviour
 
     public void Play(string clipName)
     {
-        if (clipMap.TryGetValue(clipName, out var clip))
-            audioSource.PlayOneShot(clip, audioSource.volume);
+        if (clipMap == null)
+        {
+            clipMap = new Dictionary<string, AudioClip>();
+            if (clips != null)
+            {
+                foreach (var c in clips)
+                {
+                    if (c != null && !string.IsNullOrEmpty(c.name))
+                        clipMap[c.name] = c.clip;
+                }
+            }
+        }
+
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                audioSource = gameObject.AddComponent<AudioSource>();
+            }
+        }
+
+        if (clipMap.TryGetValue(clipName, out var clip) && clip != null)
+        {
+            float vol = (audioSource.volume > 0.01f) ? audioSource.volume : 1f;
+            audioSource.PlayOneShot(clip, vol);
+        }
     }
     
     public AudioClip GetClipByName(string name)

@@ -229,6 +229,14 @@ public class FailOrPass : BaseProfessors
                 }
             }
         }
+
+        if (firstLetter != null && firstLetter.gameObject.activeInHierarchy)
+        {
+            if (letter != null && letter.isTyping && InputReader.IsAnyClickDown())
+            {
+                letter.SkipTyping();
+            }
+        }
     }
 
     private Text GetDialogueText()
@@ -288,7 +296,21 @@ public class FailOrPass : BaseProfessors
     public void StartGame()
     {
         StartMinigame();
-        UIAnimationManager.Instance.ShowWindow(task, 0.5f);
+
+        TaskUI.SetTopUIVisible(false);
+        PlayerUIModeHelper.PlayerEnterUIMode(_player);
+        PlayerUIModeHelper.DisableTasksButton(_allTasksBackButton, _currentTaskButton);
+
+        if (task != null)
+        {
+            Canvas c = task.GetComponentInParent<Canvas>(true);
+            if (c != null)
+            {
+                c.overrideSorting = true;
+                c.sortingOrder = 25;
+            }
+            UIAnimationManager.Instance.ShowWindow(task, 0.5f);
+        }
 
         if (PaperManager.Instance != null)
         {
@@ -297,14 +319,58 @@ public class FailOrPass : BaseProfessors
 
         if (firstLetter != null)
         {
-            firstLetter.interactable = false;
+            firstLetter.onClick.RemoveAllListeners();
+            firstLetter.onClick.AddListener(HandleFirstLetterClicked);
+            firstLetter.interactable = true;
+            firstLetter.gameObject.SetActive(true);
         }
+
         if (musicChange != null)
         {
             musicChange.ToggleMusic();
             musicChange.PlayThemeMusic();
         }
-        if (letter != null) letter.StartTyping();
+
+        if (letter != null)
+        {
+            letter.OnTypingFinished -= EnableButton;
+            letter.OnTypingFinished += EnableButton;
+            letter.StartTyping();
+        }
+    }
+
+    public void HandleFirstLetterClicked()
+    {
+        if (letter != null && letter.isTyping)
+        {
+            letter.SkipTyping();
+            return;
+        }
+
+        CloseFirstLetter();
+    }
+
+    public void CloseFirstLetter()
+    {
+        if (firstLetter != null)
+        {
+            RectTransform rt = firstLetter.GetComponent<RectTransform>();
+            if (rt != null)
+            {
+                UIAnimationManager.Instance.HideWindow(rt, 0.3f);
+            }
+            else
+            {
+                firstLetter.gameObject.SetActive(false);
+            }
+        }
+
+        isMinigameActive = true;
+        IsAnyMinigameActive = true;
+        ActiveProfessor = this;
+        PlayerUIModeHelper.PlayerEnterUIMode(_player);
+        PlayerUIModeHelper.DisableTasksButton(_allTasksBackButton, _currentTaskButton);
+        TaskUI.SetTopUIVisible(false);
     }
 
     private void EnableButton()

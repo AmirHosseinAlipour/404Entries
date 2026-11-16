@@ -65,13 +65,14 @@ public class PaperManager : MonoBehaviour
         {
             Instance = this;
         }
-        else
+        else if (Instance != this)
         {
             Destroy(gameObject);
+            return;
         }
 
-        _textLength = texts.Length;
-        _papersLength = listOfPapers.Count;
+        _textLength = (texts != null) ? texts.Length : 0;
+        _papersLength = (listOfPapers != null && listOfPapers.Count > 0) ? listOfPapers.Count : 10;
         _counter = _papersLength;
         
         _failedPapers = new List<GameObject>();
@@ -567,7 +568,8 @@ public class PaperManager : MonoBehaviour
         Transform paperToRotate1 = null;
         Transform paperToRotate2 = null;
         
-        _soundPlayer.Play("Paper");
+        if (_soundPlayer == null) _soundPlayer = GetComponent<SoundPlayer>();
+        if (_soundPlayer != null) _soundPlayer.Play("Paper");
 
         if (_currentItemIndex + 1 < listOfPapers.Count && listOfPapers[_currentItemIndex + 1] != null)
         {

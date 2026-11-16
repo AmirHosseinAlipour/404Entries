@@ -14,44 +14,89 @@ public class BaseDraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
     protected Vector2 originalPosition;
     protected Transform originalParent;
+    protected Vector3 originalLocalScale = Vector3.one;
 
     public bool isLocked = false;
     protected bool wasDropped = false;
 
     protected virtual void Awake()
     {
-        rectTransform = GetComponent<RectTransform>();
-        image = GetComponent<Image>();
-        canvas = GetComponentInParent<Canvas>();
+        EnsureReferences();
+    }
+
+    public void EnsureReferences()
+    {
+        if (rectTransform == null) rectTransform = GetComponent<RectTransform>();
+        if (image == null) image = GetComponent<Image>();
+        if (canvas == null) canvas = GetComponentInParent<Canvas>(true);
+        if (canvas == null)
+        {
+            Canvas[] allCanvases = UnityEngine.Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include);
+            foreach (var c in allCanvases)
+            {
+                if (c != null && c.name.Contains("Mission"))
+                {
+                    canvas = c;
+                    break;
+                }
+            }
+            if (canvas == null && allCanvases.Length > 0)
+            {
+                canvas = allCanvases[0];
+            }
+        }
     }
 
     public virtual void OnBeginDrag(PointerEventData eventData)
     {
-        // Lock check is removed from base class
-        
-        originalPosition = rectTransform.anchoredPosition;
+        EnsureReferences();
+        if (isLocked)
+        {
+            if (eventData != null) eventData.pointerDrag = null;
+            return;
+        }
+
+        originalPosition = rectTransform != null ? rectTransform.anchoredPosition : Vector2.zero;
         originalParent = transform.parent;
-        
-        transform.SetParent(canvas.transform, true);
-        transform.SetAsLastSibling();
-        
-        image.raycastTarget = false;
+        originalLocalScale = transform.localScale;
+
+        if (canvas != null)
+        {
+            transform.SetParent(canvas.transform, true);
+            transform.SetAsLastSibling();
+        }
+        else
+        {
+            transform.SetAsLastSibling();
+        }
+
+        if (image != null) image.raycastTarget = false;
         wasDropped = false;
     }
 
     public virtual void OnDrag(PointerEventData eventData)
     {
-        if (transform.parent != canvas.transform)
+        EnsureReferences();
+        if (canvas != null && transform.parent != canvas.transform)
             return;
 
-        rectTransform.anchoredPosition += eventData.delta / canvas.scaleFactor;
+        if (rectTransform != null && eventData != null)
+        {
+            float scale = (canvas != null && canvas.scaleFactor > 0.001f) ? canvas.scaleFactor : 1f;
+            rectTransform.anchoredPosition += eventData.delta / scale;
+        }
     }
 
     public virtual void OnEndDrag(PointerEventData eventData)
     {
-        image.raycastTarget = true;
+        EnsureReferences();
+        if (image != null) image.raycastTarget = true;
 
-        if (!wasDropped && transform.parent == canvas.transform)
+        if (!wasDropped && canvas != null && transform.parent == canvas.transform)
+        {
+            ReturnToOriginalPosition();
+        }
+        else if (!wasDropped && originalParent != null && transform.parent != originalParent)
         {
             ReturnToOriginalPosition();
         }
@@ -67,15 +112,25 @@ public class BaseDraggableItem : MonoBehaviour, IBeginDragHandler, IDragHandler,
 
     public virtual void FinalizeDrop(BaseDropZone zone)
     {
-        transform.SetParent(zone.transform, false);
-        rectTransform.anchoredPosition = Vector2.zero;
-        currentDropZone = zone;
+        if (zone != null)
+        {
+            transform.SetParent(zone.transform, false);
+            if (rectTransform != null) rectTransform.anchoredPosition = Vector2.zero;
+            currentDropZone = zone;
+        }
     }
 
     public virtual void ReturnToOriginalPosition()
     {
         currentDropZone = null;
-        transform.SetParent(originalParent, false);
-        rectTransform.anchoredPosition = originalPosition;
+        if (originalParent != null)
+        {
+            transform.SetParent(originalParent, false);
+        }
+        if (rectTransform != null)
+        {
+            rectTransform.anchoredPosition = originalPosition;
+        }
+        transform.localScale = originalLocalScale;
     }
 }

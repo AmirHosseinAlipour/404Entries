@@ -15,11 +15,14 @@ public class TeacherController : BaseProfessors
     private bool _isActive = false; 
     private Coroutine lookRoutine;
     private SoundPlayer soundPlayer;
+    private float _lastGreenSoundTime = -10f;
+    private float _lastRedSoundTime = -10f;
 
     protected override void Awake()
     {
         base.Awake();
         soundPlayer = GetComponent<SoundPlayer>();
+        if (animator == null) animator = GetComponent<Animator>();
     }
 
     protected override void Start()
@@ -30,7 +33,15 @@ public class TeacherController : BaseProfessors
             gameObject.AddComponent<AsgharRoomCamera>();
         }
         if (animator == null) animator = GetComponent<Animator>();
-        if (animator != null) animator.Play("idle");
+        if (soundPlayer == null) soundPlayer = GetComponent<SoundPlayer>();
+
+        // Stand facing the chalkboard initially
+        isFacingPlayer = false;
+        if (animator != null)
+        {
+            animator.Play("BackIdle");
+        }
+
         HideMinigameUI();
         ApplyModernVisualStyles();
     }
@@ -51,7 +62,12 @@ public class TeacherController : BaseProfessors
             AudioSource src = soundPlayer.GetComponent<AudioSource>();
             if (src != null) src.Stop();
         }
-        if (animator != null) animator.Play("idle");
+        if (animator != null)
+        {
+            animator.ResetTrigger("FacingFront");
+            animator.ResetTrigger("FacingBack");
+            animator.Play("BackIdle");
+        }
     }
 
     public override void AcceptChallenge()
@@ -62,13 +78,47 @@ public class TeacherController : BaseProfessors
     public void StartLooking()
     {
         StartMinigame();
+
+        if (_player == null)
+        {
+            var pObj = GameObject.FindWithTag("Player");
+            if (pObj != null) _player = pObj.GetComponent<PlayerController>();
+        }
         PlayerUIModeHelper.PlayerExitUIMode(_player);
+        if (_player != null)
+        {
+            _player.isUIActive = false;
+        }
+
+        if (PlatformHelper.IsMobile())
+        {
+            var joy = GameObject.FindWithTag("JoyStick");
+            if (joy != null) UIUtils.SetAlpha(joy, 1f);
+        }
+
         if (AsgharRoomCamera.Instance != null)
         {
             AsgharRoomCamera.Instance.EnterRoom();
         }
+
         if (_isActive) return;
         _isActive = true;
+
+        if (animator == null) animator = GetComponent<Animator>();
+        if (soundPlayer == null) soundPlayer = GetComponent<SoundPlayer>();
+
+        // Face the chalkboard so player can sneak into the room
+        isFacingPlayer = false;
+        if (animator != null)
+        {
+            animator.ResetTrigger("FacingFront");
+            animator.ResetTrigger("FacingBack");
+            animator.Play("BackIdle");
+        }
+
+        // Play initial Green Light chant
+        PlayGreenLightSound();
+
         lookRoutine = StartCoroutine(RandomLookRoutine());
     }
 
@@ -77,30 +127,88 @@ public class TeacherController : BaseProfessors
         while (_isActive)
         {
             yield return new WaitForSeconds(Random.Range(minWait, maxWait));
-        
+            if (!_isActive) yield break;
+
             if (isFacingPlayer)
             {
-                if (animator != null) animator.SetTrigger("FacingBack");
-                isFacingPlayer = false; 
+                TurnToBoard();
             }
             else
             {
-                if (animator != null) animator.SetTrigger("FacingFront");
+                TurnToPlayer();
             }
+        }
+    }
+
+    public void TurnToPlayer()
+    {
+        if (!_isActive) return;
+        if (animator != null)
+        {
+            animator.ResetTrigger("FacingBack");
+            animator.SetTrigger("FacingFront");
+            animator.Play("FacingFront", 0, 0f);
+        }
+        StartCoroutine(DelayedFacingPlayer());
+    }
+
+    private IEnumerator DelayedFacingPlayer()
+    {
+        yield return new WaitForSeconds(0.085f);
+        if (_isActive)
+        {
+            OnFacingFrontComplete();
+        }
+    }
+
+    public void TurnToBoard()
+    {
+        if (!_isActive) return;
+        // Player is immediately safe to move when teacher starts turning back to board
+        isFacingPlayer = false;
+        if (animator != null)
+        {
+            animator.ResetTrigger("FacingFront");
+            animator.SetTrigger("FacingBack");
+            animator.Play("FacingBack", 0, 0f);
+        }
+        StartCoroutine(DelayedFacingBoard());
+    }
+
+    private IEnumerator DelayedFacingBoard()
+    {
+        yield return new WaitForSeconds(0.085f);
+        if (_isActive)
+        {
+            PlayGreenLightSound();
         }
     }
 
     public void PlayGreenLightSound()
     {
         if (!_isActive) return;
-        if (soundPlayer != null) soundPlayer.Play("GreenLight");
+        if (Time.time - _lastGreenSoundTime < 0.4f) return;
+        _lastGreenSoundTime = Time.time;
+
+        if (soundPlayer == null) soundPlayer = GetComponent<SoundPlayer>();
+        if (soundPlayer != null)
+        {
+            soundPlayer.Play("GreenLight");
+        }
     }
     
     public void OnFacingFrontComplete()
     {
         if (!_isActive) return;
         isFacingPlayer = true;
-        if (soundPlayer != null) soundPlayer.Play("RedLight");
+        if (Time.time - _lastRedSoundTime < 0.4f) return;
+        _lastRedSoundTime = Time.time;
+
+        if (soundPlayer == null) soundPlayer = GetComponent<SoundPlayer>();
+        if (soundPlayer != null)
+        {
+            soundPlayer.Play("RedLight");
+        }
     }
 
     public void StopLooking()
@@ -119,7 +227,11 @@ public class TeacherController : BaseProfessors
             if (src != null) src.Stop();
         }
         if (animator != null)
-            animator.Play("idle");
+        {
+            animator.ResetTrigger("FacingFront");
+            animator.ResetTrigger("FacingBack");
+            animator.Play("BackIdle");
+        }
     }
 
     protected override void OnTriggerEnter2D(Collider2D other)

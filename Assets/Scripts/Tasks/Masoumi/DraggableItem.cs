@@ -7,10 +7,10 @@ public class DraggableItem : BaseDraggableItem
 
     public override void OnBeginDrag(PointerEventData eventData)
     {
-        // Derived class re-implements the lock check
+        EnsureReferences();
         if (isLocked)
         {
-            eventData.pointerDrag = null;
+            if (eventData != null) eventData.pointerDrag = null;
             return;
         }
         
@@ -19,13 +19,25 @@ public class DraggableItem : BaseDraggableItem
 
     public override void OnEndDrag(PointerEventData eventData)
     {
-        image.raycastTarget = true;
+        EnsureReferences();
+        if (image != null) image.raycastTarget = true;
 
         if (pendingDropZone != null)
         {
-            PaperManager.Instance.ShowConfirmation(this, pendingDropZone);
+            if (PaperManager.Instance != null)
+            {
+                PaperManager.Instance.ShowConfirmation(this, pendingDropZone);
+            }
+            else
+            {
+                CompleteDrop();
+            }
         }
-        else if (transform.parent == canvas.transform) 
+        else if (canvas != null && transform.parent == canvas.transform) 
+        {
+            ReturnToOriginalPosition();
+        }
+        else if (originalParent != null && transform.parent != originalParent)
         {
             ReturnToOriginalPosition();
         }
@@ -60,9 +72,7 @@ public class DraggableItem : BaseDraggableItem
         transform.rotation = Quaternion.identity;
         FinalizeDrop(pendingDropZone);
         
-        // Locking is now handled here, in the derived class
         isLocked = true; 
-        
         pendingDropZone = null;
     }
 }

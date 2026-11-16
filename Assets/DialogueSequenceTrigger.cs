@@ -281,10 +281,13 @@ public class DialogueSequenceTrigger : MonoBehaviour
         }
 
         FindReferences();
-        PlayerUIModeHelper.PlayerExitUIMode(_player);
-        PlayerUIModeHelper.EnableTasksButton(_allTasksBackButton, _currentTaskButton);
-        TaskUI.SetTopUIVisible(true);
-        if (_joyStick != null) UIUtils.SetAlpha(_joyStick, 1f);
+        if (BaseProfessors.ActiveProfessor == null && !BaseProfessors.IsAnyMinigameActive)
+        {
+            PlayerUIModeHelper.PlayerExitUIMode(_player);
+            PlayerUIModeHelper.EnableTasksButton(_allTasksBackButton, _currentTaskButton);
+            TaskUI.SetTopUIVisible(true);
+            if (_joyStick != null) UIUtils.SetAlpha(_joyStick, 1f);
+        }
 
         currentIndex = 0;
         inConversation = false;
