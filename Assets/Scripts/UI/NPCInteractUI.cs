@@ -17,6 +17,7 @@ public class NPCInteractUI : MonoBehaviour
     private CanvasGroup _canvasGroup;
     private RectTransform _buttonRect;
     private Button _eButton;
+    private PlayerController _playerController;
 
     public static enterdialouge CurrentNPC => _currentNPC;
 
@@ -209,11 +210,19 @@ public class NPCInteractUI : MonoBehaviour
         // - Shown if PlatformHelper.IsMobile() is TRUE
         // - An NPC is in range
         // - Dialogue / cutscene is not currently active
+        if (_playerController == null)
+        {
+            _playerController = UnityEngine.Object.FindAnyObjectByType<PlayerController>();
+        }
+
         bool isMobile = PlatformHelper.IsMobile();
         bool isDialogueActive = (_currentNPC != null && _currentNPC.IsDialogueActive) ||
                                 DialogueSequenceTrigger.IsAnyConversationActive;
+        bool isMinigameActive = BaseProfessors.IsAnyMinigameActive ||
+                                (BaseProfessors.ActiveProfessor != null && BaseProfessors.ActiveProfessor.isMinigameActive) ||
+                                (_playerController != null && _playerController.isUIActive);
 
-        bool shouldShowMobile = isMobile && _currentNPC != null && !isDialogueActive;
+        bool shouldShowMobile = isMobile && _currentNPC != null && !isDialogueActive && !isMinigameActive;
 
         if (_canvasGroup != null)
         {

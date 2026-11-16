@@ -28,7 +28,7 @@ public class TaskManager : MonoBehaviour
     public List<GameObject> taskTriggers;
 
     [Header("Testing & Mobile Controls")]
-    public bool forceShowJoystick = false;
+    public bool forceShowJoystick = true;
 
     [Header("Language")]
     public GameLanguage gameLanguage = GameLanguage.Persian;

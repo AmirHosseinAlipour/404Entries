@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
     private int currentTaskIndex;
 
     [Header("Testing & Controls")]
-    public bool forceShowJoystick = false;
+    public bool forceShowJoystick = true;
 
     [Header("Language")]
     public GameLanguage gameLanguage = GameLanguage.Persian;
@@ -54,12 +54,6 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        if (UnityEngine.InputSystem.Keyboard.current != null && UnityEngine.InputSystem.Keyboard.current.f2Key.wasPressedThisFrame)
-        {
-            forceShowJoystick = !forceShowJoystick;
-            PlatformHelper.SetForceShowJoystick(forceShowJoystick);
-        }
-
         if (LocalizationManager.CurrentLanguage != gameLanguage)
         {
             gameLanguage = LocalizationManager.CurrentLanguage;

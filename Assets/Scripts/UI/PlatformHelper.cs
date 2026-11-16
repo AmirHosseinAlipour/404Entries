@@ -9,13 +9,8 @@ public static class PlatformHelper
 
     public static bool IsMobile()
     {
-#if UNITY_ANDROID || UNITY_IOS
+        // Mobile UI controls are permanently active across all platforms and editor
         return true;
-#else
-        if (Application.isMobilePlatform || SystemInfo.deviceType == DeviceType.Handheld)
-            return true;
-        return forceShowMobileControls;
-#endif
     }
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -44,7 +39,7 @@ public static class PlatformHelper
             return _cachedJoystickCanvas;
         }
 
-        Canvas[] canvases = Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include, FindObjectsSortMode.None);
+        Canvas[] canvases = UnityEngine.Object.FindObjectsByType<Canvas>(FindObjectsInactive.Include);
         foreach (var c in canvases)
         {
             if (c != null && c.gameObject != null && c.gameObject.name.Contains("JoyStick"))

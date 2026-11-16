@@ -18,6 +18,13 @@ public class Pause : MonoBehaviour
 
     private void Start()
     {
+        Canvas c = GetComponentInParent<Canvas>(true);
+        if (c != null)
+        {
+            c.overrideSorting = true;
+            c.sortingOrder = 40;
+        }
+
         if (pausePanel != null)
         {
             var img = pausePanel.GetComponent<Image>();

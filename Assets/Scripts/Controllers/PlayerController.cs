@@ -28,7 +28,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("Platform & Mobile Controls")]
     [Tooltip("If true, shows the virtual mobile joystick even when testing inside the PC/Unity Editor.")]
-    public bool forceShowMobileJoystick = false;
+    public bool forceShowMobileJoystick = true;
 
     private void Awake()
     {

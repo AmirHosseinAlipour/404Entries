@@ -125,10 +125,8 @@ public class DynamicFloatingJoystick : MonoBehaviour
         if (_canvas != null)
         {
             _canvasRect = _canvas.GetComponent<RectTransform>();
-            if (_canvas.sortingOrder < 5)
-            {
-                _canvas.sortingOrder = 5;
-            }
+            _canvas.overrideSorting = true;
+            _canvas.sortingOrder = 2; // Under dialogues (50) and minigame canvases
         }
 
         if (canvasGroup == null)
@@ -253,20 +251,14 @@ public class DynamicFloatingJoystick : MonoBehaviour
 
     private void Update()
     {
-        bool f2Pressed = false;
-        if (Keyboard.current != null && Keyboard.current.f2Key.wasPressedThisFrame) f2Pressed = true;
-        if (Input.GetKeyDown(KeyCode.F2)) f2Pressed = true;
-        if (f2Pressed)
-        {
-            PlatformHelper.SetForceShowJoystick(!PlatformHelper.forceShowMobileControls);
-        }
-
         if (_player == null)
         {
-            _player = Object.FindFirstObjectByType<PlayerController>();
+            _player = UnityEngine.Object.FindAnyObjectByType<PlayerController>();
         }
 
-        bool isUiBlocked = (_player != null && _player.isUIActive);
+        bool isMinigameActive = BaseProfessors.IsAnyMinigameActive ||
+                                (BaseProfessors.ActiveProfessor != null && BaseProfessors.ActiveProfessor.isMinigameActive);
+        bool isUiBlocked = (_player != null && _player.isUIActive) || isMinigameActive;
         if (isUiBlocked)
         {
             if (_isDragging)
